@@ -1,0 +1,57 @@
+.issuetree {
+  background-color: #fff; }
+  .issuetree.issuetree--status-active {
+    border-left: 7px solid #fe9; }
+  .issuetree.issuetree--status-fixed {
+    border-left: 7px solid #6e9; }
+  .issuetree.issuetree--status-no-active {
+    border-left: 7px solid #666; }
+  .issuetree .issuetree__block {
+    padding: 5px 0;
+    margin: 0.5em 0; }
+  .issuetree .issuetree__heading {
+    font-weight: bold;
+    border-left: 3px solid #999;
+    padding: 0 1em; }
+  .issuetree .issuetree__discussion-timeline--timeline {
+    height: 300px;
+    overflow: auto; }
+    .issuetree .issuetree__discussion-timeline--timeline > div {
+      border-bottom: 1px solid #bbb;
+      padding: 0.5em 0;
+      font-size: 13px; }
+      .issuetree .issuetree__discussion-timeline--timeline > div:last-child {
+        border-bottom: none; }
+  .issuetree .issuetree__discussion-timeline--form textarea {
+    width: 100%; }
+  .issuetree .issuetree__issue {
+    font-weight: bold;
+    font-size: 24px; }
+  .issuetree .issuetree__owner {
+    font-weight: bold;
+    font-size: small; }
+  .issuetree .issuetree__comment {
+    font-size: small; }
+  .issuetree .issuetree__voteuser {
+    padding: 0;
+    margin: 0; }
+    .issuetree .issuetree__voteuser li {
+      list-style-type: none;
+      display: inline-block;
+      padding: 0.2em 1em;
+      margin: 1px;
+      background-color: #666;
+      color: #eee;
+      font-size: 11px;
+      font-weight: normal;
+      border-radius: 0.5em; }
+      .issuetree .issuetree__voteuser li.issuetree__voteuser--me {
+        background-color: #999; }
+  .issuetree--widget {
+    border: 1px solid #ddd;
+    padding: 5px;
+    font-size: 11px;
+    width: 120px; }
+    .issuetree--widget .issuetree__issue {
+      font-size: 11px;
+      font-weight: bold; }

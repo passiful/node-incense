@@ -8,6 +8,7 @@ describe('test', function() {
 	it("test", function(done) {
 		this.timeout(60*1000);
 		assert.strictEqual(1, 1);
+		done();
 	});
 
 });

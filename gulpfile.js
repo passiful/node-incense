@@ -26,6 +26,7 @@ var _tasks = [
 gulp.task("replace-package-dist", function() {
 	gulp.src(["node_modules/bootstrap/dist/**/*"])
 		.pipe(gulp.dest( './dist/common/bootstrap/dist/' ))
+		.pipe(gulp.dest( './tests/testdata/htdocs/common/bootstrap/dist/' ))
 	;
 });
 
@@ -37,6 +38,7 @@ gulp.task('.css.scss', function(){
 		.pipe(autoprefixer())
 		.pipe(rename({extname: ''}))
 		.pipe(gulp.dest( './dist/' ))
+		.pipe(gulp.dest( './tests/testdata/htdocs/common/dist/' ))
 	;
 });
 
@@ -45,6 +47,7 @@ gulp.task('.css', function(){
 	gulp.src(["src/**/*.css","!src/**/_*.css"])
 		.pipe(plumber())
 		.pipe(gulp.dest( './dist/' ))
+		.pipe(gulp.dest( './tests/testdata/htdocs/common/dist/' ))
 	;
 });
 
@@ -56,6 +59,7 @@ gulp.task(".js", function() {
 		}))
 		// .pipe(uglify())
 		.pipe(gulp.dest( './dist/' ))
+		.pipe(gulp.dest( './tests/testdata/htdocs/common/dist/' ))
 	;
 });
 
@@ -64,6 +68,7 @@ gulp.task(".html", function() {
 	gulp.src(["src/**/*.html", "src/**/*.htm"])
 		.pipe(plumber())
 		.pipe(gulp.dest( './dist/' ))
+		.pipe(gulp.dest( './tests/testdata/htdocs/common/dist/' ))
 	;
 });
 
@@ -79,6 +84,7 @@ gulp.task(".html.twig", function() {
 		}))
 		.pipe(rename({extname: ''}))
 		.pipe(gulp.dest( './dist/' ))
+		.pipe(gulp.dest( './tests/testdata/htdocs/common/dist/' ))
 	;
 });
 
@@ -93,6 +99,12 @@ gulp.task("preview", function() {
 // src 中のすべての拡張子を監視して処理
 gulp.task("watch", function() {
 	gulp.watch(["src/**/*"], _tasks);
+
+	var svrCtrl = require( './tests/testdata/server/serverCtrl.js' );
+	svrCtrl.boot(function(){
+		require('child_process').spawn('open',[svrCtrl.getUrl()]);
+	});
+
 });
 
 // src 中のすべての拡張子を処理(default)
