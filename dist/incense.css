@@ -2,23 +2,31 @@
   position: relative;
   top: 0;
   left: 0;
-  overflow: auto; }
-  .incense.board__field .board__field-relations {
+  overflow: hidden; }
+  .incense.board__field .board__field-outer {
     position: absolute;
     top: 0;
     left: 0;
-    width: 10000px;
-    height: 10000px;
-    overflow: hidden;
-    z-index: 1000; }
-  .incense.board__field .board__field-inner {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 10000px;
-    height: 10000px;
-    overflow: hidden;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
     z-index: 2000; }
+    .incense.board__field .board__field-outer .board__field-relations {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 10000px;
+      height: 10000px;
+      overflow: hidden;
+      z-index: 1000; }
+    .incense.board__field .board__field-outer .board__field-inner {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 10000px;
+      height: 10000px;
+      overflow: hidden;
+      z-index: 2000; }
 
 .incense.board__timeline {
   position: absolute;
@@ -57,6 +65,20 @@
         text-decoration: none; }
         .incense .contextmenu ul li a:hover {
           background-color: #f8f8f8; }
+
+.incense .incense-modal {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.2); }
+  .incense .incense-modal__dialog {
+    width: 90%;
+    margin: 1em auto;
+    background-color: #fff; }
 
 .incense .message-unit {
   font-size: 13px;

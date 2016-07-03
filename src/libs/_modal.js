@@ -1,12 +1,12 @@
 /**
  * _modal.js
  */
-module.exports = function($fieldInner){
+module.exports = function($field){
 	var _this = this;
 	var $ = require('jquery');
 
-	var tpl = '<div class="modal fade" tabindex="-1" role="dialog">'+"\n"
-			+ '  <div class="modal-dialog modal-lg" role="document">'+"\n"
+	var tpl = '<div class="incense-modal" tabindex="-1">'+"\n"
+			+ '  <div class="incense-modal__dialog">'+"\n"
 			+ '    <div class="modal-content">'+"\n"
 			+ '      <div class="modal-header">'+"\n"
 			+ '        <button type="button" class="close" data-dismiss="modal" aria-label="Close">'+"\n"
@@ -33,7 +33,7 @@ module.exports = function($fieldInner){
 		this.close(function(){
 
 			$dialog = $(tpl);
-			$fieldInner
+			$field
 				.append($dialog)
 			;
 

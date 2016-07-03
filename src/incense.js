@@ -18,6 +18,7 @@ window.Incense = function(){
 		$timelineForm,
 		$field,
 		$fieldRelations,
+		$fieldOuter,
 		$fieldInner;
 	var boardId;
 
@@ -61,11 +62,14 @@ window.Incense = function(){
 					.addClass('incense')
 					.addClass('board__field')
 					.html(
+						'<div class="board__field-outer">'+
 						'<div class="board__field-relations"></div>'+
-						'<div class="board__field-inner"></div>'
+						'<div class="board__field-inner"></div>'+
+						'</div>'
 					)
 				;
 				$fieldRelations = $field.find('.board__field-relations');
+				$fieldOuter = $field.find('.board__field-outer');
 				$fieldInner = $field.find('.board__field-inner');
 
 				_this.$field = $field;
@@ -77,8 +81,8 @@ window.Incense = function(){
 				_this.fieldContextMenu = new (require('./libs/_fieldContextMenu.js'))(_this, $fieldInner);
 				_this.messageOperator = new (require('./libs/_messageOperator.js'))(_this, $timelineList, $fieldInner);
 				_this.widgetBase = require('./libs/_widgetBase.js');
-				_this.widgetMgr = new (require('./libs/_widgetMgr.js'))(_this, $timelineList, $field, $fieldInner);
-				_this.modal = new (require('./libs/_modal.js'))($fieldInner);
+				_this.widgetMgr = new (require('./libs/_widgetMgr.js'))(_this, $timelineList, $field, $fieldOuter, $fieldInner);
+				_this.modal = new (require('./libs/_modal.js'))($field);
 				_this.userMgr = new (require('./libs/_userMgr.js'))(_this, $timelineList, $field, $fieldInner);
 
 
@@ -264,9 +268,9 @@ window.Incense = function(){
 								// console.log(targetWidgetId, fromX, fromY);
 								// console.log(e.offsetX, e.offsetY);
 								// console.log(e);
-								var toX = $field.scrollLeft() + e.pageX - fromOffsetX - $field.offset().left;
+								var toX = $fieldOuter.scrollLeft() + e.pageX - fromOffsetX - $fieldOuter.offset().left;
 								if( toX < 0 ){ toX = 0; }
-								var toY = $field.scrollTop() + e.pageY - fromOffsetY - $field.offset().top;
+								var toY = $fieldOuter.scrollTop() + e.pageY - fromOffsetY - $fieldOuter.offset().top;
 								if( toY < 0 ){ toY = 0; }
 								_this.sendMessage(
 									{
@@ -420,48 +424,6 @@ window.Incense = function(){
 		return userInfo;
 	}
 
-	// /**
-	//  * プロフィールを編集
-	//  */
-	// this.editProfile = function(callback){
-	// 	callback = callback || function(){};
-	// 	console.log('profile dialog:');
-	// 	var $body = $('<form action="javascript:;" method="post">YourName: <input type="text" name="userName" value="{% userName %}" class="form-control" /></form>');
-	// 	$body.find('[name=userName]').val( userInfo.id );
-	// 	incense.modal.dialog({
-	// 		'title': 'プロフィール',
-	// 		'body': $body,
-	// 		'buttons': [
-	// 			$('<button>')
-	// 				.text('OK')
-	// 				.addClass('btn')
-	// 				.addClass('btn-primary')
-	// 				.click(function(){
-	// 					var name = JSON.parse(JSON.stringify($body.find('[name=userName]').val()));
-	// 					userInfo.id = name;
-	// 					userInfo.name = name;
-	// 					_this.sendMessage(
-	// 						{
-	// 							'content': JSON.stringify({
-	// 								'userInfo': userInfo,
-	// 								'operation': 'userLogin'
-	// 							}),
-	// 							'contentType': 'application/x-passiflora-command'
-	// 						},
-	// 						function(rtn){
-	// 							incense.modal.close();
-	// 						}
-	// 					);
-	// 					callback();
-	// 				})
-	// 		]
-	// 	});
-	// 	setTimeout(function(){
-	// 		$body.find('input').get(0).focus();
-	// 	}, 1000);
-	// 	return;
-	// }
-
 	/**
 	 * 親子関係の表現を更新する
 	 */
@@ -470,9 +432,9 @@ window.Incense = function(){
 		// <path stroke="black" stroke-width="2" fill="none" d="M120,170 180,170 150,230z" />
 
 		function getCenterOfGravity($elm){
-			var toX = $field.offset().left + $field.scrollLeft() + $elm.offset().left + $elm.outerWidth()/2;
+			var toX = 0 - $field.offset().left + $fieldOuter.scrollLeft() + $elm.offset().left + $elm.outerWidth()/2;
 			if( toX < 0 ){ toX = 0; }
-			var toY = $field.offset().top + $field.scrollTop() + $elm.offset().top + $elm.outerHeight()/2;
+			var toY = 0 - $field.offset().top + $fieldOuter.scrollTop() + $elm.offset().top + $elm.outerHeight()/2;
 			if( toY < 0 ){ toY = 0; }
 			return {'x':toX, 'y':toY};
 		}

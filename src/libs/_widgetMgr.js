@@ -1,7 +1,7 @@
 /**
  * widgetMgr.js
  */
-module.exports = function( incense, $timelineList, $field, $fieldInner ){
+module.exports = function( incense, $timelineList, $field, $fieldOuter, $fieldInner ){
 	var _this = this;
 	var $ = require('jquery');
 	var _ = require('underscore');
@@ -90,9 +90,9 @@ module.exports = function( incense, $timelineList, $field, $fieldInner ){
 		// $field.scroll( offset );
 		// console.log( $field );
 		// $field.eq(0).scrollTo(widget.$, 'normal');
-		$field
-			.animate({ 'scrollTop': $field.scrollTop() + widget.$.offset().top - ($field.innerHeight()/2) + (widget.$.outerHeight()/2) })
-			.animate({ 'scrollLeft': $field.scrollLeft() + widget.$.offset().left - ($field.innerWidth()/2) + (widget.$.outerWidth()/2) })
+		$fieldOuter
+			.animate({ 'scrollTop': $fieldOuter.scrollTop() + widget.$.offset().top - ($fieldOuter.innerHeight()/2) + (widget.$.outerHeight()/2) })
+			.animate({ 'scrollLeft': $fieldOuter.scrollLeft() + widget.$.offset().left - ($fieldOuter.innerWidth()/2) + (widget.$.outerWidth()/2) })
 		;
 
 		incense.modal.close(function(){
