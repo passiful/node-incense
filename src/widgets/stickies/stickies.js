@@ -3,6 +3,7 @@
  */
 module.exports = function( app, $widget ){
 	var _this = this;
+	var $ = require('jquery');
 
 	this.value = 'new Stickies';
 

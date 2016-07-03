@@ -3,6 +3,7 @@
  */
 module.exports = function( app, $timelineList, $field, $fieldInner ){
 	var _this = this;
+	var $ = require('jquery');
 	var _ = require('underscore');
 	var widgetIndex = [];
 

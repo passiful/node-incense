@@ -163,6 +163,26 @@ window.Incense = function(){
 			.then(function(){ return new Promise(function(rlv, rjt){
 				// キーボードイベントセット
 				console.log('incense: setting Keyboard events...');
+
+				_this.setBehaviorCharComment(
+					$timelineForm.find('textarea.board__main-chat-comment'),
+					{
+						'submit': function(value){
+							var msg = {
+								'content': value,
+								'contentType': 'text/markdown'
+							};
+							_this.sendMessage(
+								msg,
+								function(rtn){
+									console.log('Your message was sent.');
+								}
+							);
+
+						}
+					}
+				);
+
 				if( !window.keypress ){
 					console.error('incense: window.keypress is not exists.');
 					rlv();
@@ -201,24 +221,6 @@ window.Incense = function(){
 					}
 					e.preventDefault();
 				});
-				app.setBehaviorCharComment(
-					$timelineForm.find('textarea.board__main-chat-comment'),
-					{
-						'submit': function(value){
-							var msg = {
-								'content': value,
-								'contentType': 'text/markdown'
-							};
-							_this.sendMessage(
-								msg,
-								function(rtn){
-									console.log('Your message was sent.');
-								}
-							);
-
-						}
-					}
-				);
 				// Keypress.simple_combo(cmdKeyName+" x", function(e) {
 				// 	px.message('cmd x');
 				// 	e.preventDefault();
@@ -260,9 +262,9 @@ window.Incense = function(){
 								// console.log(targetWidgetId, fromX, fromY);
 								// console.log(e.offsetX, e.offsetY);
 								// console.log(e);
-								var toX = $field.offset().left + $field.scrollLeft() + e.pageX - fromOffsetX;
+								var toX = $field.scrollLeft() + e.pageX - fromOffsetX - $field.offset().left;
 								if( toX < 0 ){ toX = 0; }
-								var toY = $field.offset().top + $field.scrollTop() + e.pageY - fromOffsetY;
+								var toY = $field.scrollTop() + e.pageY - fromOffsetY - $field.offset().top;
 								if( toY < 0 ){ toY = 0; }
 								_this.sendMessage(
 									{
@@ -289,13 +291,22 @@ window.Incense = function(){
 
 				rlv();
 			}); })
-			// .then(function(){ return new Promise(function(rlv, rjt){
-			// 	// プロフィールを入力する
-			// 	console.log('incense: input your profile:');
-			// 	_this.editProfile(function(){
-			// 		rlv();
-			// 	});
-			// }); })
+			.then(function(){ return new Promise(function(rlv, rjt){
+				// ログインする
+				console.log('incense: input your profile:');
+				_this.sendMessage(
+					{
+						'content': JSON.stringify({
+							'userInfo': userInfo,
+							'operation': 'userLogin'
+						}),
+						'contentType': 'application/x-passiflora-command'
+					},
+					function(rtn){
+						rlv();
+					}
+				);
+			}); })
 			.then(function(){ return new Promise(function(rlv, rjt){
 				// 返却
 				console.log('standby.');

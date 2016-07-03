@@ -1,9 +1,9 @@
-.board__field {
+.incense.board__field {
   position: relative;
   top: 0;
   left: 0;
   overflow: auto; }
-  .board__field .board__field-relations {
+  .incense.board__field .board__field-relations {
     position: absolute;
     top: 0;
     left: 0;
@@ -11,7 +11,7 @@
     height: 10000px;
     overflow: hidden;
     z-index: 1000; }
-  .board__field .board__field-inner {
+  .incense.board__field .board__field-inner {
     position: absolute;
     top: 0;
     left: 0;
@@ -20,71 +20,71 @@
     overflow: hidden;
     z-index: 2000; }
 
-.board__timeline {
+.incense.board__timeline {
   position: absolute;
   top: 0;
   right: 0;
   width: 30%;
   height: 100%;
   overflow: hidden; }
-  .board__timeline_list {
+  .incense.board__timeline .board__timeline_list {
     position: absolute;
     left: 0;
     top: 0;
     overflow: auto;
     width: 100%; }
-  .board__timeline_form {
+  .incense.board__timeline .board__timeline_form {
     position: absolute;
     left: 0;
     bottom: 0;
     width: 100%; }
-  .board__timeline textarea {
+  .incense.board__timeline textarea {
     width: 100%; }
 
-.contextmenu {
+.incense .contextmenu {
   background-color: #fff;
   border: 1px solid #eee; }
-  .contextmenu ul {
+  .incense .contextmenu ul {
     margin: 0;
     padding: 0; }
-    .contextmenu ul li {
+    .incense .contextmenu ul li {
       list-style-type: none;
       margin: 0;
       padding: 0; }
-      .contextmenu ul li a {
+      .incense .contextmenu ul li a {
         display: block;
         padding: 1em 2em;
         text-decoration: none; }
-        .contextmenu ul li a:hover {
+        .incense .contextmenu ul li a:hover {
           background-color: #f8f8f8; }
 
-.message-unit {
+.incense .message-unit {
   font-size: 13px;
   padding: 0.5em;
   margin: 0 0 1px 0;
   border-bottom: 1px solid #eee; }
-  .message-unit.message-unit--operation {
+  .incense .message-unit.message-unit--operation {
     background-color: #eeeef9;
     color: #77b;
     font-size: 70%; }
-  .message-unit:last-child {
+  .incense .message-unit:last-child {
     border: none; }
-  .message-unit .message-unit__owner {
+  .incense .message-unit .message-unit__owner {
     font-weight: bold; }
-  .message-unit .message-unit__content {
+  .incense .message-unit .message-unit__content {
     font-weight: normal; }
-    .message-unit .message-unit__content > :first-child {
+    .incense .message-unit .message-unit__content > :first-child {
       margin-top: 0; }
-    .message-unit .message-unit__content > :last-child {
+    .incense .message-unit .message-unit__content > :last-child {
       margin-bottom: 0; }
-  .message-unit .message-unit__operation-message {
+  .incense .message-unit .message-unit__operation-message {
     text-align: center; }
-  .message-unit .message-unit__targetWidget {
+  .incense .message-unit .message-unit__targetWidget {
     text-align: right;
     font-size: 75%;
     color: #aaa; }
 
-.widget {
+.incense .widget {
   position: absolute;
   left: 0;
   top: 0;
@@ -92,47 +92,47 @@
   min-height: 5px;
   background-color: #eee; }
 
-.markdown * {
+.incense .markdown * {
   font-size: 100%; }
 
-.issuetree {
+.incense .issuetree {
   background-color: #fff; }
-  .issuetree.issuetree--status-active {
+  .incense .issuetree.issuetree--status-active {
     border-left: 7px solid #fe9; }
-  .issuetree.issuetree--status-fixed {
+  .incense .issuetree.issuetree--status-fixed {
     border-left: 7px solid #6e9; }
-  .issuetree.issuetree--status-no-active {
+  .incense .issuetree.issuetree--status-no-active {
     border-left: 7px solid #666; }
-  .issuetree .issuetree__block {
+  .incense .issuetree .issuetree__block {
     padding: 5px 0;
     margin: 0.5em 0; }
-  .issuetree .issuetree__heading {
+  .incense .issuetree .issuetree__heading {
     font-weight: bold;
     border-left: 3px solid #999;
     padding: 0 1em; }
-  .issuetree .issuetree__discussion-timeline--timeline {
+  .incense .issuetree .issuetree__discussion-timeline--timeline {
     height: 300px;
     overflow: auto; }
-    .issuetree .issuetree__discussion-timeline--timeline > div {
+    .incense .issuetree .issuetree__discussion-timeline--timeline > div {
       border-bottom: 1px solid #bbb;
       padding: 0.5em 0;
       font-size: 13px; }
-      .issuetree .issuetree__discussion-timeline--timeline > div:last-child {
+      .incense .issuetree .issuetree__discussion-timeline--timeline > div:last-child {
         border-bottom: none; }
-  .issuetree .issuetree__discussion-timeline--form textarea {
+  .incense .issuetree .issuetree__discussion-timeline--form textarea {
     width: 100%; }
-  .issuetree .issuetree__issue {
+  .incense .issuetree .issuetree__issue {
     font-weight: bold;
     font-size: 24px; }
-  .issuetree .issuetree__owner {
+  .incense .issuetree .issuetree__owner {
     font-weight: bold;
     font-size: small; }
-  .issuetree .issuetree__comment {
+  .incense .issuetree .issuetree__comment {
     font-size: small; }
-  .issuetree .issuetree__voteuser {
+  .incense .issuetree .issuetree__voteuser {
     padding: 0;
     margin: 0; }
-    .issuetree .issuetree__voteuser li {
+    .incense .issuetree .issuetree__voteuser li {
       list-style-type: none;
       display: inline-block;
       padding: 0.2em 1em;
@@ -142,18 +142,18 @@
       font-size: 11px;
       font-weight: normal;
       border-radius: 0.5em; }
-      .issuetree .issuetree__voteuser li.issuetree__voteuser--me {
+      .incense .issuetree .issuetree__voteuser li.issuetree__voteuser--me {
         background-color: #999; }
-  .issuetree--widget {
+  .incense .issuetree--widget {
     border: 1px solid #ddd;
     padding: 5px;
     font-size: 11px;
     width: 120px; }
-    .issuetree--widget .issuetree__issue {
+    .incense .issuetree--widget .issuetree__issue {
       font-size: 11px;
       font-weight: bold; }
 
-.stickies {
+.incense .stickies {
   font-size: 11px;
   min-width: 80px;
   min-height: 80px;
