@@ -3,10 +3,11 @@
  */
 module.exports = function( app, $timelineList, $fieldInner ){
 	var _this = this;
+	var $ = require('jquery');
+	var it79 = require('iterate79');
 	var newestMessageNumber = 0;
 	var messageQueue = {};
 	var messageQueueLength = 0;
-	var it79 = require('iterate79');
 	var isQueueProgress = false;
 
 	/**

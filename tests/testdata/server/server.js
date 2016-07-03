@@ -4,12 +4,12 @@ var express = require('express'),
 	app = express();
 var server = require('http').Server(app);
 var biflora = require('biflora');
+var conf = require('config');
 
-var main = require( path.resolve(__dirname, './backend/main.js') );
+var main = new (require( path.resolve(__dirname, '../../../libs/bifloraMain.js') ))(conf);
 var _port = 8088;
 var backendApis = {};
-backendApis['broccoli'] = require( path.resolve(__dirname, './backend/apis/incense.js') );
-backendApis['socketTest'] = require( path.resolve(__dirname, './backend/apis/socketTest.js') );
+backendApis = require( path.resolve(__dirname, '../../../libs/apis/bifloraApi.js') );
 
 
 console.log('port number is '+_port);

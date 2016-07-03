@@ -22,7 +22,7 @@ module.exports = function(conf, main){
 			callback(dbs[boardId]);
 			return;
 		}
-
+		// console.log(boardId);
 		var dbPath = require('path').resolve(conf.dataDir, ''+boardId, 'db.sqlite');
 		// console.log(dbPath);
 

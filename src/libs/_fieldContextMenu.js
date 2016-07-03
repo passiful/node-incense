@@ -1,10 +1,10 @@
 /**
- * fieldContextMenu.js
+ * _fieldContextMenu.js
  */
 module.exports = function( app, $fieldInner ){
 	var _this = this;
-	var $contextmenu = $('<div class="contextmenu">')
-	;
+	var $ = require('jquery');
+	var $contextmenu = $('<div class="contextmenu">');
 
 	/**
 	 * コンテキストメニューを開く

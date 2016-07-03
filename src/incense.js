@@ -1,4 +1,4 @@
-window.app = new (function(){
+window.Incense = function(){
 	// app "board"
 	var _this = this;
 	var $ = require('jquery');
@@ -9,8 +9,8 @@ window.app = new (function(){
 	var biflora,
 		Keypress,
 		userInfo = {
-			'id': 'new Commer',
-			'name': 'new Commer'
+			'id': '',
+			'name': ''
 		};
 	var $timeline,
 		$timelineList,
@@ -23,32 +23,54 @@ window.app = new (function(){
 	/**
 	 * 初期化
 	 */
-	this.init = function(callback){
+	this.init = function(options, callback){
+		console.log('incense: initialize...');
 		callback = callback || function(){};
+		options = options || {};
+		userInfo = options.userInfo;
 
 		this.widgetsMaxZIndex = 1000;
 
 		new Promise(function(rlv){rlv();})
 			.then(function(){ return new Promise(function(rlv, rjt){
 				// BoardID を取得
-				var pathname = window.location.pathname;
-				pathname.match(new RegExp('\\/board\\/([0-9a-zA-Z]+)\\/'));
-				boardId = RegExp.$1;
+				boardId = options.boardId;
+				console.log('boardId = '+boardId);
 
 				rlv();
 			}); })
 			.then(function(){ return new Promise(function(rlv, rjt){
 				// DOM Setup
-				$timeline = $('.board__timeline');
-				$timelineList = $('.board__timeline .board__timeline_list');
-				$timelineForm = $('.board__timeline .board__timeline_form');
-				$field = $('.board__field');
-				$fieldRelations = $('.board__field .board__field-relations');
-				$fieldInner = $('.board__field .board__field-inner');
+				console.log('incense: DOM Setup...');
+
+				$timeline = $(options.elmTimeline);
+				$timeline
+					.addClass('incense')
+					.addClass('board__timeline')
+					.html(
+						'<div class="board__timeline_list"></div>'+
+						'<div class="board__timeline_form"><textarea class="form-control board__main-chat-comment"></textarea></div>'
+					)
+				;
+				$timelineList = $timeline.find('.board__timeline_list');
+				$timelineForm = $timeline.find('.board__timeline_form');
+
+				$field = $(options.elmBoard);
+				$field
+					.addClass('incense')
+					.addClass('board__field')
+					.html(
+						'<div class="board__field-relations"></div>'+
+						'<div class="board__field-inner"></div>'
+					)
+				;
+				$fieldRelations = $field.find('.board__field-relations');
+				$fieldInner = $field.find('.board__field-inner');
 
 				_this.$field = $field;
 				_this.$fieldInner = $fieldInner;
 				$fieldRelations.append( $('<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 10000 10000">') );
+
 
 				// functions Setup
 				_this.fieldContextMenu = new (require('./libs/_fieldContextMenu.js'))(_this, $fieldInner);
@@ -56,6 +78,7 @@ window.app = new (function(){
 				_this.widgetMgr = new (require('./libs/_widgetMgr.js'))(_this, $timelineList, $field, $fieldInner);
 				_this.widgetBase = require('./libs/_widgetBase.js');
 				_this.userMgr = new (require('./libs/_userMgr.js'))(_this, $timelineList, $field, $fieldInner);
+
 
 				_this.widgetList = {
 					'stickies': {
@@ -68,11 +91,11 @@ window.app = new (function(){
 					}
 				};
 
-
 				rlv();
 			}); })
 			.then(function(){ return new Promise(function(rlv, rjt){
 				// init biflora framework
+				console.log('incense: initializing biflora framework...');
 				biflora = _this.biflora = window.biflora
 					.createSocket(
 						_this,
@@ -85,6 +108,7 @@ window.app = new (function(){
 				rlv();
 			}); })
 			.then(function(){ return new Promise(function(rlv, rjt){
+				console.log('incense: setting on window resize event handler...');
 				windowResized();
 				$(window).resize(function(){
 					windowResized();
@@ -93,6 +117,7 @@ window.app = new (function(){
 			}); })
 			.then(function(){ return new Promise(function(rlv, rjt){
 				// (biflora 送信テスト)
+				console.log('incense: biflora test...');
 				biflora.send(
 					'ping',
 					{} ,
@@ -104,7 +129,7 @@ window.app = new (function(){
 			}); })
 			.then(function(){ return new Promise(function(rlv, rjt){
 				// boardId ルームに参加する
-				console.log('join to room: '+boardId);
+				console.log('incense: join to room: '+boardId);
 				biflora.joinRoom(
 					boardId,
 					1,
@@ -116,7 +141,7 @@ window.app = new (function(){
 			}); })
 			.then(function(){ return new Promise(function(rlv, rjt){
 				// boardId のこれまでのメッセージを取得する
-				console.log('getting messages: '+boardId);
+				console.log('incense: getting messages: '+boardId);
 				biflora.send(
 					'getMessageList',
 					{'boardId': boardId},
@@ -137,6 +162,12 @@ window.app = new (function(){
 			}); })
 			.then(function(){ return new Promise(function(rlv, rjt){
 				// キーボードイベントセット
+				console.log('incense: setting Keyboard events...');
+				if( !window.keypress ){
+					console.error('incense: window.keypress is not exists.');
+					rlv();
+					return;
+				}
 				var cmdKeyName = (function(ua){
 					// console.log(ua);
 					var idxOf = ua.indexOf( 'Mac OS X' );
@@ -196,6 +227,7 @@ window.app = new (function(){
 			}); })
 			.then(function(){ return new Promise(function(rlv, rjt){
 				// フィールドのイベントセット
+				console.log('incense: setting board events...');
 				var mkWidget = function(e){
 					// console.log(e);
 					_this.fieldContextMenu.open(e.offsetX, e.offsetY);
@@ -257,16 +289,17 @@ window.app = new (function(){
 
 				rlv();
 			}); })
-			.then(function(){ return new Promise(function(rlv, rjt){
-				// プロフィールを入力する
-				_this.editProfile(function(){
-					rlv();
-				});
-			}); })
+			// .then(function(){ return new Promise(function(rlv, rjt){
+			// 	// プロフィールを入力する
+			// 	console.log('incense: input your profile:');
+			// 	_this.editProfile(function(){
+			// 		rlv();
+			// 	});
+			// }); })
 			.then(function(){ return new Promise(function(rlv, rjt){
 				// 返却
 				console.log('standby.');
-				callback(rtn);
+				callback();
 				rlv();
 			}); })
 		;
@@ -374,47 +407,47 @@ window.app = new (function(){
 		return userInfo;
 	}
 
-	/**
-	 * プロフィールを編集
-	 */
-	this.editProfile = function(callback){
-		callback = callback || function(){};
-		console.log('profile dialog:');
-		var $body = $('<form action="javascript:;" method="post">YourName: <input type="text" name="userName" value="{% userName %}" class="form-control" /></form>');
-		$body.find('[name=userName]').val( userInfo.id );
-		window.main.modal.dialog({
-			'title': 'プロフィール',
-			'body': $body,
-			'buttons': [
-				$('<button>')
-					.text('OK')
-					.addClass('btn')
-					.addClass('btn-primary')
-					.click(function(){
-						var name = JSON.parse(JSON.stringify($body.find('[name=userName]').val()));
-						userInfo.id = name;
-						userInfo.name = name;
-						_this.sendMessage(
-							{
-								'content': JSON.stringify({
-									'userInfo': userInfo,
-									'operation': 'userLogin'
-								}),
-								'contentType': 'application/x-passiflora-command'
-							},
-							function(rtn){
-								window.main.modal.close();
-							}
-						);
-						callback();
-					})
-			]
-		});
-		setTimeout(function(){
-			$body.find('input').get(0).focus();
-		}, 1000);
-		return;
-	}
+	// /**
+	//  * プロフィールを編集
+	//  */
+	// this.editProfile = function(callback){
+	// 	callback = callback || function(){};
+	// 	console.log('profile dialog:');
+	// 	var $body = $('<form action="javascript:;" method="post">YourName: <input type="text" name="userName" value="{% userName %}" class="form-control" /></form>');
+	// 	$body.find('[name=userName]').val( userInfo.id );
+	// 	window.main.modal.dialog({
+	// 		'title': 'プロフィール',
+	// 		'body': $body,
+	// 		'buttons': [
+	// 			$('<button>')
+	// 				.text('OK')
+	// 				.addClass('btn')
+	// 				.addClass('btn-primary')
+	// 				.click(function(){
+	// 					var name = JSON.parse(JSON.stringify($body.find('[name=userName]').val()));
+	// 					userInfo.id = name;
+	// 					userInfo.name = name;
+	// 					_this.sendMessage(
+	// 						{
+	// 							'content': JSON.stringify({
+	// 								'userInfo': userInfo,
+	// 								'operation': 'userLogin'
+	// 							}),
+	// 							'contentType': 'application/x-passiflora-command'
+	// 						},
+	// 						function(rtn){
+	// 							window.main.modal.close();
+	// 						}
+	// 					);
+	// 					callback();
+	// 				})
+	// 		]
+	// 	});
+	// 	setTimeout(function(){
+	// 		$body.find('input').get(0).focus();
+	// 	}, 1000);
+	// 	return;
+	// }
 
 	/**
 	 * 親子関係の表現を更新する
@@ -468,4 +501,4 @@ window.app = new (function(){
 		return;
 	}
 
-})();
+};

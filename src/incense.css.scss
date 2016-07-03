@@ -1,90 +1,52 @@
-html, body{
-	height: 100%;
-	width: 100%;
-	margin: 0;
-	padding: 0;
-	position: absolute;
-	left:0; top:0;
-}
-.board-head{
-	position: absolute;
-	top: 10px;
-	left: 10px;
-	z-index: 1000;
-	color: #000;
-	background-color: #f9f9f9;
-	padding: 10px;
-	border-radius: 3px;
-
-	*{
-		font-size: 13px;
-		margin: 0;
-	}
-	h1{
-		font-size: 16px;
-		font-weight: bold;
-	}
-}
-.board{
-	height: 100%;
-	width: 100%;
-	position: absolute;
-	left:0; top:0;
-	overflow: hidden;
-	z-index: 500;
-
-	&__field{
+.board__field{
+	position: relative;
+	top: 0;
+	left: 0;
+	overflow: auto;
+	.board__field-relations{
 		position: absolute;
 		top: 0;
 		left: 0;
-		width: 70%;
-		height: 100%;
-		overflow: auto;
-		.board__field-relations{
-			position: absolute;
-			top: 0;
-			left: 0;
-			width: 10000px;
-			height: 10000px;
-			overflow: hidden;
-			z-index: 1000;
-		}
-		.board__field-inner{
-			position: absolute;
-			top: 0;
-			left: 0;
-			width: 10000px;
-			height: 10000px;
-			overflow: hidden;
-			z-index: 2000;
-		}
+		width: 10000px;
+		height: 10000px;
+		overflow: hidden;
+		z-index: 1000;
 	}
-	&__timeline{
+	.board__field-inner{
 		position: absolute;
 		top: 0;
-		right: 0;
-		width: 30%;
-		height: 100%;
+		left: 0;
+		width: 10000px;
+		height: 10000px;
 		overflow: hidden;
-
-		&_list{
-			position:absolute;
-			left:0;
-			top:0;
-			overflow: auto;
-			width: 100%;
-		}
-		&_form{
-			position:absolute;
-			left:0;
-			bottom:0;
-			width: 100%;
-		}
-		textarea{
-			width: 100%;
-		}
-
+		z-index: 2000;
 	}
+}
+.board__timeline{
+	position: absolute;
+	top: 0;
+	right: 0;
+	width: 30%;
+	height: 100%;
+	overflow: hidden;
+
+	&_list{
+		position:absolute;
+		left:0;
+		top:0;
+		overflow: auto;
+		width: 100%;
+	}
+	&_form{
+		position:absolute;
+		left:0;
+		bottom:0;
+		width: 100%;
+	}
+	textarea{
+		width: 100%;
+	}
+
 }
 .contextmenu{
 	background-color: #fff;

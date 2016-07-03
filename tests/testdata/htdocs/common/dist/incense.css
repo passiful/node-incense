@@ -1,79 +1,45 @@
-html, body {
-  height: 100%;
-  width: 100%;
-  margin: 0;
-  padding: 0;
-  position: absolute;
-  left: 0;
-  top: 0; }
-
-.board-head {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  z-index: 1000;
-  color: #000;
-  background-color: #f9f9f9;
-  padding: 10px;
-  border-radius: 3px; }
-  .board-head * {
-    font-size: 13px;
-    margin: 0; }
-  .board-head h1 {
-    font-size: 16px;
-    font-weight: bold; }
-
-.board {
-  height: 100%;
-  width: 100%;
-  position: absolute;
-  left: 0;
+.board__field {
+  position: relative;
   top: 0;
-  overflow: hidden;
-  z-index: 500; }
-  .board__field {
+  left: 0;
+  overflow: auto; }
+  .board__field .board__field-relations {
     position: absolute;
     top: 0;
     left: 0;
-    width: 70%;
-    height: 100%;
-    overflow: auto; }
-    .board__field .board__field-relations {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 10000px;
-      height: 10000px;
-      overflow: hidden;
-      z-index: 1000; }
-    .board__field .board__field-inner {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 10000px;
-      height: 10000px;
-      overflow: hidden;
-      z-index: 2000; }
-  .board__timeline {
+    width: 10000px;
+    height: 10000px;
+    overflow: hidden;
+    z-index: 1000; }
+  .board__field .board__field-inner {
     position: absolute;
     top: 0;
-    right: 0;
-    width: 30%;
-    height: 100%;
-    overflow: hidden; }
-    .board__timeline_list {
-      position: absolute;
-      left: 0;
-      top: 0;
-      overflow: auto;
-      width: 100%; }
-    .board__timeline_form {
-      position: absolute;
-      left: 0;
-      bottom: 0;
-      width: 100%; }
-    .board__timeline textarea {
-      width: 100%; }
+    left: 0;
+    width: 10000px;
+    height: 10000px;
+    overflow: hidden;
+    z-index: 2000; }
+
+.board__timeline {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 30%;
+  height: 100%;
+  overflow: hidden; }
+  .board__timeline_list {
+    position: absolute;
+    left: 0;
+    top: 0;
+    overflow: auto;
+    width: 100%; }
+  .board__timeline_form {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%; }
+  .board__timeline textarea {
+    width: 100%; }
 
 .contextmenu {
   background-color: #fff;
