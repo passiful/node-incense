@@ -17737,6 +17737,7 @@ module.exports = function( data, callback, main, socket ){
 window.Incense = function(){
 	// app "board"
 	var _this = this;
+	var incense = this;
 	var $ = require('jquery');
 	var Promise = require('es6-promise').Promise;
 	var utils79 = require('utils79');
@@ -17811,8 +17812,9 @@ window.Incense = function(){
 				// functions Setup
 				_this.fieldContextMenu = new (require('./libs/_fieldContextMenu.js'))(_this, $fieldInner);
 				_this.messageOperator = new (require('./libs/_messageOperator.js'))(_this, $timelineList, $fieldInner);
-				_this.widgetMgr = new (require('./libs/_widgetMgr.js'))(_this, $timelineList, $field, $fieldInner);
 				_this.widgetBase = require('./libs/_widgetBase.js');
+				_this.widgetMgr = new (require('./libs/_widgetMgr.js'))(_this, $timelineList, $field, $fieldInner);
+				_this.modal = new (require('./libs/_modal.js'))($fieldInner);
 				_this.userMgr = new (require('./libs/_userMgr.js'))(_this, $timelineList, $field, $fieldInner);
 
 
@@ -18162,7 +18164,7 @@ window.Incense = function(){
 	// 	console.log('profile dialog:');
 	// 	var $body = $('<form action="javascript:;" method="post">YourName: <input type="text" name="userName" value="{% userName %}" class="form-control" /></form>');
 	// 	$body.find('[name=userName]').val( userInfo.id );
-	// 	window.main.modal.dialog({
+	// 	incense.modal.dialog({
 	// 		'title': 'プロフィール',
 	// 		'body': $body,
 	// 		'buttons': [
@@ -18183,7 +18185,7 @@ window.Incense = function(){
 	// 							'contentType': 'application/x-passiflora-command'
 	// 						},
 	// 						function(rtn){
-	// 							window.main.modal.close();
+	// 							incense.modal.close();
 	// 						}
 	// 					);
 	// 					callback();
@@ -18250,7 +18252,7 @@ window.Incense = function(){
 
 };
 
-},{"./apis/_receiveBroadcast.js":77,"./libs/_fieldContextMenu.js":79,"./libs/_messageOperator.js":80,"./libs/_userMgr.js":81,"./libs/_widgetBase.js":82,"./libs/_widgetMgr.js":83,"./widgets/issuetree/issuetree.js":84,"./widgets/stickies/stickies.js":85,"es6-promise":4,"iterate79":6,"jquery":7,"marked":8,"twig":11,"utils79":13}],79:[function(require,module,exports){
+},{"./apis/_receiveBroadcast.js":77,"./libs/_fieldContextMenu.js":79,"./libs/_messageOperator.js":80,"./libs/_modal.js":81,"./libs/_userMgr.js":82,"./libs/_widgetBase.js":83,"./libs/_widgetMgr.js":84,"./widgets/issuetree/issuetree.js":85,"./widgets/stickies/stickies.js":86,"es6-promise":4,"iterate79":6,"jquery":7,"marked":8,"twig":11,"utils79":13}],79:[function(require,module,exports){
 /**
  * _fieldContextMenu.js
  */
@@ -18547,6 +18549,110 @@ module.exports = function( app, $timelineList, $fieldInner ){
 
 },{"iterate79":6,"jquery":7}],81:[function(require,module,exports){
 /**
+ * _modal.js
+ */
+module.exports = function($fieldInner){
+	var _this = this;
+	var $ = require('jquery');
+
+	var tpl = '<div class="modal fade" tabindex="-1" role="dialog">'+"\n"
+			+ '  <div class="modal-dialog modal-lg" role="document">'+"\n"
+			+ '    <div class="modal-content">'+"\n"
+			+ '      <div class="modal-header">'+"\n"
+			+ '        <button type="button" class="close" data-dismiss="modal" aria-label="Close">'+"\n"
+			+ '          <span aria-hidden="true">&times;</span>'+"\n"
+			+ '        </button>'+"\n"
+			+ '        <h4 class="modal-title"></h4>'+"\n"
+			+ '      </div>'+"\n"
+			+ '      <div class="modal-body"></div>'+"\n"
+			+ '      <div class="modal-footer">'+"\n"
+			// + '        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>'+"\n"
+			// + '        <button type="button" class="btn btn-primary">Save changes</button>'+"\n"
+			+ '      </div>'+"\n"
+			+ '    </div><!-- /.modal-content -->'+"\n"
+			+ '  </div><!-- /.modal-dialog -->'+"\n"
+			+ '</div><!-- /.modal -->'
+	;
+
+	var $dialog;
+
+	/**
+	 * ダイアログを表示する
+	 */
+	this.dialog = function(opt){
+		this.close(function(){
+
+			$dialog = $(tpl);
+			$fieldInner
+				.append($dialog)
+			;
+
+			opt = opt||{};
+			opt.title = opt.title||'command:';
+			opt.body = opt.body||$('<div>');
+			opt.buttons = opt.buttons||[
+				$('<button class="btn btn-primary">').text('OK').click(function(){
+					this.close();
+				})
+			];
+
+			for( var i in opt.buttons ){
+				var $btnElm = $(opt.buttons[i]);
+				$btnElm.each(function(){
+					if(!$(this).hasClass('btn')){
+						$(this).addClass('btn').addClass('btn-secondary');
+					}
+				});
+				opt.buttons[i] = $btnElm;
+			}
+
+			// var $dialogButtons = $('<div class="modal-footer">').append(opt.buttons);
+
+			$dialog.find('.modal-title').append(opt.title);
+			$dialog.find('.modal-body').append(opt.body);
+			$dialog.find('.modal-footer').append(opt.buttons);
+			$dialog.find('.modal-header button.close').click(function(e){
+				_this.close();
+			});
+
+		});
+		return $dialog;
+	}//dialog()
+
+	/**
+	 * ダイアログを閉じる
+	 */
+	this.close = function(callback){
+		callback = callback || function(){};
+		if($dialog){
+			$dialog.hide();
+			setTimeout(function(){
+				callback();
+			}, 110);
+			return $dialog;
+		}
+		callback();
+		return $dialog;
+	}//close()
+
+
+	/**
+	 * イベントリスナー
+	 */
+	// $(window).on( 'resize', function(e){
+	// 	if( typeof($dialog) !== typeof( $('<div>') ) ){return;}
+	// 	$dialog
+	// 		.css({
+	// 			'width': $(window).width(),
+	// 			'height': $(window).height()
+	// 		})
+	// 	;
+	// } );
+
+}
+
+},{"jquery":7}],82:[function(require,module,exports){
+/**
  * userMgr.js
  */
 module.exports = function( app, $timelineList, $field, $fieldInner ){
@@ -18593,11 +18699,11 @@ module.exports = function( app, $timelineList, $field, $fieldInner ){
 	return;
 }
 
-},{}],82:[function(require,module,exports){
+},{}],83:[function(require,module,exports){
 /**
  * widgets: base class
  */
-module.exports = function( app, $widget ){
+module.exports = function( incense, $widget ){
 	var _this = this;
 	this.id = null; // <= widgetMgr.create() が自動的にセットする
 	this.widgetType = null; // <= widgetMgr.create() が自動的にセットする
@@ -18617,11 +18723,11 @@ module.exports = function( app, $widget ){
 	return;
 }
 
-},{}],83:[function(require,module,exports){
+},{}],84:[function(require,module,exports){
 /**
  * widgetMgr.js
  */
-module.exports = function( app, $timelineList, $field, $fieldInner ){
+module.exports = function( incense, $timelineList, $field, $fieldInner ){
 	var _this = this;
 	var $ = require('jquery');
 	var _ = require('underscore');
@@ -18643,7 +18749,7 @@ module.exports = function( app, $timelineList, $field, $fieldInner ){
 			.css({
 				'left': content.x,
 				'top': content.y,
-				'z-index': app.widgetsMaxZIndex ++
+				'z-index': incense.widgetsMaxZIndex ++
 			})
 			.attr({
 				'data-widget-id': id,
@@ -18653,7 +18759,7 @@ module.exports = function( app, $timelineList, $field, $fieldInner ){
 			})
 			.bind('mousedown', function(e){
 				$(this).css({
-					'z-index': app.widgetsMaxZIndex ++
+					'z-index': incense.widgetsMaxZIndex ++
 				});
 			})
 			.on('dblclick contextmenu', function(e){
@@ -18671,13 +18777,13 @@ module.exports = function( app, $timelineList, $field, $fieldInner ){
 			})
 		);
 		// console.log(content);
-		widgetIndex[id] = _.defaults( new app.widgetList[content.widgetType].api(app, $widget), app.widgetBase );
+		widgetIndex[id] = _.defaults( new incense.widgetList[content.widgetType].api(incense, $widget), new (incense.widgetBase)(incense, $widget) );
 		widgetIndex[id].id = id;
 		widgetIndex[id].widgetType = content.widgetType;
 		widgetIndex[id].parent = content.parent;
 		widgetIndex[id].$ = $widget;
 
-		app.updateRelations();
+		incense.updateRelations();
 		return;
 	}
 
@@ -18696,7 +18802,7 @@ module.exports = function( app, $timelineList, $field, $fieldInner ){
 				'data-offset-y': content.moveToY
 			})
 		;
-		app.updateRelations();
+		incense.updateRelations();
 	}
 
 	/**
@@ -18715,7 +18821,7 @@ module.exports = function( app, $timelineList, $field, $fieldInner ){
 			.animate({ 'scrollLeft': $field.scrollLeft() + widget.$.offset().left - ($field.innerWidth()/2) + (widget.$.outerWidth()/2) })
 		;
 
-		window.main.modal.close(function(){
+		incense.modal.close(function(){
 			widget.focus();
 		});
 		return;
@@ -18778,11 +18884,11 @@ module.exports = function( app, $timelineList, $field, $fieldInner ){
 	return;
 }
 
-},{"jquery":7,"underscore":12}],84:[function(require,module,exports){
+},{"jquery":7,"underscore":12}],85:[function(require,module,exports){
 /**
  * widgets: issuetree.js
  */
-module.exports = function( app, $widget ){
+module.exports = function( incense, $widget ){
 	var _this = this;
 	var $ = require('jquery');
 	var mode = null;
@@ -18792,7 +18898,7 @@ module.exports = function( app, $widget ){
 	this.vote = {};
 
 	var $widgetBody = $('<div class="issuetree issuetree--widget issuetree--status-no-active">')
-		.append( $('<div class="issuetree__issue markdown">').html( app.markdown(this.issue) || 'no-set' ) )
+		.append( $('<div class="issuetree__issue markdown">').html( incense.markdown(this.issue) || 'no-set' ) )
 		.append( $('<div class="issuetree__answer">').text('投票なし') )
 		.append( $('<div class="issuetree__comment-count">') )
 	;
@@ -18801,13 +18907,13 @@ module.exports = function( app, $widget ){
 			.append( $('<div class="col-sm-6">')
 				.append( $('<div class="issuetree__block">')
 					.append( $('<div class="issuetree__heading">').text( '問' ) )
-					.append( $('<div class="issuetree__issue markdown">').html( app.markdown(this.issue) || 'no-set' ) )
+					.append( $('<div class="issuetree__issue markdown">').html( incense.markdown(this.issue) || 'no-set' ) )
 				)
 			)
 			.append( $('<div class="col-sm-6">')
 				.append( $('<div class="issuetree__block">')
 					.append( $('<div class="issuetree__heading">').text( '答' ) )
-					.append( $('<div class="issuetree__answer markdown">').html( app.markdown(this.answer) || 'no-answer' ) )
+					.append( $('<div class="issuetree__answer markdown">').html( incense.markdown(this.answer) || 'no-answer' ) )
 				)
 			)
 		)
@@ -18839,20 +18945,20 @@ module.exports = function( app, $widget ){
 					.append( $('<button class="btn btn-default">')
 						.text('新しい子課題を作成')
 						.click(function(e){
-							app.sendMessage(
+							incense.sendMessage(
 								{
 									'contentType': 'application/x-passiflora-command',
 									'content': JSON.stringify({
 										'operation':'createWidget',
 										'widgetType': _this.widgetType,
-										'x': app.$field.scrollLeft() + $widget.offset().left + $widget.outerWidth() + 10,
-										'y': app.$field.scrollTop() + $widget.offset().top + 10,
+										'x': incense.$field.scrollLeft() + $widget.offset().left + $widget.outerWidth() + 10,
+										'y': incense.$field.scrollTop() + $widget.offset().top + 10,
 										'parent': _this.id
 									})
 								} ,
 								function(rtn){
 									// console.log(rtn);
-									app.sendMessage(
+									incense.sendMessage(
 										{
 											'content': JSON.stringify({
 												'command': 'update_relations'
@@ -18888,7 +18994,7 @@ module.exports = function( app, $widget ){
 			return;
 		}
 
-		app.sendMessage(
+		incense.sendMessage(
 			{
 				'content': JSON.stringify({
 					'command': 'update_' + targetType,
@@ -18925,7 +19031,7 @@ module.exports = function( app, $widget ){
 		.dblclick(function(e){
 			mode = 'edit';
 			$detailBodyIssue.append( $detailBodyIssue_textarea.val( _this.issue ) );
-			app.setBehaviorCharComment(
+			incense.setBehaviorCharComment(
 				$detailBodyIssue_textarea,
 				{
 					'submit': function(value){
@@ -18966,7 +19072,7 @@ module.exports = function( app, $widget ){
 		.dblclick(function(e){
 			mode = 'edit';
 			$detailBodyAnswer.append( $detailBodyAnswer_textarea.val( _this.answer ) );
-			app.setBehaviorCharComment(
+			incense.setBehaviorCharComment(
 				$detailBodyAnswer_textarea,
 				{
 					'submit': function(value){
@@ -18989,13 +19095,13 @@ module.exports = function( app, $widget ){
 	var $detailBodyParentIssue = $detailBody.find('.issuetree__parent-issue');
 	var $detailBodySubIssues = $detailBody.find('.issuetree__sub-issues');
 
-	app.setBehaviorCharComment(
+	incense.setBehaviorCharComment(
 		$detailBody.find('textarea.issuetree__discussion-timeline--chat-comment'),
 		{
 			'submit': function(value){
 				function sendComment(value, stance, callback){
 					callback = callback || function(){};
-					app.sendMessage(
+					incense.sendMessage(
 						{
 							'content': JSON.stringify({
 								'command': 'comment',
@@ -19012,7 +19118,7 @@ module.exports = function( app, $widget ){
 					);
 				}
 
-				var myAnswer = _this.vote[app.getUserInfo().id];
+				var myAnswer = _this.vote[incense.getUserInfo().id];
 				var newAnswer = $yourStanceSelector.val();
 				if( newAnswer.length && newAnswer != myAnswer ){
 					sendVoteMessage(newAnswer, function(){
@@ -19029,7 +19135,7 @@ module.exports = function( app, $widget ){
 	 * 詳細画面を開く
 	 */
 	function openDetailWindow(){
-		window.main.modal.dialog({
+		incense.modal.dialog({
 			'title': 'issue',
 			'body': $detailBody,
 			'buttons': [
@@ -19038,7 +19144,7 @@ module.exports = function( app, $widget ){
 					.addClass('btn')
 					.addClass('btn-default')
 					.click(function(){
-						window.main.modal.close();
+						incense.modal.close();
 					})
 			]
 		});
@@ -19047,7 +19153,7 @@ module.exports = function( app, $widget ){
 		updateRelations();
 
 		setTimeout(function(){
-			app.adjustTimelineScrolling( $detailBodyTimeline );
+			incense.adjustTimelineScrolling( $detailBodyTimeline );
 		}, 200);
 	}
 
@@ -19073,8 +19179,8 @@ module.exports = function( app, $widget ){
 	 */
 	function updateAnswer(){
 		var optionValueList = {};
-		var myAnswer = _this.vote[app.getUserInfo().id];
-		$detailBodyAnswer.html( app.markdown(_this.answer) || 'no-answer' );
+		var myAnswer = _this.vote[incense.getUserInfo().id];
+		$detailBodyAnswer.html( incense.markdown(_this.answer) || 'no-answer' );
 		$detailBodyAnswer.find('ol>li').each(function(){
 			var $this = $(this);
 			var optionValue = $this.html()+'';
@@ -19109,7 +19215,7 @@ module.exports = function( app, $widget ){
 						.unbind('click')
 						.bind('click', function(e){
 							var $this = $(this);
-							if( $this.attr('data-passiflora-vote-option') == _this.vote[app.getUserInfo().id] ){
+							if( $this.attr('data-passiflora-vote-option') == _this.vote[incense.getUserInfo().id] ){
 								return false;
 							}
 							sendVoteMessage($this.attr('data-passiflora-vote-option'));
@@ -19127,11 +19233,11 @@ module.exports = function( app, $widget ){
 					$voteUserList.append( $li
 						.text(userName)
 					);
-					// console.log( userName, app.getUserInfo().id );
-					if( userName == app.getUserInfo().id ){
+					// console.log( userName, incense.getUserInfo().id );
+					if( userName == incense.getUserInfo().id ){
 						$li.addClass('issuetree__voteuser--me');
 					}
-					optionValueList[optionValue].voteUsers.push( app.getUserInfo().id );
+					optionValueList[optionValue].voteUsers.push( incense.getUserInfo().id );
 				}
 			}
 			if( $voteUserList.find('>li').size() ){
@@ -19242,7 +19348,7 @@ module.exports = function( app, $widget ){
 	 */
 	function sendVoteMessage(vote, callback){
 		callback = callback || function(){};
-		app.sendMessage(
+		incense.sendMessage(
 			{
 				'content': JSON.stringify({
 					'command': 'vote',
@@ -19267,12 +19373,12 @@ module.exports = function( app, $widget ){
 		$detailBodyParentIssue.html('---');
 		if( _this.parent ){
 			$detailBodyParentIssue.html('').append( $('<div>')
-				.append( $('<div>').text(app.widgetMgr.get(_this.parent).issue) )
-				.append( $('<div>').append( app.widgetMgr.mkLinkToWidget( _this.parent ) ) )
+				.append( $('<div>').text(incense.widgetMgr.get(_this.parent).issue) )
+				.append( $('<div>').append( incense.widgetMgr.mkLinkToWidget( _this.parent ) ) )
 			);
 		}
 
-		var children =  app.widgetMgr.getChildren( _this.id );
+		var children =  incense.widgetMgr.getChildren( _this.id );
 		$detailBodySubIssues.html('---');
 		if( children.length ){
 			$detailBodySubIssues.html('');
@@ -19280,7 +19386,7 @@ module.exports = function( app, $widget ){
 			for( var idx in children ){
 				var $li = $('<li>')
 					.append( $('<div>').text(children[idx].issue) )
-					.append( $('<div>').append( app.widgetMgr.mkLinkToWidget( children[idx].id ) ) )
+					.append( $('<div>').append( incense.widgetMgr.mkLinkToWidget( children[idx].id ) ) )
 				;
 				$ul.append( $li );
 			}
@@ -19309,7 +19415,7 @@ module.exports = function( app, $widget ){
 		switch( message.content.command ){
 			case 'comment':
 				// コメントの投稿
-				userMessage = app.markdown( message.content.comment );
+				userMessage = incense.markdown( message.content.comment );
 
 				var totalCommentCount = $detailBodyTimeline.find('>div').size();
 				$widgetBody.find('.issuetree__comment-count').text( (totalCommentCount+1) + '件のコメント' );
@@ -19319,33 +19425,33 @@ module.exports = function( app, $widget ){
 					.append( $('<div class="issuetree__owner">').text(message.owner) )
 					.append( $('<div class="issuetree__content markdown">').html(userMessage) )
 				);
-				app.adjustTimelineScrolling( $detailBodyTimeline );
+				incense.adjustTimelineScrolling( $detailBodyTimeline );
 
 				// メインチャットに追加
-				app.insertTimeline( $messageUnit
+				incense.insertTimeline( $messageUnit
 					.append( $('<div class="message-unit__owner">').text(message.owner) )
 					.append( $('<div class="message-unit__content markdown">').html(userMessage) )
-					.append( $('<div class="message-unit__targetWidget">').append( app.widgetMgr.mkLinkToWidget( message.targetWidget ) ) )
+					.append( $('<div class="message-unit__targetWidget">').append( incense.widgetMgr.mkLinkToWidget( message.targetWidget ) ) )
 				);
 				break;
 
 			case 'update_issue':
 				// 問の更新
 				_this.issue = message.content.val;
-				$detailBodyIssue.html( app.markdown(_this.issue) || 'no-set' );
-				$widget.find('.issuetree__issue').html( app.markdown(_this.issue) || 'no-set' );
+				$detailBodyIssue.html( incense.markdown(_this.issue) || 'no-set' );
+				$widget.find('.issuetree__issue').html( incense.markdown(_this.issue) || 'no-set' );
 
 				// 詳細画面のディスカッションに追加
 				$detailBodyTimeline.append( $('<div>')
 					.append( $('<div class="issuetree__content">').html(message.owner + ' が、問を "' + _this.issue + '" に変更しました。') )
 				);
-				app.adjustTimelineScrolling( $detailBodyTimeline );
+				incense.adjustTimelineScrolling( $detailBodyTimeline );
 
 				// メインチャットに追加
-				app.insertTimeline( $messageUnit
+				incense.insertTimeline( $messageUnit
 					.append( $('<div class="message-unit__owner">').text(message.owner) )
 					.append( $('<div class="message-unit__content">').html('問を "' + _this.issue + '" に変更しました。') )
-					.append( $('<div class="message-unit__targetWidget">').append( app.widgetMgr.mkLinkToWidget( message.targetWidget ) ) )
+					.append( $('<div class="message-unit__targetWidget">').append( incense.widgetMgr.mkLinkToWidget( message.targetWidget ) ) )
 				);
 				break;
 
@@ -19358,13 +19464,13 @@ module.exports = function( app, $widget ){
 				$detailBodyTimeline.append( $('<div>')
 					.append( $('<div class="issuetree__content">').html(message.owner + ' が、答を "' + _this.answer + '" に変更しました。') )
 				);
-				app.adjustTimelineScrolling( $detailBodyTimeline );
+				incense.adjustTimelineScrolling( $detailBodyTimeline );
 
 				// メインチャットに追加
-				app.insertTimeline( $messageUnit
+				incense.insertTimeline( $messageUnit
 					.append( $('<div class="message-unit__owner">').text(message.owner) )
 					.append( $('<div class="message-unit__content">').html('答を "' + _this.answer + '" に変更しました。') )
-					.append( $('<div class="message-unit__targetWidget">').append( app.widgetMgr.mkLinkToWidget( message.targetWidget ) ) )
+					.append( $('<div class="message-unit__targetWidget">').append( incense.widgetMgr.mkLinkToWidget( message.targetWidget ) ) )
 				);
 				break;
 
@@ -19377,13 +19483,13 @@ module.exports = function( app, $widget ){
 				$detailBodyTimeline.append( $('<div>')
 					.append( $('<div class="issuetree__content">').text(message.owner + ' が、 "' + message.content.option + '" に投票しました。') )
 				);
-				app.adjustTimelineScrolling( $detailBodyTimeline );
+				incense.adjustTimelineScrolling( $detailBodyTimeline );
 
 				// メインチャットに追加
-				app.insertTimeline( $messageUnit
+				incense.insertTimeline( $messageUnit
 					.append( $('<div class="message-unit__owner">').text(message.owner) )
 					.append( $('<div class="message-unit__content">').text(message.owner + ' が、 "' + message.content.option + '" に投票しました。') )
-					.append( $('<div class="message-unit__targetWidget">').append( app.widgetMgr.mkLinkToWidget( message.targetWidget ) ) )
+					.append( $('<div class="message-unit__targetWidget">').append( incense.widgetMgr.mkLinkToWidget( message.targetWidget ) ) )
 				);
 				break;
 
@@ -19407,11 +19513,11 @@ module.exports = function( app, $widget ){
 	return;
 }
 
-},{"jquery":7}],85:[function(require,module,exports){
+},{"jquery":7}],86:[function(require,module,exports){
 /**
  * widgets: stickies.js
  */
-module.exports = function( app, $widget ){
+module.exports = function( incense, $widget ){
 	var _this = this;
 	var $ = require('jquery');
 
@@ -19430,7 +19536,7 @@ module.exports = function( app, $widget ){
 	var mode = null;
 
 	$widget.append( $stickies
-		.html( app.markdown( _this.value ) )
+		.html( incense.markdown( _this.value ) )
 	);
 
 	$widget
@@ -19450,11 +19556,11 @@ module.exports = function( app, $widget ){
 		if( _this.value == $textarea.val() ){
 			// 変更なし
 			$textarea.val('').remove();
-			$stickies.html( app.markdown(_this.value) );
+			$stickies.html( incense.markdown(_this.value) );
 			return;
 		}
 
-		app.sendMessage(
+		incense.sendMessage(
 			{
 				'content': JSON.stringify({
 					'val': $textarea.val()
@@ -19465,7 +19571,7 @@ module.exports = function( app, $widget ){
 			function(){
 				console.log('stickies change submited.');
 				$textarea.val('').remove();
-				$stickies.html( app.markdown(_this.value) );
+				$stickies.html( incense.markdown(_this.value) );
 			}
 		);
 	}
@@ -19481,7 +19587,7 @@ module.exports = function( app, $widget ){
 		})
 	;
 
-	app.setBehaviorCharComment(
+	incense.setBehaviorCharComment(
 		$textarea,
 		{
 			'submit': function(value){
@@ -19498,7 +19604,7 @@ module.exports = function( app, $widget ){
 		// console.log(message);
 		var before = this.value;
 		this.value = message.content.val;
-		$stickies.html( app.markdown( _this.value ) );
+		$stickies.html( incense.markdown( _this.value ) );
 
 		var $messageUnit = $('<div class="message-unit">')
 			.attr({
@@ -19512,10 +19618,10 @@ module.exports = function( app, $widget ){
 		}else if( before.length && !message.content.val.length ){
 			userMessage = 'stickies の内容 "'+before + '" を削除しました。';
 		}
-		app.insertTimeline( $messageUnit
+		incense.insertTimeline( $messageUnit
 			.append( $('<div class="message-unit__owner">').text(message.owner) )
 			.append( $('<div class="message-unit__content">').text(userMessage) )
-			.append( $('<div class="message-unit__targetWidget">').append( app.widgetMgr.mkLinkToWidget( message.targetWidget ) ) )
+			.append( $('<div class="message-unit__targetWidget">').append( incense.widgetMgr.mkLinkToWidget( message.targetWidget ) ) )
 		);
 
 	}

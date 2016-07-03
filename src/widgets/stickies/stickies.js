@@ -1,7 +1,7 @@
 /**
  * widgets: stickies.js
  */
-module.exports = function( app, $widget ){
+module.exports = function( incense, $widget ){
 	var _this = this;
 	var $ = require('jquery');
 
@@ -20,7 +20,7 @@ module.exports = function( app, $widget ){
 	var mode = null;
 
 	$widget.append( $stickies
-		.html( app.markdown( _this.value ) )
+		.html( incense.markdown( _this.value ) )
 	);
 
 	$widget
@@ -40,11 +40,11 @@ module.exports = function( app, $widget ){
 		if( _this.value == $textarea.val() ){
 			// 変更なし
 			$textarea.val('').remove();
-			$stickies.html( app.markdown(_this.value) );
+			$stickies.html( incense.markdown(_this.value) );
 			return;
 		}
 
-		app.sendMessage(
+		incense.sendMessage(
 			{
 				'content': JSON.stringify({
 					'val': $textarea.val()
@@ -55,7 +55,7 @@ module.exports = function( app, $widget ){
 			function(){
 				console.log('stickies change submited.');
 				$textarea.val('').remove();
-				$stickies.html( app.markdown(_this.value) );
+				$stickies.html( incense.markdown(_this.value) );
 			}
 		);
 	}
@@ -71,7 +71,7 @@ module.exports = function( app, $widget ){
 		})
 	;
 
-	app.setBehaviorCharComment(
+	incense.setBehaviorCharComment(
 		$textarea,
 		{
 			'submit': function(value){
@@ -88,7 +88,7 @@ module.exports = function( app, $widget ){
 		// console.log(message);
 		var before = this.value;
 		this.value = message.content.val;
-		$stickies.html( app.markdown( _this.value ) );
+		$stickies.html( incense.markdown( _this.value ) );
 
 		var $messageUnit = $('<div class="message-unit">')
 			.attr({
@@ -102,10 +102,10 @@ module.exports = function( app, $widget ){
 		}else if( before.length && !message.content.val.length ){
 			userMessage = 'stickies の内容 "'+before + '" を削除しました。';
 		}
-		app.insertTimeline( $messageUnit
+		incense.insertTimeline( $messageUnit
 			.append( $('<div class="message-unit__owner">').text(message.owner) )
 			.append( $('<div class="message-unit__content">').text(userMessage) )
-			.append( $('<div class="message-unit__targetWidget">').append( app.widgetMgr.mkLinkToWidget( message.targetWidget ) ) )
+			.append( $('<div class="message-unit__targetWidget">').append( incense.widgetMgr.mkLinkToWidget( message.targetWidget ) ) )
 		);
 
 	}

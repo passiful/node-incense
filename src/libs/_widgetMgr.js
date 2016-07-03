@@ -1,7 +1,7 @@
 /**
  * widgetMgr.js
  */
-module.exports = function( app, $timelineList, $field, $fieldInner ){
+module.exports = function( incense, $timelineList, $field, $fieldInner ){
 	var _this = this;
 	var $ = require('jquery');
 	var _ = require('underscore');
@@ -23,7 +23,7 @@ module.exports = function( app, $timelineList, $field, $fieldInner ){
 			.css({
 				'left': content.x,
 				'top': content.y,
-				'z-index': app.widgetsMaxZIndex ++
+				'z-index': incense.widgetsMaxZIndex ++
 			})
 			.attr({
 				'data-widget-id': id,
@@ -33,7 +33,7 @@ module.exports = function( app, $timelineList, $field, $fieldInner ){
 			})
 			.bind('mousedown', function(e){
 				$(this).css({
-					'z-index': app.widgetsMaxZIndex ++
+					'z-index': incense.widgetsMaxZIndex ++
 				});
 			})
 			.on('dblclick contextmenu', function(e){
@@ -51,13 +51,13 @@ module.exports = function( app, $timelineList, $field, $fieldInner ){
 			})
 		);
 		// console.log(content);
-		widgetIndex[id] = _.defaults( new app.widgetList[content.widgetType].api(app, $widget), app.widgetBase );
+		widgetIndex[id] = _.defaults( new incense.widgetList[content.widgetType].api(incense, $widget), new (incense.widgetBase)(incense, $widget) );
 		widgetIndex[id].id = id;
 		widgetIndex[id].widgetType = content.widgetType;
 		widgetIndex[id].parent = content.parent;
 		widgetIndex[id].$ = $widget;
 
-		app.updateRelations();
+		incense.updateRelations();
 		return;
 	}
 
@@ -76,7 +76,7 @@ module.exports = function( app, $timelineList, $field, $fieldInner ){
 				'data-offset-y': content.moveToY
 			})
 		;
-		app.updateRelations();
+		incense.updateRelations();
 	}
 
 	/**
@@ -95,7 +95,7 @@ module.exports = function( app, $timelineList, $field, $fieldInner ){
 			.animate({ 'scrollLeft': $field.scrollLeft() + widget.$.offset().left - ($field.innerWidth()/2) + (widget.$.outerWidth()/2) })
 		;
 
-		window.main.modal.close(function(){
+		incense.modal.close(function(){
 			widget.focus();
 		});
 		return;

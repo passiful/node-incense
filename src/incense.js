@@ -1,6 +1,7 @@
 window.Incense = function(){
 	// app "board"
 	var _this = this;
+	var incense = this;
 	var $ = require('jquery');
 	var Promise = require('es6-promise').Promise;
 	var utils79 = require('utils79');
@@ -75,8 +76,9 @@ window.Incense = function(){
 				// functions Setup
 				_this.fieldContextMenu = new (require('./libs/_fieldContextMenu.js'))(_this, $fieldInner);
 				_this.messageOperator = new (require('./libs/_messageOperator.js'))(_this, $timelineList, $fieldInner);
-				_this.widgetMgr = new (require('./libs/_widgetMgr.js'))(_this, $timelineList, $field, $fieldInner);
 				_this.widgetBase = require('./libs/_widgetBase.js');
+				_this.widgetMgr = new (require('./libs/_widgetMgr.js'))(_this, $timelineList, $field, $fieldInner);
+				_this.modal = new (require('./libs/_modal.js'))($fieldInner);
 				_this.userMgr = new (require('./libs/_userMgr.js'))(_this, $timelineList, $field, $fieldInner);
 
 
@@ -426,7 +428,7 @@ window.Incense = function(){
 	// 	console.log('profile dialog:');
 	// 	var $body = $('<form action="javascript:;" method="post">YourName: <input type="text" name="userName" value="{% userName %}" class="form-control" /></form>');
 	// 	$body.find('[name=userName]').val( userInfo.id );
-	// 	window.main.modal.dialog({
+	// 	incense.modal.dialog({
 	// 		'title': 'プロフィール',
 	// 		'body': $body,
 	// 		'buttons': [
@@ -447,7 +449,7 @@ window.Incense = function(){
 	// 							'contentType': 'application/x-passiflora-command'
 	// 						},
 	// 						function(rtn){
-	// 							window.main.modal.close();
+	// 							incense.modal.close();
 	// 						}
 	// 					);
 	// 					callback();

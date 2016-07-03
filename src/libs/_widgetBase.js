@@ -1,7 +1,7 @@
 /**
  * widgets: base class
  */
-module.exports = function( app, $widget ){
+module.exports = function( incense, $widget ){
 	var _this = this;
 	this.id = null; // <= widgetMgr.create() が自動的にセットする
 	this.widgetType = null; // <= widgetMgr.create() が自動的にセットする
