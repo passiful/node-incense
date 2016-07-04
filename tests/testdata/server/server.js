@@ -6,17 +6,20 @@ var server = require('http').Server(app);
 var biflora = require('biflora');
 var conf = require('config');
 
-var main = new (require( path.resolve(__dirname, '../../../libs/bifloraMain.js') ))(conf);
 var _port = 8088;
-var backendApis = {};
-backendApis = require( path.resolve(__dirname, '../../../libs/apis/bifloraApi.js') );
 
 
 console.log('port number is '+_port);
 
 // middleware - biflora resources
 app.use( biflora.clientLibs() );
-biflora.setupWebSocket(server, backendApis, main);
+biflora.setupWebSocket(
+	server,
+	require( path.resolve(__dirname, '../../../libs/main.js') ).getBifloraApi() ,
+	require( path.resolve(__dirname, '../../../libs/main.js') ).getBifloraMain({
+		'dataDir': conf.dataDir
+	})
+);
 
 // middleware - frontend documents
 app.use( express.static( path.resolve(__dirname, '../htdocs/') ) );
