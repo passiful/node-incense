@@ -48,29 +48,29 @@ window.Incense = function(){
 				$timeline = $(options.elmTimeline);
 				$timeline
 					.addClass('incense')
-					.addClass('board__timeline')
+					.addClass('incense__timeline')
 					.html(
-						'<div class="board__timeline_list"></div>'+
-						'<div class="board__timeline_form"><textarea class="form-control board__main-chat-comment"></textarea></div>'
+						'<div class="incense__timeline_list"></div>'+
+						'<div class="incense__timeline_form"><textarea class="form-control board__main-chat-comment"></textarea></div>'
 					)
 				;
-				$timelineList = $timeline.find('.board__timeline_list');
-				$timelineForm = $timeline.find('.board__timeline_form');
+				$timelineList = $timeline.find('.incense__timeline_list');
+				$timelineForm = $timeline.find('.incense__timeline_form');
 
 				$field = $(options.elmBoard);
 				$field
 					.addClass('incense')
-					.addClass('board__field')
+					.addClass('incense__board')
 					.html(
-						'<div class="board__field-outer">'+
-						'<div class="board__field-relations"></div>'+
-						'<div class="board__field-inner"></div>'+
+						'<div class="incense__board-outer">'+
+						'<div class="incense__board-relations"></div>'+
+						'<div class="incense__board-inner"></div>'+
 						'</div>'
 					)
 				;
-				$fieldRelations = $field.find('.board__field-relations');
-				$fieldOuter = $field.find('.board__field-outer');
-				$fieldInner = $field.find('.board__field-inner');
+				$fieldRelations = $field.find('.incense__board-relations');
+				$fieldOuter = $field.find('.incense__board-outer');
+				$fieldInner = $field.find('.incense__board-inner');
 
 				_this.$field = $field;
 				_this.$fieldInner = $fieldInner;

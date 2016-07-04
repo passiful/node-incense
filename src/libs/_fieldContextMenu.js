@@ -4,7 +4,7 @@
 module.exports = function( app, $fieldInner ){
 	var _this = this;
 	var $ = require('jquery');
-	var $contextmenu = $('<div class="contextmenu">');
+	var $contextmenu = $('<div class="incense-contextmenu">');
 
 	/**
 	 * コンテキストメニューを開く

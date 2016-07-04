@@ -16,7 +16,7 @@ module.exports = function( app, $timelineList, $fieldInner ){
 	function execute(message, callback){
 		callback = callback || function(){};
 
-		var $messageUnit = $('<div class="message-unit">')
+		var $messageUnit = $('<div class="incense__message-unit">')
 			.attr({
 				'data-message-id': message.id
 			})
@@ -40,8 +40,8 @@ module.exports = function( app, $timelineList, $fieldInner ){
 						str += message.content.widgetType;
 						str += ' を作成しました。';
 						app.insertTimeline( $messageUnit
-							.addClass('message-unit--operation')
-							.append( $('<div class="message-unit__operation-message">').text(str) )
+							.addClass('incense__message-unit--operation')
+							.append( $('<div class="incense__message-unit__operation-message">').text(str) )
 						);
 						break;
 					case 'moveWidget':
@@ -54,8 +54,8 @@ module.exports = function( app, $timelineList, $fieldInner ){
 							str += message.content.userInfo.name;
 							str += ' がログインしました。';
 							app.insertTimeline( $messageUnit
-								.addClass('message-unit--operation')
-								.append( $('<div class="message-unit__operation-message">').text(str) )
+								.addClass('incense__message-unit--operation')
+								.append( $('<div class="incense__message-unit__operation-message">').text(str) )
 							);
 						} );
 						break;
@@ -72,8 +72,8 @@ module.exports = function( app, $timelineList, $fieldInner ){
 							str += userInfo.name;
 							str += ' がログアウトしました。';
 							app.insertTimeline( $messageUnit
-								.addClass('message-unit--operation')
-								.append( $('<div class="message-unit__operation-message">').text(str) )
+								.addClass('incense__message-unit--operation')
+								.append( $('<div class="incense__message-unit__operation-message">').text(str) )
 							);
 						} );
 						break;
@@ -85,8 +85,8 @@ module.exports = function( app, $timelineList, $fieldInner ){
 				break;
 			case 'text/html':
 				app.insertTimeline( $messageUnit
-					.append( $('<div class="message-unit__owner">').text(message.owner) )
-					.append( $('<div class="message-unit__content markdown">').html(message.content) )
+					.append( $('<div class="incense__message-unit__owner">').text(message.owner) )
+					.append( $('<div class="incense__message-unit__content incense-markdown">').html(message.content) )
 				);
 				break;
 		}

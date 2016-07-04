@@ -9907,7 +9907,7 @@ module.exports = function( incense, $widget ){
 		this.value = message.content.val;
 		$stickies.html( incense.markdown( _this.value ) );
 
-		var $messageUnit = $('<div class="message-unit">')
+		var $messageUnit = $('<div class="incense__message-unit">')
 			.attr({
 				'data-message-id': message.id
 			})
@@ -9920,9 +9920,9 @@ module.exports = function( incense, $widget ){
 			userMessage = 'stickies の内容 "'+before + '" を削除しました。';
 		}
 		incense.insertTimeline( $messageUnit
-			.append( $('<div class="message-unit__owner">').text(message.owner) )
-			.append( $('<div class="message-unit__content">').text(userMessage) )
-			.append( $('<div class="message-unit__targetWidget">').append( incense.widgetMgr.mkLinkToWidget( message.targetWidget ) ) )
+			.append( $('<div class="incense__message-unit__owner">').text(message.owner) )
+			.append( $('<div class="incense__message-unit__content">').text(userMessage) )
+			.append( $('<div class="incense__message-unit__targetWidget">').append( incense.widgetMgr.mkLinkToWidget( message.targetWidget ) ) )
 		);
 
 	}

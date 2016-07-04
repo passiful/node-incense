@@ -17784,29 +17784,29 @@ window.Incense = function(){
 				$timeline = $(options.elmTimeline);
 				$timeline
 					.addClass('incense')
-					.addClass('board__timeline')
+					.addClass('incense__timeline')
 					.html(
-						'<div class="board__timeline_list"></div>'+
-						'<div class="board__timeline_form"><textarea class="form-control board__main-chat-comment"></textarea></div>'
+						'<div class="incense__timeline_list"></div>'+
+						'<div class="incense__timeline_form"><textarea class="form-control board__main-chat-comment"></textarea></div>'
 					)
 				;
-				$timelineList = $timeline.find('.board__timeline_list');
-				$timelineForm = $timeline.find('.board__timeline_form');
+				$timelineList = $timeline.find('.incense__timeline_list');
+				$timelineForm = $timeline.find('.incense__timeline_form');
 
 				$field = $(options.elmBoard);
 				$field
 					.addClass('incense')
-					.addClass('board__field')
+					.addClass('incense__board')
 					.html(
-						'<div class="board__field-outer">'+
-						'<div class="board__field-relations"></div>'+
-						'<div class="board__field-inner"></div>'+
+						'<div class="incense__board-outer">'+
+						'<div class="incense__board-relations"></div>'+
+						'<div class="incense__board-inner"></div>'+
 						'</div>'
 					)
 				;
-				$fieldRelations = $field.find('.board__field-relations');
-				$fieldOuter = $field.find('.board__field-outer');
-				$fieldInner = $field.find('.board__field-inner');
+				$fieldRelations = $field.find('.incense__board-relations');
+				$fieldOuter = $field.find('.incense__board-outer');
+				$fieldInner = $field.find('.incense__board-inner');
 
 				_this.$field = $field;
 				_this.$fieldInner = $fieldInner;
@@ -18221,7 +18221,7 @@ window.Incense = function(){
 module.exports = function( app, $fieldInner ){
 	var _this = this;
 	var $ = require('jquery');
-	var $contextmenu = $('<div class="contextmenu">');
+	var $contextmenu = $('<div class="incense-contextmenu">');
 
 	/**
 	 * コンテキストメニューを開く
@@ -18314,7 +18314,7 @@ module.exports = function( app, $timelineList, $fieldInner ){
 	function execute(message, callback){
 		callback = callback || function(){};
 
-		var $messageUnit = $('<div class="message-unit">')
+		var $messageUnit = $('<div class="incense__message-unit">')
 			.attr({
 				'data-message-id': message.id
 			})
@@ -18338,8 +18338,8 @@ module.exports = function( app, $timelineList, $fieldInner ){
 						str += message.content.widgetType;
 						str += ' を作成しました。';
 						app.insertTimeline( $messageUnit
-							.addClass('message-unit--operation')
-							.append( $('<div class="message-unit__operation-message">').text(str) )
+							.addClass('incense__message-unit--operation')
+							.append( $('<div class="incense__message-unit__operation-message">').text(str) )
 						);
 						break;
 					case 'moveWidget':
@@ -18352,8 +18352,8 @@ module.exports = function( app, $timelineList, $fieldInner ){
 							str += message.content.userInfo.name;
 							str += ' がログインしました。';
 							app.insertTimeline( $messageUnit
-								.addClass('message-unit--operation')
-								.append( $('<div class="message-unit__operation-message">').text(str) )
+								.addClass('incense__message-unit--operation')
+								.append( $('<div class="incense__message-unit__operation-message">').text(str) )
 							);
 						} );
 						break;
@@ -18370,8 +18370,8 @@ module.exports = function( app, $timelineList, $fieldInner ){
 							str += userInfo.name;
 							str += ' がログアウトしました。';
 							app.insertTimeline( $messageUnit
-								.addClass('message-unit--operation')
-								.append( $('<div class="message-unit__operation-message">').text(str) )
+								.addClass('incense__message-unit--operation')
+								.append( $('<div class="incense__message-unit__operation-message">').text(str) )
 							);
 						} );
 						break;
@@ -18383,8 +18383,8 @@ module.exports = function( app, $timelineList, $fieldInner ){
 				break;
 			case 'text/html':
 				app.insertTimeline( $messageUnit
-					.append( $('<div class="message-unit__owner">').text(message.owner) )
-					.append( $('<div class="message-unit__content markdown">').html(message.content) )
+					.append( $('<div class="incense__message-unit__owner">').text(message.owner) )
+					.append( $('<div class="incense__message-unit__content incense-markdown">').html(message.content) )
 				);
 				break;
 		}
@@ -18700,7 +18700,7 @@ module.exports = function( incense, $timelineList, $field, $fieldOuter, $fieldIn
 	 */
 	this.create = function(id, content){
 		// console.log(id, content);
-		var $widget = $('<div class="widget">');
+		var $widget = $('<div class="incense-widget">');
 		content = content || {};
 		content.x = content.x || 0;
 		content.y = content.y || 0;
@@ -18860,7 +18860,7 @@ module.exports = function( incense, $widget ){
 	this.vote = {};
 
 	var $widgetBody = $('<div class="issuetree issuetree--widget issuetree--status-no-active">')
-		.append( $('<div class="issuetree__issue markdown">').html( incense.markdown(this.issue) || 'no-set' ) )
+		.append( $('<div class="issuetree__issue incense-markdown">').html( incense.markdown(this.issue) || 'no-set' ) )
 		.append( $('<div class="issuetree__answer">').text('投票なし') )
 		.append( $('<div class="issuetree__comment-count">') )
 	;
@@ -18869,13 +18869,13 @@ module.exports = function( incense, $widget ){
 			.append( $('<div class="col-sm-6">')
 				.append( $('<div class="issuetree__block">')
 					.append( $('<div class="issuetree__heading">').text( '問' ) )
-					.append( $('<div class="issuetree__issue markdown">').html( incense.markdown(this.issue) || 'no-set' ) )
+					.append( $('<div class="issuetree__issue incense-markdown">').html( incense.markdown(this.issue) || 'no-set' ) )
 				)
 			)
 			.append( $('<div class="col-sm-6">')
 				.append( $('<div class="issuetree__block">')
 					.append( $('<div class="issuetree__heading">').text( '答' ) )
-					.append( $('<div class="issuetree__answer markdown">').html( incense.markdown(this.answer) || 'no-answer' ) )
+					.append( $('<div class="issuetree__answer incense-markdown">').html( incense.markdown(this.answer) || 'no-answer' ) )
 				)
 			)
 		)
@@ -19368,7 +19368,7 @@ module.exports = function( incense, $widget ){
 		// this.value = message.content.val;
 		// $widgetBody.html( marked( _this.value ) );
 
-		var $messageUnit = $('<div class="message-unit">')
+		var $messageUnit = $('<div class="incense__message-unit">')
 			.attr({
 				'data-message-id': message.id
 			})
@@ -19385,15 +19385,15 @@ module.exports = function( incense, $widget ){
 				// 詳細画面のディスカッションに追加
 				$detailBodyTimeline.append( $('<div>')
 					.append( $('<div class="issuetree__owner">').text(message.owner) )
-					.append( $('<div class="issuetree__content markdown">').html(userMessage) )
+					.append( $('<div class="issuetree__content incense-markdown">').html(userMessage) )
 				);
 				incense.adjustTimelineScrolling( $detailBodyTimeline );
 
 				// メインチャットに追加
 				incense.insertTimeline( $messageUnit
-					.append( $('<div class="message-unit__owner">').text(message.owner) )
-					.append( $('<div class="message-unit__content markdown">').html(userMessage) )
-					.append( $('<div class="message-unit__targetWidget">').append( incense.widgetMgr.mkLinkToWidget( message.targetWidget ) ) )
+					.append( $('<div class="incense__message-unit__owner">').text(message.owner) )
+					.append( $('<div class="incense__message-unit__content incense-markdown">').html(userMessage) )
+					.append( $('<div class="incense__message-unit__targetWidget">').append( incense.widgetMgr.mkLinkToWidget( message.targetWidget ) ) )
 				);
 				break;
 
@@ -19411,9 +19411,9 @@ module.exports = function( incense, $widget ){
 
 				// メインチャットに追加
 				incense.insertTimeline( $messageUnit
-					.append( $('<div class="message-unit__owner">').text(message.owner) )
-					.append( $('<div class="message-unit__content">').html('問を "' + _this.issue + '" に変更しました。') )
-					.append( $('<div class="message-unit__targetWidget">').append( incense.widgetMgr.mkLinkToWidget( message.targetWidget ) ) )
+					.append( $('<div class="incense__message-unit__owner">').text(message.owner) )
+					.append( $('<div class="incense__message-unit__content">').html('問を "' + _this.issue + '" に変更しました。') )
+					.append( $('<div class="incense__message-unit__targetWidget">').append( incense.widgetMgr.mkLinkToWidget( message.targetWidget ) ) )
 				);
 				break;
 
@@ -19430,9 +19430,9 @@ module.exports = function( incense, $widget ){
 
 				// メインチャットに追加
 				incense.insertTimeline( $messageUnit
-					.append( $('<div class="message-unit__owner">').text(message.owner) )
-					.append( $('<div class="message-unit__content">').html('答を "' + _this.answer + '" に変更しました。') )
-					.append( $('<div class="message-unit__targetWidget">').append( incense.widgetMgr.mkLinkToWidget( message.targetWidget ) ) )
+					.append( $('<div class="incense__message-unit__owner">').text(message.owner) )
+					.append( $('<div class="incense__message-unit__content">').html('答を "' + _this.answer + '" に変更しました。') )
+					.append( $('<div class="incense__message-unit__targetWidget">').append( incense.widgetMgr.mkLinkToWidget( message.targetWidget ) ) )
 				);
 				break;
 
@@ -19449,9 +19449,9 @@ module.exports = function( incense, $widget ){
 
 				// メインチャットに追加
 				incense.insertTimeline( $messageUnit
-					.append( $('<div class="message-unit__owner">').text(message.owner) )
-					.append( $('<div class="message-unit__content">').text(message.owner + ' が、 "' + message.content.option + '" に投票しました。') )
-					.append( $('<div class="message-unit__targetWidget">').append( incense.widgetMgr.mkLinkToWidget( message.targetWidget ) ) )
+					.append( $('<div class="incense__message-unit__owner">').text(message.owner) )
+					.append( $('<div class="incense__message-unit__content">').text(message.owner + ' が、 "' + message.content.option + '" に投票しました。') )
+					.append( $('<div class="incense__message-unit__targetWidget">').append( incense.widgetMgr.mkLinkToWidget( message.targetWidget ) ) )
 				);
 				break;
 
@@ -19568,7 +19568,7 @@ module.exports = function( incense, $widget ){
 		this.value = message.content.val;
 		$stickies.html( incense.markdown( _this.value ) );
 
-		var $messageUnit = $('<div class="message-unit">')
+		var $messageUnit = $('<div class="incense__message-unit">')
 			.attr({
 				'data-message-id': message.id
 			})
@@ -19581,9 +19581,9 @@ module.exports = function( incense, $widget ){
 			userMessage = 'stickies の内容 "'+before + '" を削除しました。';
 		}
 		incense.insertTimeline( $messageUnit
-			.append( $('<div class="message-unit__owner">').text(message.owner) )
-			.append( $('<div class="message-unit__content">').text(userMessage) )
-			.append( $('<div class="message-unit__targetWidget">').append( incense.widgetMgr.mkLinkToWidget( message.targetWidget ) ) )
+			.append( $('<div class="incense__message-unit__owner">').text(message.owner) )
+			.append( $('<div class="incense__message-unit__content">').text(userMessage) )
+			.append( $('<div class="incense__message-unit__targetWidget">').append( incense.widgetMgr.mkLinkToWidget( message.targetWidget ) ) )
 		);
 
 	}

@@ -1,10 +1,10 @@
 .incense{
 
-	&.board__field{
+	&.incense__board{
 		position: relative;
 		top: 0; left: 0;
 		overflow: hidden;
-		.board__field-outer{
+		.incense__board-outer{
 			position: absolute;
 			top: 0;
 			left: 0;
@@ -12,7 +12,7 @@
 			height: 100%;
 			overflow: auto;
 			z-index: 2000;
-			.board__field-relations{
+			.incense__board-relations{
 				position: absolute;
 				top: 0;
 				left: 0;
@@ -21,7 +21,7 @@
 				overflow: hidden;
 				z-index: 1000;
 			}
-			.board__field-inner{
+			.incense__board-inner{
 				position: absolute;
 				top: 0;
 				left: 0;
@@ -32,7 +32,7 @@
 			}
 		}
 	}
-	&.board__timeline{
+	&.incense__timeline{
 		position: absolute;
 		top: 0;
 		right: 0;
@@ -40,14 +40,14 @@
 		height: 100%;
 		overflow: hidden;
 
-		.board__timeline_list{
+		.incense__timeline_list{
 			position:absolute;
 			left:0;
 			top:0;
 			overflow: auto;
 			width: 100%;
 		}
-		.board__timeline_form{
+		.incense__timeline_form{
 			position:absolute;
 			left:0;
 			bottom:0;
@@ -58,7 +58,7 @@
 		}
 
 	}
-	.contextmenu{
+	.incense-contextmenu{
 		background-color: #fff;
 		border: 1px solid #eee;
 		ul{
@@ -94,13 +94,13 @@
 			background-color: #fff;
 		}
 	}
-	.message-unit{
+	.incense__message-unit{
 		font-size:13px;
 		padding: 0.5em;
 		margin: 0 0 1px 0;
 		border-bottom: 1px solid #eee;
 
-		&.message-unit--operation{
+		&.incense__message-unit--operation{
 			background-color: #eeeef9;
 			color: #77b;
 			font-size: 70%;
@@ -109,10 +109,10 @@
 		&:last-child{
 			border: none;
 		}
-		.message-unit__owner{
+		.incense__message-unit__owner{
 			font-weight: bold;
 		}
-		.message-unit__content{
+		.incense__message-unit__content{
 			font-weight: normal;
 			>:first-child{
 				margin-top: 0;
@@ -121,23 +121,23 @@
 				margin-bottom: 0;
 			}
 		}
-		.message-unit__operation-message{
+		.incense__message-unit__operation-message{
 			text-align: center;
 		}
-		.message-unit__targetWidget{
+		.incense__message-unit__targetWidget{
 			text-align: right;
 			font-size: 75%;
 			color: #aaa;
 		}
 	}
-	.widget{
+	.incense-widget{
 		position: absolute;
 		left: 0; top: 0;
 		min-width: 5px;
 		min-height: 5px;
 		background-color: #eee;
 	}
-	.markdown{
+	.incense-markdown{
 		*{
 			font-size: 100%;
 		}

@@ -12,7 +12,7 @@ module.exports = function( incense, $timelineList, $field, $fieldOuter, $fieldIn
 	 */
 	this.create = function(id, content){
 		// console.log(id, content);
-		var $widget = $('<div class="widget">');
+		var $widget = $('<div class="incense-widget">');
 		content = content || {};
 		content.x = content.x || 0;
 		content.y = content.y || 0;
