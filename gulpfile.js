@@ -24,9 +24,13 @@ var _tasks = [
 
 // broccoli-client (frontend) , bootstrap などを処理
 gulp.task("replace-package-dist", function() {
-	gulp.src(["node_modules/bootstrap/dist/**/*"])
-		.pipe(gulp.dest( './dist/common/bootstrap/dist/' ))
-		.pipe(gulp.dest( './tests/testdata/htdocs/common/bootstrap/dist/' ))
+	gulp.src(["node_modules/bootstrap/dist/fonts/**/*"])
+		.pipe(gulp.dest( './dist/libs/bootstrap/dist/fonts/' ))
+		.pipe(gulp.dest( './tests/testdata/htdocs/common/dist/libs/bootstrap/dist/fonts/' ))
+	;
+	gulp.src(["node_modules/bootstrap/dist/js/**/*"])
+		.pipe(gulp.dest( './dist/libs/bootstrap/dist/js/' ))
+		.pipe(gulp.dest( './tests/testdata/htdocs/common/dist/libs/bootstrap/dist/js/' ))
 	;
 });
 
