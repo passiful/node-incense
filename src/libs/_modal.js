@@ -5,23 +5,21 @@ module.exports = function($field){
 	var _this = this;
 	var $ = require('jquery');
 
-	var tpl = '<div class="incense-modal" tabindex="-1">'+"\n"
+	var tpl = '<div class="incense-modal">'+"\n"
 			+ '  <div class="incense-modal__dialog">'+"\n"
-			+ '    <div class="modal-content">'+"\n"
-			+ '      <div class="modal-header">'+"\n"
-			+ '        <button type="button" class="close" data-dismiss="modal" aria-label="Close">'+"\n"
-			+ '          <span aria-hidden="true">&times;</span>'+"\n"
+			+ '    <div class="incense-modal__content">'+"\n"
+			+ '      <div class="incense-modal__header">'+"\n"
+			+ '        <button type="button" class="incense-modal__close" data-dismiss="modal">'+"\n"
+			+ '          <span>&times;</span>'+"\n"
 			+ '        </button>'+"\n"
-			+ '        <h4 class="modal-title"></h4>'+"\n"
+			+ '        <h4 class="incense-modal__title"></h4>'+"\n"
 			+ '      </div>'+"\n"
-			+ '      <div class="modal-body"></div>'+"\n"
-			+ '      <div class="modal-footer">'+"\n"
-			// + '        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>'+"\n"
-			// + '        <button type="button" class="btn btn-primary">Save changes</button>'+"\n"
+			+ '      <div class="incense-modal__body"></div>'+"\n"
+			+ '      <div class="incense-modal__footer">'+"\n"
 			+ '      </div>'+"\n"
-			+ '    </div><!-- /.modal-content -->'+"\n"
-			+ '  </div><!-- /.modal-dialog -->'+"\n"
-			+ '</div><!-- /.modal -->'
+			+ '    </div><!-- /.incense-modal__content -->'+"\n"
+			+ '  </div><!-- /.incense-modal__dialog -->'+"\n"
+			+ '</div><!-- /.incense-modal -->'
 	;
 
 	var $dialog;
@@ -56,12 +54,12 @@ module.exports = function($field){
 				opt.buttons[i] = $btnElm;
 			}
 
-			// var $dialogButtons = $('<div class="modal-footer">').append(opt.buttons);
+			// var $dialogButtons = $('<div class="incense-modal__footer">').append(opt.buttons);
 
-			$dialog.find('.modal-title').append(opt.title);
-			$dialog.find('.modal-body').append(opt.body);
-			$dialog.find('.modal-footer').append(opt.buttons);
-			$dialog.find('.modal-header button.close').click(function(e){
+			$dialog.find('.incense-modal__title').append(opt.title);
+			$dialog.find('.incense-modal__body').append(opt.body);
+			$dialog.find('.incense-modal__footer').append(opt.buttons);
+			$dialog.find('.incense-modal__header button.incense-modal__close').click(function(e){
 				_this.close();
 			});
 

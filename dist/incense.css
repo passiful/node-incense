@@ -76,8 +76,25 @@
     background-color: rgba(0, 0, 0, 0.2); }
     .incense .incense-modal__dialog {
       width: 90%;
-      margin: 1em auto;
-      background-color: #fff; }
+      margin: 3em auto;
+      background-color: #fff;
+      padding: 10px 30px;
+      box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.1); }
+    .incense .incense-modal .incense-modal__header {
+      clear: both;
+      float: none;
+      padding: 0 0 10px 0;
+      border-bottom: 1px solid #ddd; }
+      .incense .incense-modal .incense-modal__header:after {
+        content: " ";
+        clear: both;
+        float: none; }
+      .incense .incense-modal .incense-modal__header .incense-modal__close {
+        float: right; }
+    .incense .incense-modal .incense-modal__footer {
+      text-align: right;
+      padding: 10px 0 0 0;
+      border-top: 1px solid #ddd; }
   .incense .incense__message-unit {
     font-size: 13px;
     padding: 0.5em;

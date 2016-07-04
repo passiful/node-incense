@@ -90,8 +90,29 @@
 		background-color: rgba(0, 0, 0, 0.2);
 		&__dialog{
 			width: 90%;
-			margin: 1em auto;
+			margin: 3em auto;
 			background-color: #fff;
+			padding: 10px 30px;
+			box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.1);
+		}
+		.incense-modal__header{
+			clear: both;
+			float: none;
+			padding: 0 0 10px 0;
+			border-bottom: 1px solid #ddd;
+			&:after{
+				content: " ";
+				clear: both;
+				float: none;
+			}
+			.incense-modal__close{
+				float: right;
+			}
+		}
+		.incense-modal__footer{
+			text-align: right;
+			padding: 10px 0 0 0;
+			border-top: 1px solid #ddd;
 		}
 	}
 	.incense__message-unit{
