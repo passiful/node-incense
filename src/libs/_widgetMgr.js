@@ -64,6 +64,7 @@ module.exports = function( incense, $timelineList, $field, $fieldOuter, $fieldIn
 		widgetIndex[id].$ = $widget;
 
 		incense.updateRelations();
+		this.updateSelection();
 		return;
 	}
 
@@ -83,6 +84,7 @@ module.exports = function( incense, $timelineList, $field, $fieldOuter, $fieldIn
 			})
 		;
 		incense.updateRelations();
+		this.updateSelection();
 	}
 
 	/**
@@ -90,16 +92,14 @@ module.exports = function( incense, $timelineList, $field, $fieldOuter, $fieldIn
 	 */
 	this.focus = function(widgetId){
 		var widget = this.get(widgetId);
-		// console.log( widget.$.offset() );
 
-		// var offset = widget.$.offset();
-		// $field.scroll( offset );
-		// console.log( $field );
-		// $field.eq(0).scrollTo(widget.$, 'normal');
 		$fieldOuter
-			.animate({ 'scrollTop': $fieldOuter.scrollTop() + widget.$.offset().top - ($fieldOuter.innerHeight()/2) + (widget.$.outerHeight()/2) })
-			.animate({ 'scrollLeft': $fieldOuter.scrollLeft() + widget.$.offset().left - ($fieldOuter.innerWidth()/2) + (widget.$.outerWidth()/2) })
+			.animate({
+				'scrollTop': $fieldOuter.scrollTop() + widget.$.offset().top - ($fieldOuter.innerHeight()/2) + (widget.$.outerHeight()/2) ,
+				'scrollLeft': $fieldOuter.scrollLeft() + widget.$.offset().left - ($fieldOuter.innerWidth()/2) + (widget.$.outerWidth()/2)
+			})
 		;
+		this.updateSelection();
 
 		incense.modal.close(function(){
 			widget.focus();
@@ -130,6 +130,34 @@ module.exports = function( incense, $timelineList, $field, $fieldOuter, $fieldIn
 			})
 		;
 		$fieldSelection.append( $selected );
+
+		return;
+	}
+
+	/**
+	 * ウィジェットの選択状態を更新
+	 */
+	this.updateSelection = function(){
+		// var widget = this.get(id);
+
+		$fieldSelection.html('');
+		for( var i in selected ){
+			$targetWidget = $fieldInner.find('[data-widget-id='+selected[i]+']');
+			var $selected = $('<div>');
+			$selected
+				.css({
+					'position': 'absolute',
+					'top': $targetWidget.css('top'),
+					'left': $targetWidget.css('left'),
+					'width': $targetWidget.width(),
+					'height': $targetWidget.height(),
+					'background': 'rgba(255,0,0,0.2)',
+					'border': '3px solid #f00',
+					'opacity': '0.6'
+				})
+			;
+			$fieldSelection.append( $selected );
+		}
 
 		return;
 	}
@@ -183,6 +211,8 @@ module.exports = function( incense, $timelineList, $field, $fieldOuter, $fieldIn
 			.text('#widget.'+targetWidget)
 			.click(function(e){
 				var widgetId = $(this).attr('data-widget-id');
+				_this.unselect();
+				_this.select(widgetId);
 				_this.focus(widgetId);
 				return false;
 			})
