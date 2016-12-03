@@ -388,6 +388,11 @@ window.Incense = function(){
 				'data-message-owner': message.owner
 			})
 		;
+		if( userInfo.id == message.owner ){
+			$messageUnit
+				.addClass('incense__message-unit--myitem')
+			;
+		}
 		// console.log( this.userMgr.getAll() );
 
 		$timelineList.append( $messageUnit );

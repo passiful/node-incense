@@ -128,7 +128,13 @@
         .incense .incense__message-unit .incense__message-unit__owner-id:before {
           content: "@"; }
     .incense .incense__message-unit .incense__message-unit__content {
-      font-weight: normal; }
+      font-weight: normal;
+      margin-left: 0;
+      margin-right: 24px;
+      background-color: #f9f9f9;
+      text-align: left;
+      padding: 12px;
+      border-radius: 10px; }
       .incense .incense__message-unit .incense__message-unit__content > :first-child {
         margin-top: 0; }
       .incense .incense__message-unit .incense__message-unit__content > :last-child {
@@ -139,6 +145,12 @@
       text-align: right;
       font-size: 75%;
       color: #aaa; }
+    .incense .incense__message-unit--myitem .incense__message-unit__owner {
+      text-align: right; }
+    .incense .incense__message-unit--myitem .incense__message-unit__content {
+      margin-left: 24px;
+      margin-right: 0;
+      background-color: #ccf0cc; }
   .incense .incense-widget {
     position: absolute;
     left: 0;
