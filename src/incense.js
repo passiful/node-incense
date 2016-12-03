@@ -17,6 +17,7 @@ window.Incense = function(){
 		$timelineList,
 		$timelineForm,
 		$field,
+		$fieldSelection,
 		$fieldRelations,
 		$fieldOuter,
 		$fieldInner;
@@ -63,11 +64,17 @@ window.Incense = function(){
 					.addClass('incense__board')
 					.html(
 						'<div class="incense__board-outer">'+
-						'<div class="incense__board-relations"></div>'+
-						'<div class="incense__board-inner"></div>'+
+							'<div class="incense__board-selection"></div>'+
+							'<div class="incense__board-inner"></div>'+
+							'<div class="incense__board-relations"></div>'+
 						'</div>'
 					)
+					.on('click', function(e){
+						_this.widgetMgr.unselect();
+						return false;
+					})
 				;
+				$fieldSelection = $field.find('.incense__board-selection');
 				$fieldRelations = $field.find('.incense__board-relations');
 				$fieldOuter = $field.find('.incense__board-outer');
 				$fieldInner = $field.find('.incense__board-inner');
@@ -81,7 +88,7 @@ window.Incense = function(){
 				_this.fieldContextMenu = new (require('./libs/_fieldContextMenu.js'))(_this, $fieldInner);
 				_this.messageOperator = new (require('./libs/_messageOperator.js'))(_this, $timelineList, $fieldInner);
 				_this.widgetBase = require('./libs/_widgetBase.js');
-				_this.widgetMgr = new (require('./libs/_widgetMgr.js'))(_this, $timelineList, $field, $fieldOuter, $fieldInner);
+				_this.widgetMgr = new (require('./libs/_widgetMgr.js'))(_this, $timelineList, $field, $fieldOuter, $fieldInner, $fieldSelection);
 				_this.modal = new (require('./libs/_modal.js'))($field);
 				_this.userMgr = new (require('./libs/_userMgr.js'))(_this, $timelineList, $field, $fieldInner);
 
@@ -170,7 +177,7 @@ window.Incense = function(){
 				// キーボードイベントセット
 				console.log('incense: setting Keyboard events...');
 
-				_this.setBehaviorCharComment(
+				_this.setBehaviorChatComment(
 					$timelineForm.find('textarea.board__main-chat-comment'),
 					{
 						'submit': function(value){
@@ -343,7 +350,7 @@ window.Incense = function(){
 	/**
 	 * チャットコメントフォームを作成
 	 */
-	this.setBehaviorCharComment = function($textarea, callbacks){
+	this.setBehaviorChatComment = function($textarea, callbacks){
 		callbacks = callbacks || {};
 		callbacks.submit = callbacks.submit || function(){};
 		$textarea = $($textarea);
@@ -368,7 +375,7 @@ window.Incense = function(){
 			return;
 		});
 		return $textarea;
-	} // setBehaviorCharComment()
+	} // setBehaviorChatComment()
 
 	/**
 	 * メインタイムラインにメッセージを表示する

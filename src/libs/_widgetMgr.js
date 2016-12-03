@@ -1,11 +1,12 @@
 /**
  * widgetMgr.js
  */
-module.exports = function( incense, $timelineList, $field, $fieldOuter, $fieldInner ){
+module.exports = function( incense, $timelineList, $field, $fieldOuter, $fieldInner, $fieldSelection ){
 	var _this = this;
 	var $ = require('jquery');
 	var _ = require('underscore');
 	var widgetIndex = [];
+	var selected = [];
 
 	/**
 	 * ウィジェットを配置する
@@ -38,6 +39,11 @@ module.exports = function( incense, $timelineList, $field, $fieldOuter, $fieldIn
 			})
 			.on('dblclick contextmenu', function(e){
 				e.stopPropagation();
+			})
+			.on('click', function(e){
+				_this.unselect();
+				_this.select( $(this).attr('data-widget-id') );
+				return false;
 			})
 			.bind('dragstart', function(e){
 				e.stopPropagation();
@@ -98,6 +104,43 @@ module.exports = function( incense, $timelineList, $field, $fieldOuter, $fieldIn
 		incense.modal.close(function(){
 			widget.focus();
 		});
+		return;
+	}
+
+	/**
+	 * ウィジェットを選択する
+	 */
+	this.select = function(id){
+		// var widget = this.get(id);
+		selected.push(id);
+		// console.log(selected);
+
+		$targetWidget = $fieldInner.find('[data-widget-id='+id+']');
+		var $selected = $('<div>');
+		$selected
+			.css({
+				'position': 'absolute',
+				'top': $targetWidget.css('top'),
+				'left': $targetWidget.css('left'),
+				'width': $targetWidget.width(),
+				'height': $targetWidget.height(),
+				'background': 'rgba(255,0,0,0.2)',
+				'border': '3px solid #f00',
+				'opacity': '0.6'
+			})
+		;
+		$fieldSelection.append( $selected );
+
+		return;
+	}
+
+	/**
+	 * ウィジェットの選択を解除する
+	 */
+	this.unselect = function(){
+		selected = [];
+		$fieldSelection.html('');
+		// console.log(selected);
 		return;
 	}
 

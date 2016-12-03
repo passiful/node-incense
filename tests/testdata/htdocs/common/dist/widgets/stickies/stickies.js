@@ -9888,7 +9888,7 @@ module.exports = function( incense, $widget ){
 		})
 	;
 
-	incense.setBehaviorCharComment(
+	incense.setBehaviorChatComment(
 		$textarea,
 		{
 			'submit': function(value){

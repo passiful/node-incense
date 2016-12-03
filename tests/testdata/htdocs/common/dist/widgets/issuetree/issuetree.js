@@ -9961,7 +9961,7 @@ module.exports = function( incense, $widget ){
 		.dblclick(function(e){
 			mode = 'edit';
 			$detailBodyIssue.append( $detailBodyIssue_textarea.val( _this.issue ) );
-			incense.setBehaviorCharComment(
+			incense.setBehaviorChatComment(
 				$detailBodyIssue_textarea,
 				{
 					'submit': function(value){
@@ -10002,7 +10002,7 @@ module.exports = function( incense, $widget ){
 		.dblclick(function(e){
 			mode = 'edit';
 			$detailBodyAnswer.append( $detailBodyAnswer_textarea.val( _this.answer ) );
-			incense.setBehaviorCharComment(
+			incense.setBehaviorChatComment(
 				$detailBodyAnswer_textarea,
 				{
 					'submit': function(value){
@@ -10025,7 +10025,7 @@ module.exports = function( incense, $widget ){
 	var $detailBodyParentIssue = $detailBody.find('.issuetree__parent-issue');
 	var $detailBodySubIssues = $detailBody.find('.issuetree__sub-issues');
 
-	incense.setBehaviorCharComment(
+	incense.setBehaviorChatComment(
 		$detailBody.find('textarea.issuetree__discussion-timeline--chat-comment'),
 		{
 			'submit': function(value){

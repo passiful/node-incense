@@ -31,6 +31,10 @@ module.exports = function($field){
 		this.close(function(){
 
 			$dialog = $(tpl);
+			$dialog.on('click', function(e){
+				e.stopPropagation();
+			});
+
 			$field
 				.append($dialog)
 			;
