@@ -22,7 +22,7 @@
   "dependencies": {
     "es6-promise": "^3.2.1",
     "fs-extra": "^0.30.0",
-    "iterate79": "0.0.1",
+    "iterate79": "^1.0.0",
     "marked": "^0.3.5",
     "phpjs": "^1.3.2",
     "purl": "^1.0.4",
@@ -31,7 +31,7 @@
     "twig": "^0.8.9",
     "underscore": "^1.8.3",
     "url-parse": "^1.0.5",
-    "utils79": "*",
+    "utils79": "^0.0.1",
     "validator": "^5.1.0"
   },
   "devDependencies": {
