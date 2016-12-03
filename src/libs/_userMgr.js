@@ -59,6 +59,15 @@ module.exports = function( app, $timelineList, $field, $fieldInner ){
 	 * ユーザー情報を取得する
 	 */
 	this.get = function(id){
+		var rtn = userList[id];
+		if( !rtn ){
+			// userが見つからない場合
+			console.error( 'User NOT found: ' + id );
+			rtn = {
+				"id": id,
+				"name": "("+id+")"
+			};
+		}
 		return userList[id];
 	}
 
