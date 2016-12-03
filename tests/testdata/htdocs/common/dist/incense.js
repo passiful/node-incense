@@ -19140,7 +19140,7 @@ module.exports = function( app, $timelineList, $field, $fieldInner ){
 				"name": "("+id+")"
 			};
 		}
-		return userList[id];
+		return rtn;
 	}
 
 	/**
