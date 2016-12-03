@@ -37,6 +37,7 @@ module.exports = function( incense, $widget ){
 	function apply(){
 		if(mode != 'edit'){return;}
 		mode = null;
+console.log(12345678);
 		if( _this.value == $textarea.val() ){
 			// 変更なし
 			$textarea.val('').remove();
@@ -87,14 +88,11 @@ module.exports = function( incense, $widget ){
 	this.onMessage = function(message){
 		// console.log(message);
 		var before = this.value;
+		var user = incense.userMgr.get(message.owner);
 		this.value = message.content.val;
 		$stickies.html( incense.markdown( _this.value ) );
 
-		var $messageUnit = $('<div class="incense__message-unit">')
-			.attr({
-				'data-message-id': message.id
-			})
-		;
+		var $messageUnit = $('<div>');
 
 		var userMessage = 'stickies の内容を "'+before+'" から "'+message.content.val + '" に書き換えました。';
 		if( !before.length && message.content.val.length ){
@@ -102,8 +100,11 @@ module.exports = function( incense, $widget ){
 		}else if( before.length && !message.content.val.length ){
 			userMessage = 'stickies の内容 "'+before + '" を削除しました。';
 		}
-		incense.insertTimeline( $messageUnit
-			.append( $('<div class="incense__message-unit__owner">').text(message.owner) )
+		incense.insertTimeline( message, $messageUnit
+			.append( $('<div class="incense__message-unit__owner">')
+				.append( $('<span class="incense__message-unit__owner-name">').text(user.name) )
+				.append( $('<span class="incense__message-unit__owner-id">').text(user.id) )
+			)
 			.append( $('<div class="incense__message-unit__content">').text(userMessage) )
 			.append( $('<div class="incense__message-unit__targetWidget">').append( incense.widgetMgr.mkLinkToWidget( message.targetWidget ) ) )
 		);

@@ -15,12 +15,9 @@ module.exports = function( app, $timelineList, $fieldInner ){
 	 */
 	function execute(message, callback){
 		callback = callback || function(){};
+		// console.log(message);
 
-		var $messageUnit = $('<div class="incense__message-unit">')
-			.attr({
-				'data-message-id': message.id
-			})
-		;
+		var $messageUnit = $('<div>');
 
 		if( !message.content ){
 			console.error('content がセットされていないレコードです。', message);
@@ -39,7 +36,7 @@ module.exports = function( app, $timelineList, $fieldInner ){
 						str += ' が ';
 						str += message.content.widgetType;
 						str += ' を作成しました。';
-						app.insertTimeline( $messageUnit
+						app.insertTimeline( message, $messageUnit
 							.addClass('incense__message-unit--operation')
 							.append( $('<div class="incense__message-unit__operation-message">').text(str) )
 						);
@@ -53,7 +50,7 @@ module.exports = function( app, $timelineList, $fieldInner ){
 							var str = '';
 							str += message.content.userInfo.name;
 							str += ' がログインしました。';
-							app.insertTimeline( $messageUnit
+							app.insertTimeline( message, $messageUnit
 								.addClass('incense__message-unit--operation')
 								.append( $('<div class="incense__message-unit__operation-message">').text(str) )
 							);
@@ -71,7 +68,7 @@ module.exports = function( app, $timelineList, $fieldInner ){
 							var str = '';
 							str += userInfo.name;
 							str += ' がログアウトしました。';
-							app.insertTimeline( $messageUnit
+							app.insertTimeline( message, $messageUnit
 								.addClass('incense__message-unit--operation')
 								.append( $('<div class="incense__message-unit__operation-message">').text(str) )
 							);
@@ -84,8 +81,12 @@ module.exports = function( app, $timelineList, $fieldInner ){
 				app.widgetMgr.receiveWidgetMessage( message );
 				break;
 			case 'text/html':
-				app.insertTimeline( $messageUnit
-					.append( $('<div class="incense__message-unit__owner">').text(message.owner) )
+				var user = app.userMgr.get(message.owner);
+				app.insertTimeline( message, $messageUnit
+					.append( $('<div class="incense__message-unit__owner">')
+						.append( $('<span class="incense__message-unit__owner-name">').text(user.name) )
+						.append( $('<span class="incense__message-unit__owner-id">').text(user.id) )
+					)
 					.append( $('<div class="incense__message-unit__content incense-markdown">').html(message.content) )
 				);
 				break;

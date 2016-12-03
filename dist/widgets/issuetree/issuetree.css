@@ -30,6 +30,13 @@
   .issuetree .issuetree__owner {
     font-weight: bold;
     font-size: small; }
+    .issuetree .issuetree__owner-id {
+      margin-left: 1em;
+      color: #999;
+      font-size: 80%;
+      font-weight: normal; }
+      .issuetree .issuetree__owner-id:before {
+        content: "@"; }
   .issuetree .issuetree__comment {
     font-size: small; }
   .issuetree .issuetree__voteuser {

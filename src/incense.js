@@ -71,7 +71,6 @@ window.Incense = function(){
 					)
 					.on('click', function(e){
 						_this.widgetMgr.unselect();
-						return false;
 					})
 				;
 				$fieldSelection = $field.find('.incense__board-selection');
@@ -380,7 +379,17 @@ window.Incense = function(){
 	/**
 	 * メインタイムラインにメッセージを表示する
 	 */
-	this.insertTimeline = function( $messageUnit ){
+	this.insertTimeline = function( message, $messageUnit ){
+		$messageUnit = $messageUnit || $('<div>');
+		$messageUnit
+			.addClass('incense__message-unit')
+			.attr({
+				'data-message-id': message.id,
+				'data-message-owner': message.owner
+			})
+		;
+		// console.log( this.userMgr.getAll() );
+
 		$timelineList.append( $messageUnit );
 
 		this.adjustTimelineScrolling($timelineList);

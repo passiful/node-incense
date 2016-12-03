@@ -10336,11 +10336,8 @@ module.exports = function( incense, $widget ){
 		// this.value = message.content.val;
 		// $widgetBody.html( marked( _this.value ) );
 
-		var $messageUnit = $('<div class="incense__message-unit">')
-			.attr({
-				'data-message-id': message.id
-			})
-		;
+		var $messageUnit = $('<div>');
+		var user = incense.userMgr.get(message.owner);
 
 		switch( message.content.command ){
 			case 'comment':
@@ -10352,14 +10349,20 @@ module.exports = function( incense, $widget ){
 
 				// 詳細画面のディスカッションに追加
 				$detailBodyTimeline.append( $('<div>')
-					.append( $('<div class="issuetree__owner">').text(message.owner) )
+					.append( $('<div class="issuetree__owner">')
+						.append( $('<span class="issuetree__owner-name">').text(user.name) )
+						.append( $('<span class="issuetree__owner-id">').text(user.id) )
+					)
 					.append( $('<div class="issuetree__content incense-markdown">').html(userMessage) )
 				);
 				incense.adjustTimelineScrolling( $detailBodyTimeline );
 
 				// メインチャットに追加
-				incense.insertTimeline( $messageUnit
-					.append( $('<div class="incense__message-unit__owner">').text(message.owner) )
+				incense.insertTimeline( message, $messageUnit
+					.append( $('<div class="incense__message-unit__owner">')
+						.append( $('<span class="incense__message-unit__owner-name">').text(user.name) )
+						.append( $('<span class="incense__message-unit__owner-id">').text(user.id) )
+					)
 					.append( $('<div class="incense__message-unit__content incense-markdown">').html(userMessage) )
 					.append( $('<div class="incense__message-unit__targetWidget">').append( incense.widgetMgr.mkLinkToWidget( message.targetWidget ) ) )
 				);
@@ -10378,8 +10381,11 @@ module.exports = function( incense, $widget ){
 				incense.adjustTimelineScrolling( $detailBodyTimeline );
 
 				// メインチャットに追加
-				incense.insertTimeline( $messageUnit
-					.append( $('<div class="incense__message-unit__owner">').text(message.owner) )
+				incense.insertTimeline( message, $messageUnit
+					.append( $('<div class="incense__message-unit__owner">')
+						.append( $('<span class="incense__message-unit__owner-name">').text(user.name) )
+						.append( $('<span class="incense__message-unit__owner-id">').text(user.id) )
+					)
 					.append( $('<div class="incense__message-unit__content">').html('問を "' + _this.issue + '" に変更しました。') )
 					.append( $('<div class="incense__message-unit__targetWidget">').append( incense.widgetMgr.mkLinkToWidget( message.targetWidget ) ) )
 				);
@@ -10397,8 +10403,11 @@ module.exports = function( incense, $widget ){
 				incense.adjustTimelineScrolling( $detailBodyTimeline );
 
 				// メインチャットに追加
-				incense.insertTimeline( $messageUnit
-					.append( $('<div class="incense__message-unit__owner">').text(message.owner) )
+				incense.insertTimeline( message, $messageUnit
+					.append( $('<div class="incense__message-unit__owner">')
+						.append( $('<span class="incense__message-unit__owner-name">').text(user.name) )
+						.append( $('<span class="incense__message-unit__owner-id">').text(user.id) )
+					)
 					.append( $('<div class="incense__message-unit__content">').html('答を "' + _this.answer + '" に変更しました。') )
 					.append( $('<div class="incense__message-unit__targetWidget">').append( incense.widgetMgr.mkLinkToWidget( message.targetWidget ) ) )
 				);
@@ -10416,8 +10425,11 @@ module.exports = function( incense, $widget ){
 				incense.adjustTimelineScrolling( $detailBodyTimeline );
 
 				// メインチャットに追加
-				incense.insertTimeline( $messageUnit
-					.append( $('<div class="incense__message-unit__owner">').text(message.owner) )
+				incense.insertTimeline( message, $messageUnit
+					.append( $('<div class="incense__message-unit__owner">')
+						.append( $('<span class="incense__message-unit__owner-name">').text(user.name) )
+						.append( $('<span class="incense__message-unit__owner-id">').text(user.id) )
+					)
 					.append( $('<div class="incense__message-unit__content">').text(message.owner + ' が、 "' + message.content.option + '" に投票しました。') )
 					.append( $('<div class="incense__message-unit__targetWidget">').append( incense.widgetMgr.mkLinkToWidget( message.targetWidget ) ) )
 				);

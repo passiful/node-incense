@@ -47,6 +47,15 @@
 	.issuetree__owner{
 		font-weight: bold;
 		font-size: small;
+		&-id{
+			margin-left: 1em;
+			color: #999;
+			font-size: 80%;
+			font-weight: normal;
+			&:before{
+				content: "@";
+			}
+		}
 	}
 	.issuetree__comment{
 		font-size: small;

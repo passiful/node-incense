@@ -3,6 +3,7 @@
  */
 module.exports = function( app, $timelineList, $field, $fieldInner ){
 	var _this = this;
+	var userConnectionList = {};
 	var userList = {};
 
 
@@ -11,8 +12,9 @@ module.exports = function( app, $timelineList, $field, $fieldInner ){
 	 */
 	this.login = function(connectionId, userInfo, callback){
 		callback = callback || function(err, userInfo){};
-		userList[connectionId] = userInfo;
-		callback(null, userList[connectionId]);
+		userConnectionList[connectionId] = userInfo;
+		userList[userInfo.id] = userInfo;
+		callback(null, userConnectionList[connectionId]);
 		return;
 	}
 
@@ -21,18 +23,36 @@ module.exports = function( app, $timelineList, $field, $fieldInner ){
 	 */
 	this.logout = function(connectionId, callback){
 		callback = callback || function(err, userInfo){};
-		var rtn = userList[connectionId];
-		userList[connectionId] = undefined;
-		delete(userList[connectionId]);
-		callback(null, rtn);
+		var rtn = userConnectionList[connectionId];
+
+		userList[rtn.id] = undefined;
+		delete( userList[rtn.id] );
+		userConnectionList[connectionId] = undefined;
+		delete( userConnectionList[connectionId] );
+
+		callback( null, rtn );
 		return;
+	}
+
+	/**
+	 * 接続IDからユーザー情報を取得する
+	 */
+	this.getUserByConnectionId = function(connectionId){
+		return userConnectionList[connectionId];
+	}
+
+	/**
+	 * 接続IDからユーザー情報を取得する
+	 */
+	this.getAllConnection = function(){
+		return userConnectionList;
 	}
 
 	/**
 	 * ユーザー情報を取得する
 	 */
-	this.get = function(connectionId){
-		return userList[connectionId];
+	this.get = function(id){
+		return userList[id];
 	}
 
 	/**
