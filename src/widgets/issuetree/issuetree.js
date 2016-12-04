@@ -414,18 +414,20 @@ module.exports = function( incense, $widget ){
 			.removeClass('issuetree--status-no-active')
 			.removeClass('issuetree--status-fixed')
 		;
-		if( maxAnswerCount > 1 || otherVoteCount ){
-			$widgetBody
-				.addClass('issuetree--status-active')
-			;
-		}else if( !maxVoteCount && !otherVoteCount ){
-			$widgetBody
-				.addClass('issuetree--status-no-active')
-			;
-		}else if( maxVoteCount && !otherVoteCount ){
+		if( _this.status == 'close' ){
 			$widgetBody
 				.addClass('issuetree--status-fixed')
 			;
+		}else{
+			if( maxAnswerCount > 1 || otherVoteCount ){
+				$widgetBody
+					.addClass('issuetree--status-active')
+				;
+			}else{
+				$widgetBody
+					.addClass('issuetree--status-no-active')
+				;
+			}
 		}
 
 		$yourStanceSelector.html('');
@@ -502,7 +504,7 @@ module.exports = function( incense, $widget ){
 			)
 		;
 
-	}
+	} // updateStatus()
 
 	/**
 	 * 投票操作のメッセージを送信する
@@ -523,7 +525,7 @@ module.exports = function( incense, $widget ){
 				callback();
 			}
 		);
-	}
+	} // sendVoteMessage()
 
 	/**
 	 * 親子関係欄を更新する
@@ -556,7 +558,7 @@ module.exports = function( incense, $widget ){
 		}
 
 		return;
-	}
+	} // updateRelations()
 
 	/**
 	 * widget への配信メッセージを受信
@@ -648,6 +650,15 @@ module.exports = function( incense, $widget ){
 				// console.log(message.content);
 				_this.status = message.content.option;
 				updateStatus();
+				updateAnswer();
+
+				var timelineMessage = user.name + ' は、問を' + (_this.status=='open'?'再び開きました':'完了しました') + '。';
+
+				// 詳細画面のディスカッションに追加
+				$detailBodyTimeline.append( $('<div>')
+					.append( $('<div class="issuetree__content">').text( timelineMessage ) )
+				);
+				incense.adjustTimelineScrolling( $detailBodyTimeline );
 
 				// メインチャットに追加
 				incense.insertTimeline( message, $messageUnit
@@ -655,7 +666,7 @@ module.exports = function( incense, $widget ){
 						.append( $('<span class="incense__message-unit__owner-name">').text(user.name) )
 						.append( $('<span class="incense__message-unit__owner-id">').text(user.id) )
 					)
-					.append( $('<div>').html('問を' + (_this.status=='open'?'再び開きました':'完了しました') + '。') )
+					.append( $('<div>').text( timelineMessage ) )
 					.append( $('<div class="incense__message-unit__targetWidget">').append( incense.widgetMgr.mkLinkToWidget( message.targetWidget ) ) )
 				);
 				break;
@@ -667,7 +678,7 @@ module.exports = function( incense, $widget ){
 
 				// 詳細画面のディスカッションに追加
 				$detailBodyTimeline.append( $('<div>')
-					.append( $('<div class="issuetree__content">').text(message.owner + ' が、 "' + message.content.option + '" に投票しました。') )
+					.append( $('<div class="issuetree__content">').text(user.name + ' が、 "' + message.content.option + '" に投票しました。') )
 				);
 				incense.adjustTimelineScrolling( $detailBodyTimeline );
 
@@ -677,7 +688,7 @@ module.exports = function( incense, $widget ){
 						.append( $('<span class="incense__message-unit__owner-name">').text(user.name) )
 						.append( $('<span class="incense__message-unit__owner-id">').text(user.id) )
 					)
-					.append( $('<div class="incense__message-unit__content">').text(message.owner + ' が、 "' + message.content.option + '" に投票しました。') )
+					.append( $('<div>').text(message.owner + ' が、 "' + message.content.option + '" に投票しました。') )
 					.append( $('<div class="incense__message-unit__targetWidget">').append( incense.widgetMgr.mkLinkToWidget( message.targetWidget ) ) )
 				);
 				break;

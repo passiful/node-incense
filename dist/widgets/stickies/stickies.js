@@ -9922,7 +9922,7 @@ console.log(12345678);
 				.append( $('<span class="incense__message-unit__owner-name">').text(user.name) )
 				.append( $('<span class="incense__message-unit__owner-id">').text(user.id) )
 			)
-			.append( $('<div class="incense__message-unit__content">').text(userMessage) )
+			.append( $('<div>').text(userMessage) )
 			.append( $('<div class="incense__message-unit__targetWidget">').append( incense.widgetMgr.mkLinkToWidget( message.targetWidget ) ) )
 		);
 
