@@ -211,29 +211,6 @@ module.exports = function( incense, $widget ){
 	;
 
 	var $detailBodyStatus = $detailBody.find('.issuetree__status');
-	$detailBodyStatus
-		.append(
-			$('<p>').text( this.status )
-		)
-		.append(
-			$('<p>').append( $('<button>')
-				.text( (this.status=='open' ? 'close' : 'reopen') )
-				.attr({
-					'data-issuetree-status-to': (this.status=='open' ? 'close' : 'open')
-				})
-				.on('click', function(e){
-					var $this = $(this);
-					var statusTo = $this.attr('data-issuetree-status-to');
-					alert(statusTo);
-					changeStatusTo(statusTo, function(){
-						// console.log('done');
-					})
-					return false;
-				})
-			)
-		)
-	;
-
 	var $detailBodyParentIssue = $detailBody.find('.issuetree__parent-issue');
 	var $detailBodySubIssues = $detailBody.find('.issuetree__sub-issues');
 
@@ -291,6 +268,7 @@ module.exports = function( incense, $widget ){
 			]
 		});
 
+		updateStatus();
 		updateAnswer();
 		updateRelations();
 
@@ -486,24 +464,44 @@ module.exports = function( incense, $widget ){
 	}
 
 	/**
-	 * 課題のステータスを変更する
+	 * 課題のステータス表示を更新する
 	 */
-	function changeStatusTo(statusTo, callback){
+	function updateStatus(callback){
 		callback = callback || function(){};
-		incense.sendMessage(
-			{
-				'content': JSON.stringify({
-					'command': 'changeStatusTo',
-					'option': statusTo
-				}),
-				'contentType': 'application/x-passiflora-widget-message',
-				'targetWidget': _this.id
-			},
-			function(){
-				console.log('issuetree changing status to "'+statusTo+'" submited.');
-				callback();
-			}
-		);
+		$detailBodyStatus
+			.html('')
+			.append(
+				$('<p>').text( (_this.status=='open' ? 'Opened' : 'Closed') )
+			)
+			.append(
+				$('<p>').append( $('<button class="btn btn-default">')
+					.text( (_this.status=='open' ? 'close' : 'reopen') )
+					.attr({
+						'data-issuetree-status-to': (_this.status=='open' ? 'close' : 'open')
+					})
+					.on('click', function(e){
+						var $this = $(this);
+						var statusTo = $this.attr('data-issuetree-status-to');
+						incense.sendMessage(
+							{
+								'content': JSON.stringify({
+									'command': 'changeStatusTo',
+									'option': statusTo
+								}),
+								'contentType': 'application/x-passiflora-widget-message',
+								'targetWidget': _this.id
+							},
+							function(){
+								console.log('issuetree changing status to "'+statusTo+'" submited.');
+								callback();
+							}
+						);
+						return false;
+					})
+				)
+			)
+		;
+
 	}
 
 	/**
@@ -649,29 +647,17 @@ module.exports = function( incense, $widget ){
 			case 'changeStatusTo':
 				// console.log(message.content);
 				_this.status = message.content.option;
-				$detailBodyStatus
-					.html('')
-					.append(
-						$('<p>').text( _this.status )
+				updateStatus();
+
+				// メインチャットに追加
+				incense.insertTimeline( message, $messageUnit
+					.append( $('<div class="incense__message-unit__owner">')
+						.append( $('<span class="incense__message-unit__owner-name">').text(user.name) )
+						.append( $('<span class="incense__message-unit__owner-id">').text(user.id) )
 					)
-					.append(
-						$('<p>').append( $('<button>')
-							.text( (_this.status=='open' ? 'close' : 'reopen') )
-							.attr({
-								'data-issuetree-status-to': (_this.status=='open' ? 'close' : 'open')
-							})
-							.on('click', function(e){
-								var $this = $(this);
-								var statusTo = $this.attr('data-issuetree-status-to');
-								alert(statusTo);
-								changeStatusTo(statusTo, function(){
-									// console.log('done');
-								})
-								return false;
-							})
-						)
-					)
-				;
+					.append( $('<div>').html('問を' + (_this.status=='open'?'再び開きました':'完了しました') + '。') )
+					.append( $('<div class="incense__message-unit__targetWidget">').append( incense.widgetMgr.mkLinkToWidget( message.targetWidget ) ) )
+				);
 				break;
 
 			case 'vote':
