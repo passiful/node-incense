@@ -9,6 +9,7 @@ module.exports = function( incense, $widget ){
 	this.issue = '未設定';
 	this.answer = '1. 賛成'+"\n"+'2. 反対';
 	this.vote = {};
+	this.status = 'open';
 
 	var $widgetBody = $('<div class="issuetree issuetree--widget issuetree--status-no-active">')
 		.append( $('<div class="issuetree__issue incense-markdown">').html( incense.markdown(this.issue) || 'no-set' ) )
@@ -49,6 +50,10 @@ module.exports = function( incense, $widget ){
 				)
 			)
 			.append( $('<div class="col-md-4">')
+				.append( $('<div class="issuetree__block">')
+					.append( $('<div class="issuetree__heading">').text( 'ステータス' ) )
+					.append( $('<div class="issuetree__status">') )
+				)
 				.append( $('<div class="issuetree__block">')
 					.append( $('<div class="issuetree__heading">').text( '親課題' ) )
 					.append( $('<div class="issuetree__parent-issue">') )
@@ -203,6 +208,30 @@ module.exports = function( incense, $widget ){
 		.click(function(e){
 			e.stopPropagation();
 		})
+	;
+
+	var $detailBodyStatus = $detailBody.find('.issuetree__status');
+	$detailBodyStatus
+		.append(
+			$('<p>').text( this.status )
+		)
+		.append(
+			$('<p>').append( $('<button>')
+				.text( (this.status=='open' ? 'close' : 'reopen') )
+				.attr({
+					'data-issuetree-status-to': (this.status=='open' ? 'close' : 'open')
+				})
+				.on('click', function(e){
+					var $this = $(this);
+					var statusTo = $this.attr('data-issuetree-status-to');
+					alert(statusTo);
+					changeStatusTo(statusTo, function(){
+						// console.log('done');
+					})
+					return false;
+				})
+			)
+		)
 	;
 
 	var $detailBodyParentIssue = $detailBody.find('.issuetree__parent-issue');
@@ -457,6 +486,27 @@ module.exports = function( incense, $widget ){
 	}
 
 	/**
+	 * 課題のステータスを変更する
+	 */
+	function changeStatusTo(statusTo, callback){
+		callback = callback || function(){};
+		incense.sendMessage(
+			{
+				'content': JSON.stringify({
+					'command': 'changeStatusTo',
+					'option': statusTo
+				}),
+				'contentType': 'application/x-passiflora-widget-message',
+				'targetWidget': _this.id
+			},
+			function(){
+				console.log('issuetree changing status to "'+statusTo+'" submited.');
+				callback();
+			}
+		);
+	}
+
+	/**
 	 * 投票操作のメッセージを送信する
 	 */
 	function sendVoteMessage(vote, callback){
@@ -594,6 +644,34 @@ module.exports = function( incense, $widget ){
 					.append( $('<div class="incense__message-unit__content">').html('答を "' + _this.answer + '" に変更しました。') )
 					.append( $('<div class="incense__message-unit__targetWidget">').append( incense.widgetMgr.mkLinkToWidget( message.targetWidget ) ) )
 				);
+				break;
+
+			case 'changeStatusTo':
+				// console.log(message.content);
+				_this.status = message.content.option;
+				$detailBodyStatus
+					.html('')
+					.append(
+						$('<p>').text( _this.status )
+					)
+					.append(
+						$('<p>').append( $('<button>')
+							.text( (_this.status=='open' ? 'close' : 'reopen') )
+							.attr({
+								'data-issuetree-status-to': (_this.status=='open' ? 'close' : 'open')
+							})
+							.on('click', function(e){
+								var $this = $(this);
+								var statusTo = $this.attr('data-issuetree-status-to');
+								alert(statusTo);
+								changeStatusTo(statusTo, function(){
+									// console.log('done');
+								})
+								return false;
+							})
+						)
+					)
+				;
 				break;
 
 			case 'vote':
