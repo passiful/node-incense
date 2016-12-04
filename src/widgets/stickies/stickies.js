@@ -17,7 +17,7 @@ module.exports = function( incense, $widget ){
 			'height': '100%'
 		})
 	;
-	var mode = null;
+	_this.mode = null;
 
 	$widget.append( $stickies
 		.html( incense.markdown( _this.value ) )
@@ -25,13 +25,13 @@ module.exports = function( incense, $widget ){
 
 	$widget
 		.on('dblclick', function(e){
-			mode = 'edit';
 			incense.locker.lock(_this.id, 'main', function(res){
-				console.log(res);
+				// console.log(res);
 				if(!res){
 					console.log('failed to open editor; this widget was locked. This is edited by other member.');
 					return;
 				}
+				_this.mode = 'edit';
 				$widget.append( $textarea.val( _this.value ) );
 				$textarea.focus();
 			});
@@ -42,8 +42,10 @@ module.exports = function( incense, $widget ){
 	;
 
 	function apply(){
-		if(mode != 'edit'){return;}
-		mode = null;
+		if( _this.mode !== 'edit' ){
+			return;
+		}
+		_this.mode = null;
 		if( _this.value == $textarea.val() ){
 			// 変更なし
 			$textarea.val('').remove();
