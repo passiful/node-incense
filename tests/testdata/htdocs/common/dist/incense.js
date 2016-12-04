@@ -18781,22 +18781,28 @@ module.exports = function( incense ){
 		// console.log(data);
 		switch(data.method){
 			case 'lock':
-				userIndex[incense.getUserInfo().id] = {
+				userIndex[data.owner] = {
 					'widget': data.widget,
 					'item': data.item
 				};
 
 				widgetItemIndex[data.widget] = widgetItemIndex[data.widget] || {};
-				widgetItemIndex[data.widget][data.item] = incense.getUserInfo().id;
+				widgetItemIndex[data.widget][data.item] = data.owner;
 				console.log('locked.');
 				break;
 
 			case 'unlock':
-				var lockInfo = userIndex[incense.getUserInfo().id];
-				widgetItemIndex[lockInfo.widget][lockInfo.item] = undefined;
-				delete(widgetItemIndex[lockInfo.widget][lockInfo.item]);
-				userIndex[incense.getUserInfo().id] = undefined;
-				delete(userIndex[incense.getUserInfo().id]);
+				var lockInfo = userIndex[data.owner];
+				try {
+					widgetItemIndex[lockInfo.widget][lockInfo.item] = undefined;
+					delete(widgetItemIndex[lockInfo.widget][lockInfo.item]);
+				} catch (e) {
+				}
+				try {
+					userIndex[data.owner] = undefined;
+					delete(userIndex[data.owner]);
+				} catch (e) {
+				}
 				console.log('unlocked.');
 				break;
 		}
