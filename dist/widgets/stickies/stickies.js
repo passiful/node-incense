@@ -9841,12 +9841,19 @@ module.exports = function( incense, $widget ){
 	);
 
 	$widget
-		.dblclick(function(e){
+		.on('dblclick', function(e){
 			mode = 'edit';
-			$widget.append( $textarea.val( _this.value ) );
-			$textarea.focus();
+			incense.locker.lock(_this.id, 'main', function(res){
+				console.log(res);
+				if(!res){
+					console.log('failed to open editor; this widget was locked. This is edited by other member.');
+					return;
+				}
+				$widget.append( $textarea.val( _this.value ) );
+				$textarea.focus();
+			});
 		})
-		.click(function(e){
+		.on('click', function(e){
 			e.stopPropagation();
 		})
 	;
@@ -9854,11 +9861,11 @@ module.exports = function( incense, $widget ){
 	function apply(){
 		if(mode != 'edit'){return;}
 		mode = null;
-console.log(12345678);
 		if( _this.value == $textarea.val() ){
 			// 変更なし
 			$textarea.val('').remove();
 			$stickies.html( incense.markdown(_this.value) );
+			incense.locker.unlock();
 			return;
 		}
 
@@ -9874,6 +9881,8 @@ console.log(12345678);
 				console.log('stickies change submited.');
 				$textarea.val('').remove();
 				$stickies.html( incense.markdown(_this.value) );
+				incense.locker.unlock();
+				return;
 			}
 		);
 	}

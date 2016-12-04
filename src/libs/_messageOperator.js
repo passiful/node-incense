@@ -99,6 +99,8 @@ module.exports = function( app, $timelineList, $fieldInner ){
 	 * タイムラインメッセージを受け付ける
 	 */
 	this.exec = function(message, callback){
+		callback = callback || function(){};
+
 		if( newestMessageNumber >= message.id ){
 			// 既に処理済みのメッセージとみなし、キューに追加しない。
 			console.error(message.id + ' は、すでに処理済みのメッセージです。');
@@ -116,8 +118,6 @@ module.exports = function( app, $timelineList, $fieldInner ){
 		messageQueue[message.id] = message;//メッセージを Queue に追加
 		messageQueueLength ++;
 		// console.log(message);
-
-		callback = callback || function(){};
 
 		if( isQueueProgress ){
 			callback(); return;

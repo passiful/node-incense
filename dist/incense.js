@@ -18155,6 +18155,18 @@ function whitelist(str, chars) {
 module.exports = exports['default'];
 },{"./util/assertString":76}],80:[function(require,module,exports){
 /**
+ * bifloraApi - locker.js
+ */
+module.exports = function( data, callback, main, socket ){
+	// console.log(data);
+	// console.log(callback);
+	main.locker.receive(data);
+	callback(true);
+	return;
+}
+
+},{}],81:[function(require,module,exports){
+/**
  * bifloraApi - receiveBroadcast.js
  */
 module.exports = function( data, callback, main, socket ){
@@ -18165,7 +18177,7 @@ module.exports = function( data, callback, main, socket ){
 	return;
 }
 
-},{}],81:[function(require,module,exports){
+},{}],82:[function(require,module,exports){
 window.Incense = function(){
 	// app "board"
 	var _this = this;
@@ -18258,6 +18270,7 @@ window.Incense = function(){
 				_this.widgetMgr = new (require('./libs/_widgetMgr.js'))(_this, $timelineList, $field, $fieldOuter, $fieldInner, $fieldSelection);
 				_this.modal = new (require('./libs/_modal.js'))($field);
 				_this.userMgr = new (require('./libs/_userMgr.js'))(_this, $timelineList, $field, $fieldInner);
+				_this.locker = new (require('./libs/_locker.js'))(_this);
 
 
 				_this.widgetList = {
@@ -18281,7 +18294,8 @@ window.Incense = function(){
 						_this,
 						io,
 						{
-							'receiveBroadcast': require('./apis/_receiveBroadcast.js')
+							'receiveBroadcast': require('./apis/_receiveBroadcast.js'),
+							'locker': require('./apis/_locker.js')
 						}
 					)
 				;
@@ -18614,6 +18628,13 @@ window.Incense = function(){
 	}
 
 	/**
+	 * ボードIDを取得
+	 */
+	this.getBoardId = function(){
+		return boardId;
+	}
+
+	/**
 	 * 親子関係の表現を更新する
 	 */
 	this.updateRelations = function( callback ){
@@ -18667,7 +18688,7 @@ window.Incense = function(){
 
 };
 
-},{"./apis/_receiveBroadcast.js":80,"./libs/_fieldContextMenu.js":82,"./libs/_messageOperator.js":83,"./libs/_modal.js":84,"./libs/_userMgr.js":85,"./libs/_widgetBase.js":86,"./libs/_widgetMgr.js":87,"./widgets/issuetree/issuetree.js":88,"./widgets/stickies/stickies.js":89,"es6-promise":4,"iterate79":8,"jquery":9,"marked":10,"twig":13,"utils79":15}],82:[function(require,module,exports){
+},{"./apis/_locker.js":80,"./apis/_receiveBroadcast.js":81,"./libs/_fieldContextMenu.js":83,"./libs/_locker.js":84,"./libs/_messageOperator.js":85,"./libs/_modal.js":86,"./libs/_userMgr.js":87,"./libs/_widgetBase.js":88,"./libs/_widgetMgr.js":89,"./widgets/issuetree/issuetree.js":90,"./widgets/stickies/stickies.js":91,"es6-promise":4,"iterate79":8,"jquery":9,"marked":10,"twig":13,"utils79":15}],83:[function(require,module,exports){
 /**
  * _fieldContextMenu.js
  */
@@ -18748,7 +18769,100 @@ module.exports = function( app, $fieldInner ){
 	return;
 }
 
-},{"jquery":9}],83:[function(require,module,exports){
+},{"jquery":9}],84:[function(require,module,exports){
+/**
+ * lockApi - locker.js
+ */
+module.exports = function( incense ){
+	var userIndex = {};
+	var widgetItemIndex = {};
+
+	this.receive = function(data){
+		// console.log(data);
+		switch(data.method){
+			case 'lock':
+				userIndex[incense.getUserInfo().id] = {
+					'widget': data.widget,
+					'item': data.item
+				};
+
+				widgetItemIndex[data.widget] = widgetItemIndex[data.widget] || {};
+				widgetItemIndex[data.widget][data.item] = incense.getUserInfo().id;
+				console.log('locked.');
+				break;
+
+			case 'unlock':
+				var lockInfo = userIndex[incense.getUserInfo().id];
+				widgetItemIndex[lockInfo.widget][lockInfo.item] = undefined;
+				delete(widgetItemIndex[lockInfo.widget][lockInfo.item]);
+				userIndex[incense.getUserInfo().id] = undefined;
+				delete(userIndex[incense.getUserInfo().id]);
+				console.log('unlocked.');
+				break;
+		}
+	}
+
+	this.lock = function(widgetId, itemId, callback){
+		callback = callback || function(){};
+
+		if( this.isLocked(widgetId, itemId) ){
+			callback(false);
+			return false;
+		}
+
+		incense.biflora.send(
+			'locker',
+			{
+				'boardId': incense.getBoardId(),
+				'owner': incense.getUserInfo().id,
+				'method': 'lock',
+				'widget': widgetId,
+				'item': itemId
+			},
+			function(rtn){
+				callback(rtn);
+			}
+		);
+		return true;
+	}
+
+	this.isLocked = function(widgetId, itemId){
+		// console.log(userIndex);
+		// console.log(widgetItemIndex);
+		try {
+			if(!widgetItemIndex[widgetId][itemId]){
+				return false;
+			}
+			if(widgetItemIndex[widgetId][itemId] == incense.getUserInfo().id){
+				return false;
+			}
+			return true;
+		} catch (e) {
+		}
+		return false;
+	}
+
+	this.unlock = function(){
+		incense.biflora.send(
+			'locker',
+			{
+				'boardId': incense.getBoardId(),
+				'owner': incense.getUserInfo().id,
+				'method': 'unlock'
+			},
+			function(rtn){
+				console.log('unlock command was sent.');
+				// console.log(userIndex);
+				// console.log(widgetItemIndex);
+			}
+		);
+		return true;
+	}
+
+	return;
+}
+
+},{}],85:[function(require,module,exports){
 /**
  * messageOperator.js
  */
@@ -18850,6 +18964,8 @@ module.exports = function( app, $timelineList, $fieldInner ){
 	 * タイムラインメッセージを受け付ける
 	 */
 	this.exec = function(message, callback){
+		callback = callback || function(){};
+
 		if( newestMessageNumber >= message.id ){
 			// 既に処理済みのメッセージとみなし、キューに追加しない。
 			console.error(message.id + ' は、すでに処理済みのメッセージです。');
@@ -18867,8 +18983,6 @@ module.exports = function( app, $timelineList, $fieldInner ){
 		messageQueue[message.id] = message;//メッセージを Queue に追加
 		messageQueueLength ++;
 		// console.log(message);
-
-		callback = callback || function(){};
 
 		if( isQueueProgress ){
 			callback(); return;
@@ -18963,7 +19077,7 @@ module.exports = function( app, $timelineList, $fieldInner ){
 	return;
 }
 
-},{"iterate79":8,"jquery":9}],84:[function(require,module,exports){
+},{"iterate79":8,"jquery":9}],86:[function(require,module,exports){
 /**
  * _modal.js
  */
@@ -19069,7 +19183,7 @@ module.exports = function($field){
 
 }
 
-},{"jquery":9}],85:[function(require,module,exports){
+},{"jquery":9}],87:[function(require,module,exports){
 /**
  * userMgr.js
  */
@@ -19153,7 +19267,7 @@ module.exports = function( app, $timelineList, $field, $fieldInner ){
 	return;
 }
 
-},{}],86:[function(require,module,exports){
+},{}],88:[function(require,module,exports){
 /**
  * widgets: base class
  */
@@ -19177,7 +19291,7 @@ module.exports = function( incense, $widget ){
 	return;
 }
 
-},{}],87:[function(require,module,exports){
+},{}],89:[function(require,module,exports){
 /**
  * widgetMgr.js
  */
@@ -19411,7 +19525,7 @@ module.exports = function( incense, $timelineList, $field, $fieldOuter, $fieldIn
 	return;
 }
 
-},{"jquery":9,"underscore":14}],88:[function(require,module,exports){
+},{"jquery":9,"underscore":14}],90:[function(require,module,exports){
 /**
  * widgets: issuetree.js
  */
@@ -20127,7 +20241,7 @@ module.exports = function( incense, $widget ){
 	return;
 }
 
-},{"jquery":9}],89:[function(require,module,exports){
+},{"jquery":9}],91:[function(require,module,exports){
 /**
  * widgets: stickies.js
  */
@@ -20154,12 +20268,19 @@ module.exports = function( incense, $widget ){
 	);
 
 	$widget
-		.dblclick(function(e){
+		.on('dblclick', function(e){
 			mode = 'edit';
-			$widget.append( $textarea.val( _this.value ) );
-			$textarea.focus();
+			incense.locker.lock(_this.id, 'main', function(res){
+				console.log(res);
+				if(!res){
+					console.log('failed to open editor; this widget was locked. This is edited by other member.');
+					return;
+				}
+				$widget.append( $textarea.val( _this.value ) );
+				$textarea.focus();
+			});
 		})
-		.click(function(e){
+		.on('click', function(e){
 			e.stopPropagation();
 		})
 	;
@@ -20167,11 +20288,11 @@ module.exports = function( incense, $widget ){
 	function apply(){
 		if(mode != 'edit'){return;}
 		mode = null;
-console.log(12345678);
 		if( _this.value == $textarea.val() ){
 			// 変更なし
 			$textarea.val('').remove();
 			$stickies.html( incense.markdown(_this.value) );
+			incense.locker.unlock();
 			return;
 		}
 
@@ -20187,6 +20308,8 @@ console.log(12345678);
 				console.log('stickies change submited.');
 				$textarea.val('').remove();
 				$stickies.html( incense.markdown(_this.value) );
+				incense.locker.unlock();
+				return;
 			}
 		);
 	}
@@ -20244,4 +20367,4 @@ console.log(12345678);
 	return;
 }
 
-},{"jquery":9}]},{},[81])
+},{"jquery":9}]},{},[82])

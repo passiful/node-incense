@@ -90,6 +90,7 @@ window.Incense = function(){
 				_this.widgetMgr = new (require('./libs/_widgetMgr.js'))(_this, $timelineList, $field, $fieldOuter, $fieldInner, $fieldSelection);
 				_this.modal = new (require('./libs/_modal.js'))($field);
 				_this.userMgr = new (require('./libs/_userMgr.js'))(_this, $timelineList, $field, $fieldInner);
+				_this.locker = new (require('./libs/_locker.js'))(_this);
 
 
 				_this.widgetList = {
@@ -113,7 +114,8 @@ window.Incense = function(){
 						_this,
 						io,
 						{
-							'receiveBroadcast': require('./apis/_receiveBroadcast.js')
+							'receiveBroadcast': require('./apis/_receiveBroadcast.js'),
+							'locker': require('./apis/_locker.js')
 						}
 					)
 				;
@@ -443,6 +445,13 @@ window.Incense = function(){
 	 */
 	this.getUserInfo = function(){
 		return userInfo;
+	}
+
+	/**
+	 * ボードIDを取得
+	 */
+	this.getBoardId = function(){
+		return boardId;
 	}
 
 	/**

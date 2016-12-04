@@ -99,6 +99,26 @@ module.exports = (function(){
 			});
 			return;
 		}
+		this.locker = function( data, callback, main, biflora ){
+			biflora.sendToRoom(
+				'locker',
+				data,
+				data.boardId,
+				function(){
+					// console.log('send Locker message to room');
+				}
+			);
+			biflora.send(
+				'locker',
+				data,
+				function(rtn){
+					// console.log('send Locker message', rtn);
+					callback(rtn);
+				}
+			);
+
+			return;
+		}
 		this.disconnect = function( data, callback, main, biflora ){
 			console.log( 'User Disconnect.' );
 			var userInfo = connectionList[data.connectionId].userInfo;
