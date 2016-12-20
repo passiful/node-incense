@@ -18635,6 +18635,16 @@ window.Incense = function(){
 	}
 
 	/**
+	 * ウィジェットの一覧を取得する
+	 */
+	this.getWidgetList = function( callback ){
+		_this.widgetMgr.getList(function(widgetList){
+			callback( widgetList );
+		});
+		return;
+	}
+
+	/**
 	 * 親子関係の表現を更新する
 	 */
 	this.updateRelations = function( callback ){
@@ -19469,6 +19479,14 @@ module.exports = function( incense, $timelineList, $field, $fieldOuter, $fieldIn
 		selected = [];
 		$fieldSelection.html('');
 		// console.log(selected);
+		return;
+	}
+
+	/**
+	 * ウィジェットの一覧を取得する
+	 */
+	this.getList = function( callback ){
+		callback( widgetIndex );
 		return;
 	}
 

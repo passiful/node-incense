@@ -91,7 +91,7 @@ server.listen( 3000, function(){
 </html>
 ```
 
-### API
+#### API
 
 - incense.init( options, callback ) : 初期化する
 - incense.getUserInfo() : ログインユーザーの情報を取得する
