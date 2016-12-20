@@ -455,6 +455,16 @@ window.Incense = function(){
 	}
 
 	/**
+	 * ウィジェットの一覧を取得する
+	 */
+	this.getWidgetList = function( callback ){
+		_this.widgetMgr.getList(function(widgetList){
+			callback( widgetList );
+		});
+		return;
+	}
+
+	/**
 	 * 親子関係の表現を更新する
 	 */
 	this.updateRelations = function( callback ){

@@ -91,6 +91,15 @@ server.listen( 3000, function(){
 </html>
 ```
 
+### API
+
+- incense.init( options, callback ) : 初期化する
+- incense.getUserInfo() : ログインユーザーの情報を取得する
+- incense.getBoardId() : ボードIDを取得する
+- incense.getWidgetList( callback ) : ウィジェットの一覧を取得する
+- incense.sendMessage( msg, callback ) : メッセージを送信する
+
+
 ## ライセンス - License
 
 Copyright (c)2016 Tomoya Koyanagi, and Passiful Project<br />

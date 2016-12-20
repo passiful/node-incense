@@ -173,6 +173,14 @@ module.exports = function( incense, $timelineList, $field, $fieldOuter, $fieldIn
 	}
 
 	/**
+	 * ウィジェットの一覧を取得する
+	 */
+	this.getList = function( callback ){
+		callback( widgetIndex );
+		return;
+	}
+
+	/**
 	 * ウィジェットの子ウィジェットの一覧を取得する
 	 */
 	this.getChildren = function(parentWidgetId){
