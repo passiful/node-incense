@@ -12,7 +12,7 @@ module.exports = function( incense, $widget ){
 	this.status = 'open';
 
 	var $widgetBody = $('<div class="issuetree issuetree--widget issuetree--status-no-active">')
-		.append( $('<div class="issuetree__issue incense-markdown">').html( incense.markdown(this.issue) || 'no-set' ) )
+		.append( $('<div class="issuetree__issue incense-markdown">').html( incense.detoxHtml( incense.markdown(this.issue) ) || 'no-set' ) )
 		.append( $('<div class="issuetree__answer">').text('投票なし') )
 		.append( $('<div class="issuetree__comment-count">') )
 	;
@@ -21,13 +21,13 @@ module.exports = function( incense, $widget ){
 			.append( $('<div class="col-sm-6">')
 				.append( $('<div class="issuetree__block">')
 					.append( $('<div class="issuetree__heading">').text( '問' ) )
-					.append( $('<div class="issuetree__issue incense-markdown">').html( incense.markdown(this.issue) || 'no-set' ) )
+					.append( $('<div class="issuetree__issue incense-markdown">').html( incense.detoxHtml( incense.markdown(this.issue) ) || 'no-set' ) )
 				)
 			)
 			.append( $('<div class="col-sm-6">')
 				.append( $('<div class="issuetree__block">')
 					.append( $('<div class="issuetree__heading">').text( '答' ) )
-					.append( $('<div class="issuetree__answer incense-markdown">').html( incense.markdown(this.answer) || 'no-answer' ) )
+					.append( $('<div class="issuetree__answer incense-markdown">').html( incense.detoxHtml( incense.markdown(this.answer) ) || 'no-answer' ) )
 				)
 			)
 		)
@@ -300,7 +300,7 @@ module.exports = function( incense, $widget ){
 	function updateAnswer(){
 		var optionValueList = {};
 		var myAnswer = _this.vote[incense.getUserInfo().id];
-		$detailBodyAnswer.html( incense.markdown(_this.answer) || 'no-answer' );
+		$detailBodyAnswer.html( incense.detoxHtml( incense.markdown(_this.answer) ) || 'no-answer' );
 		$detailBodyAnswer.find('ol>li').each(function(){
 			var $this = $(this);
 			var optionValue = $this.html()+'';
@@ -575,7 +575,7 @@ module.exports = function( incense, $widget ){
 		switch( message.content.command ){
 			case 'comment':
 				// コメントの投稿
-				userMessage = incense.markdown( message.content.comment );
+				userMessage = incense.detoxHtml( incense.markdown( message.content.comment ) );
 
 				var totalCommentCount = $detailBodyTimeline.find('>div').size();
 				$widgetBody.find('.issuetree__comment-count').text( (totalCommentCount+1) + '件のコメント' );
@@ -604,8 +604,8 @@ module.exports = function( incense, $widget ){
 			case 'update_issue':
 				// 問の更新
 				_this.issue = message.content.val;
-				$detailBodyIssue.html( incense.markdown(_this.issue) || 'no-set' );
-				$widget.find('.issuetree__issue').html( incense.markdown(_this.issue) || 'no-set' );
+				$detailBodyIssue.html( incense.detoxHtml( incense.markdown(_this.issue) ) || 'no-set' );
+				$widget.find('.issuetree__issue').html( incense.detoxHtml( incense.markdown(_this.issue) ) || 'no-set' );
 
 				// 詳細画面のディスカッションに追加
 				$detailBodyTimeline.append( $('<div>')
