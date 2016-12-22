@@ -447,6 +447,25 @@ window.Incense = function(){
 		var $div = $('<div>').html(html);
 		$div.find('script').remove();
 		$div.find('style').remove();
+		$div.find('form').remove();
+		$div.find('link').remove();
+		$div.find('meta').remove();
+		$div.find('title').remove();
+		$div.find('[href]')
+			.each(function(){
+				var $this = $(this);
+				var href = $this.attr('href');
+				if( href.match(/^javascript\:/) ){
+					$this.attr({
+						'href': 'javascript:alert(\'Invalidated.\');'
+					}).removeAttr('target');
+				}else{
+					$this.attr({
+						'target': '_blank'
+					});
+				}
+			})
+		;
 		$div.find('*')
 			.removeAttr('style')
 			.removeAttr('class')
