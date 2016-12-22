@@ -9837,7 +9837,7 @@ module.exports = function( incense, $widget ){
 	_this.mode = null;
 
 	$widget.append( $stickies
-		.html( incense.markdown( _this.value ) )
+		.html( incense.detoxHtml( incense.markdown( _this.value ) ) )
 	);
 
 	$widget
@@ -9866,7 +9866,7 @@ module.exports = function( incense, $widget ){
 		if( _this.value == $textarea.val() ){
 			// 変更なし
 			$textarea.val('').remove();
-			$stickies.html( incense.markdown(_this.value) );
+			$stickies.html( incense.detoxHtml( incense.markdown(_this.value) ) );
 			incense.locker.unlock();
 			return;
 		}
@@ -9882,7 +9882,7 @@ module.exports = function( incense, $widget ){
 			function(){
 				console.log('stickies change submited.');
 				$textarea.val('').remove();
-				$stickies.html( incense.markdown(_this.value) );
+				$stickies.html( incense.detoxHtml( incense.markdown(_this.value) ) );
 				incense.locker.unlock();
 				return;
 			}
@@ -9918,7 +9918,7 @@ module.exports = function( incense, $widget ){
 		var before = this.value;
 		var user = incense.userMgr.get(message.owner);
 		this.value = message.content.val;
-		$stickies.html( incense.markdown( _this.value ) );
+		$stickies.html( incense.detoxHtml( incense.markdown( _this.value ) ) );
 
 		var $messageUnit = $('<div>');
 

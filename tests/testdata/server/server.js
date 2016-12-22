@@ -22,6 +22,7 @@ biflora.setupWebSocket(
 );
 
 // middleware - frontend documents
+app.use( '/common/dist', express.static( path.resolve(__dirname, '../../../dist/') ) );
 app.use( express.static( path.resolve(__dirname, '../htdocs/') ) );
 
 // {$_port}番ポートでLISTEN状態にする

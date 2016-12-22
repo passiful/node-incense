@@ -26,11 +26,9 @@ var _tasks = [
 gulp.task("replace-package-dist", function() {
 	gulp.src(["node_modules/bootstrap/dist/fonts/**/*"])
 		.pipe(gulp.dest( './dist/libs/bootstrap/dist/fonts/' ))
-		.pipe(gulp.dest( './tests/testdata/htdocs/common/dist/libs/bootstrap/dist/fonts/' ))
 	;
 	gulp.src(["node_modules/bootstrap/dist/js/**/*"])
 		.pipe(gulp.dest( './dist/libs/bootstrap/dist/js/' ))
-		.pipe(gulp.dest( './tests/testdata/htdocs/common/dist/libs/bootstrap/dist/js/' ))
 	;
 });
 
@@ -42,7 +40,6 @@ gulp.task('.css.scss', function(){
 		.pipe(autoprefixer())
 		.pipe(rename({extname: ''}))
 		.pipe(gulp.dest( './dist/' ))
-		.pipe(gulp.dest( './tests/testdata/htdocs/common/dist/' ))
 	;
 });
 
@@ -51,7 +48,6 @@ gulp.task('.css', function(){
 	gulp.src(["src/**/*.css","!src/**/_*.css"])
 		.pipe(plumber())
 		.pipe(gulp.dest( './dist/' ))
-		.pipe(gulp.dest( './tests/testdata/htdocs/common/dist/' ))
 	;
 });
 
@@ -63,7 +59,6 @@ gulp.task(".js", function() {
 		}))
 		// .pipe(uglify())
 		.pipe(gulp.dest( './dist/' ))
-		.pipe(gulp.dest( './tests/testdata/htdocs/common/dist/' ))
 	;
 });
 
@@ -72,7 +67,6 @@ gulp.task(".html", function() {
 	gulp.src(["src/**/*.html", "src/**/*.htm"])
 		.pipe(plumber())
 		.pipe(gulp.dest( './dist/' ))
-		.pipe(gulp.dest( './tests/testdata/htdocs/common/dist/' ))
 	;
 });
 
@@ -88,7 +82,6 @@ gulp.task(".html.twig", function() {
 		}))
 		.pipe(rename({extname: ''}))
 		.pipe(gulp.dest( './dist/' ))
-		.pipe(gulp.dest( './tests/testdata/htdocs/common/dist/' ))
 	;
 });
 
