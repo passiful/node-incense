@@ -594,6 +594,7 @@ module.exports = function( incense, $widget ){
 
 				// 詳細画面のディスカッションに追加
 				$detailBodyTimeline.append( $('<div>')
+					.addClass( user.id == incense.getUserInfo().id ? 'issuetree--myitem' : '' )
 					.append( $('<div class="issuetree__owner">')
 						.append( $('<span class="issuetree__owner-name">').text(user.name) )
 						.append( $('<span class="issuetree__owner-id">').text(user.id) )
@@ -621,7 +622,7 @@ module.exports = function( incense, $widget ){
 
 				// 詳細画面のディスカッションに追加
 				$detailBodyTimeline.append( $('<div>')
-					.append( $('<div class="issuetree__content">').html(message.owner + ' が、問を "' + _this.issue + '" に変更しました。') )
+					.append( $('<div class="">').html(message.owner + ' が、問を "' + _this.issue + '" に変更しました。') )
 				);
 				incense.adjustTimelineScrolling( $detailBodyTimeline );
 
@@ -631,7 +632,7 @@ module.exports = function( incense, $widget ){
 						.append( $('<span class="incense__message-unit__owner-name">').text(user.name) )
 						.append( $('<span class="incense__message-unit__owner-id">').text(user.id) )
 					)
-					.append( $('<div class="incense__message-unit__content">').html('問を "' + _this.issue + '" に変更しました。') )
+					.append( $('<div class="">').html('問を "' + _this.issue + '" に変更しました。') )
 					.append( $('<div class="incense__message-unit__targetWidget">').append( incense.widgetMgr.mkLinkToWidget( message.targetWidget ) ) )
 				);
 				break;
@@ -643,7 +644,7 @@ module.exports = function( incense, $widget ){
 
 				// 詳細画面のディスカッションに追加
 				$detailBodyTimeline.append( $('<div>')
-					.append( $('<div class="issuetree__content">').html(message.owner + ' が、答を "' + _this.answer + '" に変更しました。') )
+					.append( $('<div class="">').html(message.owner + ' が、答を "' + _this.answer + '" に変更しました。') )
 				);
 				incense.adjustTimelineScrolling( $detailBodyTimeline );
 
@@ -653,7 +654,7 @@ module.exports = function( incense, $widget ){
 						.append( $('<span class="incense__message-unit__owner-name">').text(user.name) )
 						.append( $('<span class="incense__message-unit__owner-id">').text(user.id) )
 					)
-					.append( $('<div class="incense__message-unit__content">').html('答を "' + _this.answer + '" に変更しました。') )
+					.append( $('<div class="">').html('答を "' + _this.answer + '" に変更しました。') )
 					.append( $('<div class="incense__message-unit__targetWidget">').append( incense.widgetMgr.mkLinkToWidget( message.targetWidget ) ) )
 				);
 				break;
@@ -668,7 +669,7 @@ module.exports = function( incense, $widget ){
 
 				// 詳細画面のディスカッションに追加
 				$detailBodyTimeline.append( $('<div>')
-					.append( $('<div class="issuetree__content">').text( timelineMessage ) )
+					.append( $('<div class="">').text( timelineMessage ) )
 				);
 				incense.adjustTimelineScrolling( $detailBodyTimeline );
 
@@ -690,7 +691,7 @@ module.exports = function( incense, $widget ){
 
 				// 詳細画面のディスカッションに追加
 				$detailBodyTimeline.append( $('<div>')
-					.append( $('<div class="issuetree__content">').text(user.name + ' が、 "' + message.content.option + '" に投票しました。') )
+					.append( $('<div class="">').text(user.name + ' が、 "' + message.content.option + '" に投票しました。') )
 				);
 				incense.adjustTimelineScrolling( $detailBodyTimeline );
 

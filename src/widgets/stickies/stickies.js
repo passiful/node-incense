@@ -14,7 +14,9 @@ module.exports = function( incense, $widget ){
 			'top': 0,
 			'left': 0,
 			'width': '100%',
-			'height': '100%'
+			'height': '100%',
+			'font-size': '11px',
+			'padding': '0.5em'
 		})
 	;
 	_this.mode = null;
