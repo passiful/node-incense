@@ -9829,8 +9829,20 @@ module.exports = function( incense, $widget ){
 	this.status = 'open';
 
 	var $widgetBody = $('<div class="issuetree issuetree--widget issuetree--status-no-active">')
-		.append( $('<div class="issuetree__issue incense-markdown">').html( incense.detoxHtml( incense.markdown(this.issue) ) || 'no-set' ) )
-		.append( $('<div class="issuetree__answer">').text('投票なし') )
+		.append( $('<div class="row">')
+			.append( $('<div class="col-sm-6">')
+				.append( $('<div class="issuetree__block">')
+					.append( $('<div class="issuetree__heading">').text( '問' ) )
+					.append( $('<div class="issuetree__issue incense-markdown">').html( incense.detoxHtml( incense.markdown(this.issue) ) || 'no-set' ) )
+				)
+			)
+			.append( $('<div class="col-sm-6">')
+				.append( $('<div class="issuetree__block">')
+					.append( $('<div class="issuetree__heading">').text( '答' ) )
+					.append( $('<div class="issuetree__answer">').html( incense.detoxHtml( incense.markdown(_this.answer) ) || 'no-answer' ) )
+				)
+			)
+		)
 		.append( $('<div class="issuetree__comment-count">') )
 	;
 	var $detailBody = $('<div class="issuetree">')
@@ -10223,7 +10235,7 @@ module.exports = function( incense, $widget ){
 				.append( $answerList )
 			;
 		}else{
-			$widgetAnser.html('投票なし');
+			$widgetAnser.html( incense.detoxHtml( incense.markdown(_this.answer) ) || 'no-answer' );
 		}
 
 		$widgetBody
@@ -10399,6 +10411,7 @@ module.exports = function( incense, $widget ){
 
 				// 詳細画面のディスカッションに追加
 				$detailBodyTimeline.append( $('<div>')
+					.addClass( user.id == incense.getUserInfo().id ? 'issuetree--myitem' : '' )
 					.append( $('<div class="issuetree__owner">')
 						.append( $('<span class="issuetree__owner-name">').text(user.name) )
 						.append( $('<span class="issuetree__owner-id">').text(user.id) )
@@ -10426,7 +10439,7 @@ module.exports = function( incense, $widget ){
 
 				// 詳細画面のディスカッションに追加
 				$detailBodyTimeline.append( $('<div>')
-					.append( $('<div class="issuetree__content">').html(message.owner + ' が、問を "' + _this.issue + '" に変更しました。') )
+					.append( $('<div class="">').html(message.owner + ' が、問を "' + _this.issue + '" に変更しました。') )
 				);
 				incense.adjustTimelineScrolling( $detailBodyTimeline );
 
@@ -10436,7 +10449,7 @@ module.exports = function( incense, $widget ){
 						.append( $('<span class="incense__message-unit__owner-name">').text(user.name) )
 						.append( $('<span class="incense__message-unit__owner-id">').text(user.id) )
 					)
-					.append( $('<div class="incense__message-unit__content">').html('問を "' + _this.issue + '" に変更しました。') )
+					.append( $('<div class="">').html('問を "' + _this.issue + '" に変更しました。') )
 					.append( $('<div class="incense__message-unit__targetWidget">').append( incense.widgetMgr.mkLinkToWidget( message.targetWidget ) ) )
 				);
 				break;
@@ -10448,7 +10461,7 @@ module.exports = function( incense, $widget ){
 
 				// 詳細画面のディスカッションに追加
 				$detailBodyTimeline.append( $('<div>')
-					.append( $('<div class="issuetree__content">').html(message.owner + ' が、答を "' + _this.answer + '" に変更しました。') )
+					.append( $('<div class="">').html(message.owner + ' が、答を "' + _this.answer + '" に変更しました。') )
 				);
 				incense.adjustTimelineScrolling( $detailBodyTimeline );
 
@@ -10458,7 +10471,7 @@ module.exports = function( incense, $widget ){
 						.append( $('<span class="incense__message-unit__owner-name">').text(user.name) )
 						.append( $('<span class="incense__message-unit__owner-id">').text(user.id) )
 					)
-					.append( $('<div class="incense__message-unit__content">').html('答を "' + _this.answer + '" に変更しました。') )
+					.append( $('<div class="">').html('答を "' + _this.answer + '" に変更しました。') )
 					.append( $('<div class="incense__message-unit__targetWidget">').append( incense.widgetMgr.mkLinkToWidget( message.targetWidget ) ) )
 				);
 				break;
@@ -10473,7 +10486,7 @@ module.exports = function( incense, $widget ){
 
 				// 詳細画面のディスカッションに追加
 				$detailBodyTimeline.append( $('<div>')
-					.append( $('<div class="issuetree__content">').text( timelineMessage ) )
+					.append( $('<div class="">').text( timelineMessage ) )
 				);
 				incense.adjustTimelineScrolling( $detailBodyTimeline );
 
@@ -10495,7 +10508,7 @@ module.exports = function( incense, $widget ){
 
 				// 詳細画面のディスカッションに追加
 				$detailBodyTimeline.append( $('<div>')
-					.append( $('<div class="issuetree__content">').text(user.name + ' が、 "' + message.content.option + '" に投票しました。') )
+					.append( $('<div class="">').text(user.name + ' が、 "' + message.content.option + '" に投票しました。') )
 				);
 				incense.adjustTimelineScrolling( $detailBodyTimeline );
 
