@@ -79,10 +79,12 @@ module.exports = function($field){
 		if($dialog){
 			$dialog.hide();
 			setTimeout(function(){
+				incense.widgetMgr.updateSelection();
 				callback();
 			}, 110);
 			return $dialog;
 		}
+		incense.widgetMgr.updateSelection();
 		callback();
 		return $dialog;
 	}//close()
