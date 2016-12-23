@@ -12,8 +12,20 @@ module.exports = function( incense, $widget ){
 	this.status = 'open';
 
 	var $widgetBody = $('<div class="issuetree issuetree--widget issuetree--status-no-active">')
-		.append( $('<div class="issuetree__issue incense-markdown">').html( incense.detoxHtml( incense.markdown(this.issue) ) || 'no-set' ) )
-		.append( $('<div class="issuetree__answer">').text('投票なし') )
+		.append( $('<div class="row">')
+			.append( $('<div class="col-sm-6">')
+				.append( $('<div class="issuetree__block">')
+					.append( $('<div class="issuetree__heading">').text( '問' ) )
+					.append( $('<div class="issuetree__issue incense-markdown">').html( incense.detoxHtml( incense.markdown(this.issue) ) || 'no-set' ) )
+				)
+			)
+			.append( $('<div class="col-sm-6">')
+				.append( $('<div class="issuetree__block">')
+					.append( $('<div class="issuetree__heading">').text( '答' ) )
+					.append( $('<div class="issuetree__answer">').html( incense.detoxHtml( incense.markdown(_this.answer) ) || 'no-answer' ) )
+				)
+			)
+		)
 		.append( $('<div class="issuetree__comment-count">') )
 	;
 	var $detailBody = $('<div class="issuetree">')
@@ -406,7 +418,7 @@ module.exports = function( incense, $widget ){
 				.append( $answerList )
 			;
 		}else{
-			$widgetAnser.html('投票なし');
+			$widgetAnser.html( incense.detoxHtml( incense.markdown(_this.answer) ) || 'no-answer' );
 		}
 
 		$widgetBody
