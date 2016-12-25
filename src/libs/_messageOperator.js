@@ -44,6 +44,20 @@ module.exports = function( app, $timelineList, $fieldInner ){
 					case 'moveWidget':
 						app.widgetMgr.move( message.id, message.content );
 						break;
+					case 'setParentWidget':
+						app.widgetMgr.setParentWidget( message.id, message.content );
+						var str = '';
+						str += message.owner;
+						str += ' が ';
+						str += '#widget.'+message.content.targetWidgetId;
+						str += ' の親ウィジェットを ';
+						str += '#widget.'+message.content.newParentWidgetId;
+						str += ' に変更しました。';
+						app.insertTimeline( message, $messageUnit
+							.addClass('incense__message-unit--operation')
+							.append( $('<div class="incense__message-unit__operation-message">').text(str) )
+						);
+						break;
 					case 'deleteWidget':
 						app.widgetMgr.delete( message.id, message.content.targetWidgetId );
 						var str = '';

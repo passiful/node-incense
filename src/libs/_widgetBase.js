@@ -18,5 +18,12 @@ module.exports = function( incense, $widget ){
 	this.focus = function(){
 	}
 
+	/**
+	 * widget の内容を端的に説明するテキストを取得する
+	 */
+	this.getSummary = function(){
+		return '--- summary ---';
+	}
+
 	return;
 }

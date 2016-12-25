@@ -55,7 +55,66 @@ module.exports = function( incense, $timelineList, $field, $fieldOuter, $fieldIn
 									'widget-id': widgetId
 								},
 								"action": function(data){
-									alert('開発中');
+									var widget = _this.get(data['widget-id']);
+									var $select = $('<select class="form-control">');
+									$select.append( '<option value="">なし</option>' );
+									var allWidgets = _this.getAll();
+									for( var idx in allWidgets ){
+										$select.append( $('<option>')
+											.attr({
+												'value': allWidgets[idx].id
+											})
+											.text( '#widget.' + allWidgets[idx].id + ' - ' + allWidgets[idx].widgetType + ' - ' + allWidgets[idx].getSummary() )
+										);
+									}
+									$select.val(widget.parent);
+									var $body = $('<div>');
+									$body.append( $('<h2>').text( '変更するウィジェット' ) );
+									$body.append( $('<p>').text( '#widget.'+data['widget-id']+' - '+widget.widgetType+' - '+widget.getSummary() ) );
+									$body.append( $('<h2>').text( '新しい親ウィジェット' ) );
+									$body.append( $('<p>').append( $select ) );
+									incense.modal.dialog({
+										'title': '親を変更する',
+										'body': $body,
+										'buttons': [
+											$('<button>')
+												.text('キャンセル')
+												.addClass('btn')
+												.addClass('btn-default')
+												.click(function(){
+													incense.modal.close();
+												}),
+											$('<button>')
+												.text('OK')
+												.addClass('btn')
+												.addClass('btn-primary')
+												.click(function(){
+													var selectedValue = $select.val();
+													if( selectedValue == widget.id ){
+														$body.find('p.incense__error').remove();
+														$body.append( $('<p class="incense__error">')
+															.text('自分を親にすることはできません。')
+														);
+														return;
+													}
+
+													incense.sendMessage(
+														{
+															'content': JSON.stringify({
+																'operation': 'setParentWidget',
+																'targetWidgetId': data['widget-id'],
+																'newParentWidgetId': selectedValue
+															}),
+															'contentType': 'application/x-passiflora-command'
+														},
+														function(result){
+															console.log(result);
+														}
+													);
+													incense.modal.close();
+												})
+										]
+									});
 								}
 							},
 							{
@@ -64,15 +123,14 @@ module.exports = function( incense, $timelineList, $field, $fieldOuter, $fieldIn
 									'widget-id': widgetId
 								},
 								"action": function(data){
-									var msg = {
-										'content': JSON.stringify({
-											'operation': 'deleteWidget',
-											'targetWidgetId': data['widget-id']
-										}),
-										'contentType': 'application/x-passiflora-command'
-									};
 									incense.sendMessage(
-										msg,
+										{
+											'content': JSON.stringify({
+												'operation': 'deleteWidget',
+												'targetWidgetId': data['widget-id']
+											}),
+											'contentType': 'application/x-passiflora-command'
+										},
 										function(result){
 											console.log(result);
 										}
@@ -133,6 +191,20 @@ module.exports = function( incense, $timelineList, $field, $fieldOuter, $fieldIn
 		;
 		incense.updateRelations();
 		this.updateSelection();
+		return;
+	}
+
+	/**
+	 * 親ウィジェットIDを変更する
+	 */
+	this.setParentWidget = function(id, content){
+		try {
+			widgetIndex[content.targetWidgetId].parent = content.newParentWidgetId;
+		} catch (e) {
+		}
+		incense.updateRelations();
+		this.updateSelection();
+		return;
 	}
 
 	/**
