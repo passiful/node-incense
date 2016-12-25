@@ -42,24 +42,41 @@ module.exports = function( incense, $timelineList, $field, $fieldOuter, $fieldIn
 			})
 			.on('contextmenu', function(e){
 				var $this = $(this);
+				var widgetId = $this.attr('data-widget-id');
 				_this.unselect();
-				_this.select( $this.attr('data-widget-id') );
+				_this.select( widgetId );
 				incense.fieldContextMenu.open(
 					{'x':Number($this.attr('data-offset-x')), 'y':Number($this.attr('data-offset-y'))},
 					(function(){
 						var rtn = [
 							{
 								"label": "親を変更",
-								"data": {},
+								"data": {
+									'widget-id': widgetId
+								},
 								"action": function(data){
 									alert('開発中');
 								}
 							},
 							{
 								"label": "削除",
-								"data": {},
+								"data": {
+									'widget-id': widgetId
+								},
 								"action": function(data){
-									alert('開発中');
+									var msg = {
+										'content': JSON.stringify({
+											'operation': 'deleteWidget',
+											'targetWidgetId': data['widget-id']
+										}),
+										'contentType': 'application/x-passiflora-command'
+									};
+									incense.sendMessage(
+										msg,
+										function(result){
+											console.log(result);
+										}
+									);
 								}
 							}
 						];
@@ -204,9 +221,24 @@ module.exports = function( incense, $timelineList, $field, $fieldOuter, $fieldIn
 	}
 
 	/**
+	 * ウィジェットを削除する
+	 */
+	this.delete = function(id, widgetId){
+		this.unselect();
+		try {
+			widgetIndex[widgetId].$.remove();
+			widgetIndex[widgetId] = undefined;
+			delete(widgetIndex[widgetId]);
+		} catch (e) {
+		}
+		return;
+	}
+
+	/**
 	 * ウィジェットの一覧を取得する
 	 */
 	this.getList = function( callback ){
+		callback = callback || function(){};
 		callback( widgetIndex );
 		return;
 	}
@@ -214,14 +246,16 @@ module.exports = function( incense, $timelineList, $field, $fieldOuter, $fieldIn
 	/**
 	 * ウィジェットの子ウィジェットの一覧を取得する
 	 */
-	this.getChildren = function(parentWidgetId){
+	this.getChildren = function(parentWidgetId, callback){
+		callback = callback || function(){};
 		var rtn = [];
 		for( var idx in widgetIndex ){
 			if( widgetIndex[idx].parent == parentWidgetId ){
 				rtn.push( widgetIndex[idx] );
 			}
 		}
-		return rtn;
+		callback(rtn);
+		return;
 	}
 
 	/**

@@ -44,6 +44,9 @@ module.exports = function( app, $timelineList, $fieldInner ){
 					case 'moveWidget':
 						app.widgetMgr.move( message.id, message.content );
 						break;
+					case 'deleteWidget':
+						app.widgetMgr.delete( message.id, message.content.targetWidgetId );
+						break;
 					case 'userLogin':
 						app.userMgr.login( message.connectionId, message.content.userInfo, function(err, userInfo){
 							// console.log('user "'+userInfo.name+'" Login.');

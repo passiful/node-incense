@@ -553,22 +553,21 @@ module.exports = function( incense, $widget ){
 			);
 		}
 
-		var children =  incense.widgetMgr.getChildren( _this.id );
-		$detailBodySubIssues.html('---');
-		if( children.length ){
-			$detailBodySubIssues.html('');
-			var $ul = $('<ul>');
-			for( var idx in children ){
-				var $li = $('<li>')
-					.append( $('<div>').text(children[idx].issue) )
-					.append( $('<div>').append( incense.widgetMgr.mkLinkToWidget( children[idx].id ) ) )
-				;
-				$ul.append( $li );
+		incense.widgetMgr.getChildren( _this.id, function(children){
+			$detailBodySubIssues.html('---');
+			if( children.length ){
+				$detailBodySubIssues.html('');
+				var $ul = $('<ul>');
+				for( var idx in children ){
+					var $li = $('<li>')
+						.append( $('<div>').text(children[idx].issue) )
+						.append( $('<div>').append( incense.widgetMgr.mkLinkToWidget( children[idx].id ) ) )
+					;
+					$ul.append( $li );
+				}
+				$detailBodySubIssues.append( $ul );
 			}
-			$detailBodySubIssues.append( $ul );
-
-		}
-
+		} );
 		return;
 	} // updateRelations()
 
