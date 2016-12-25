@@ -650,9 +650,12 @@ window.Incense = function(){
 		for( var idx in widgets ){
 			if( !widgets[idx].parent ){ continue; }
 			var d = '';
-			var me = getCenterOfGravity(widgets[idx].$);
-			var parent = getCenterOfGravity(_this.widgetMgr.get(widgets[idx].parent).$);
-			$svg.get(0).innerHTML += '<path stroke="#333" stroke-width="3" fill="none" d="M'+me.x+','+me.y+' L'+parent.x+','+parent.y+'" style="opacity: 0.2;" />';
+			var parentWidget = _this.widgetMgr.get(widgets[idx].parent);
+			if(parentWidget){
+				var me = getCenterOfGravity(widgets[idx].$);
+				var parent = getCenterOfGravity(parentWidget.$);
+				$svg.get(0).innerHTML += '<path stroke="#333" stroke-width="3" fill="none" d="M'+me.x+','+me.y+' L'+parent.x+','+parent.y+'" style="opacity: 0.2;" />';
+			}
 		}
 
 		callback();

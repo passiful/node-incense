@@ -546,7 +546,7 @@ module.exports = function( incense, $widget ){
 		// var $detailBodyParentIssue = $detailBody.find('.issuetree__parent-issue');
 		// var $detailBodySubIssues = $detailBody.find('.issuetree__sub-issues');
 		$detailBodyParentIssue.html('---');
-		if( _this.parent ){
+		if( _this.parent && incense.widgetMgr.get(_this.parent) ){
 			$detailBodyParentIssue.html('').append( $('<div>')
 				.append( $('<div>').text(incense.widgetMgr.get(_this.parent).issue) )
 				.append( $('<div>').append( incense.widgetMgr.mkLinkToWidget( _this.parent ) ) )

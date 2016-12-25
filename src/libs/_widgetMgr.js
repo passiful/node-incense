@@ -231,6 +231,8 @@ module.exports = function( incense, $timelineList, $field, $fieldOuter, $fieldIn
 			delete(widgetIndex[widgetId]);
 		} catch (e) {
 		}
+		incense.updateRelations();
+		this.updateSelection();
 		return;
 	}
 

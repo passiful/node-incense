@@ -46,6 +46,15 @@ module.exports = function( app, $timelineList, $fieldInner ){
 						break;
 					case 'deleteWidget':
 						app.widgetMgr.delete( message.id, message.content.targetWidgetId );
+						var str = '';
+						str += message.owner;
+						str += ' が ';
+						str += '#widget.'+message.content.targetWidgetId;
+						str += ' を削除しました。';
+						app.insertTimeline( message, $messageUnit
+							.addClass('incense__message-unit--operation')
+							.append( $('<div class="incense__message-unit__operation-message">').text(str) )
+						);
 						break;
 					case 'userLogin':
 						app.userMgr.login( message.connectionId, message.content.userInfo, function(err, userInfo){

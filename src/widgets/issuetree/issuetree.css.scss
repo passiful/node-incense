@@ -66,6 +66,10 @@
 		text-align: left;
 		padding: 12px;
 		border-radius: 10px;
+		word-wrap: break-word;
+		p{
+			white-space: pre-wrap;
+		}
 		>:first-child{
 			margin-top: 0;
 		}
