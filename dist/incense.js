@@ -18197,6 +18197,7 @@ window.Incense = function(){
 		$timelineList,
 		$timelineForm,
 		$field,
+		$fieldContextMenu,
 		$fieldSelection,
 		$fieldRelations,
 		$fieldOuter,
@@ -18244,6 +18245,7 @@ window.Incense = function(){
 					.addClass('incense__board')
 					.html(
 						'<div class="incense__board-outer">'+
+							'<div class="incense__board-contextmenu"></div>'+
 							'<div class="incense__board-selection"></div>'+
 							'<div class="incense__board-inner"></div>'+
 							'<div class="incense__board-relations"></div>'+
@@ -18253,6 +18255,7 @@ window.Incense = function(){
 						_this.widgetMgr.unselect();
 					})
 				;
+				$fieldContextMenu = $field.find('.incense__board-contextmenu');
 				$fieldSelection = $field.find('.incense__board-selection');
 				$fieldRelations = $field.find('.incense__board-relations');
 				$fieldOuter = $field.find('.incense__board-outer');
@@ -18264,7 +18267,7 @@ window.Incense = function(){
 
 
 				// functions Setup
-				_this.fieldContextMenu = new (require('./libs/_fieldContextMenu.js'))(_this, $fieldInner);
+				_this.fieldContextMenu = new (require('./libs/_fieldContextMenu.js'))(_this, $fieldContextMenu);
 				_this.messageOperator = new (require('./libs/_messageOperator.js'))(_this, $timelineList, $fieldInner);
 				_this.widgetBase = require('./libs/_widgetBase.js');
 				_this.widgetMgr = new (require('./libs/_widgetMgr.js'))(_this, $timelineList, $field, $fieldOuter, $fieldInner, $fieldSelection);
@@ -18426,7 +18429,42 @@ window.Incense = function(){
 				console.log('incense: setting board events...');
 				var mkWidget = function(e){
 					// console.log(e);
-					_this.fieldContextMenu.open(e.offsetX, e.offsetY);
+					_this.fieldContextMenu.open(
+						{'x':e.offsetX, 'y':e.offsetY},
+						(function(){
+							var rtn = [];
+							var widgets = _this.widgetList;
+							for( var widgetName in widgets ){
+								var menu = {};
+								menu.label = widgets[widgetName].name;
+								menu.data = {
+									'widget-name': widgetName,
+									'x': e.offsetX,
+									'y': e.offsetY
+								};
+								menu.action = function(data){
+									// console.log(data);
+									var widgetName = data['widget-name'];
+									incense.sendMessage(
+										{
+											'contentType': 'application/x-passiflora-command',
+											'content': JSON.stringify({
+												'operation':'createWidget',
+												'widgetType': widgetName,
+												'x': data.x,
+												'y': data.y
+											})
+										} ,
+										function(result){
+											console.log(result);
+										}
+									);
+								}
+								rtn.push(menu);
+							}
+							return rtn;
+						})()
+					);
 					e.preventDefault();
 				};
 				$fieldInner
@@ -18792,9 +18830,12 @@ window.Incense = function(){
 		for( var idx in widgets ){
 			if( !widgets[idx].parent ){ continue; }
 			var d = '';
-			var me = getCenterOfGravity(widgets[idx].$);
-			var parent = getCenterOfGravity(_this.widgetMgr.get(widgets[idx].parent).$);
-			$svg.get(0).innerHTML += '<path stroke="#333" stroke-width="3" fill="none" d="M'+me.x+','+me.y+' L'+parent.x+','+parent.y+'" style="opacity: 0.2;" />';
+			var parentWidget = _this.widgetMgr.get(widgets[idx].parent);
+			if(parentWidget){
+				var me = getCenterOfGravity(widgets[idx].$);
+				var parent = getCenterOfGravity(parentWidget.$);
+				$svg.get(0).innerHTML += '<path stroke="#333" stroke-width="3" fill="none" d="M'+me.x+','+me.y+' L'+parent.x+','+parent.y+'" style="opacity: 0.2;" />';
+			}
 		}
 
 		callback();
@@ -18829,7 +18870,7 @@ window.Incense = function(){
 /**
  * _fieldContextMenu.js
  */
-module.exports = function( app, $fieldInner ){
+module.exports = function( app, $fieldContextMenu ){
 	var _this = this;
 	var $ = require('jquery');
 	var $contextmenu = $('<div class="incense-contextmenu">');
@@ -18837,49 +18878,43 @@ module.exports = function( app, $fieldInner ){
 	/**
 	 * コンテキストメニューを開く
 	 */
-	this.open = function(x, y){
+	this.open = function(position, menu){
 		// alert(x, y);
-		var $ul = $('<ul>');
-		var widgets = app.widgetList;
+		menu = menu || [];
 
-		for( var widgetName in widgets ){
-			$ul
-				.append( $('<li>')
-					.append( $('<a>')
-						.text(widgets[widgetName].name)
-						.attr({
-							'href': 'javascript:;',
-							'data-widget-name': widgetName
-						})
-						.click(function(e){
-							var widgetName = $(this).attr('data-widget-name');
-							// console.log(widgets[widgetName].name);
-							e.stopPropagation();
-							_this.close();
-							app.sendMessage(
-								{
-									'contentType': 'application/x-passiflora-command',
-									'content': JSON.stringify({
-										'operation':'createWidget',
-										'widgetType': widgetName,
-										'x': x,
-										'y': y
-									})
-								} ,
-								function(rtn){
-									console.log(rtn);
+		var $ul = $('<ul>');
+		for( var idx in menu ){
+			(function(menu){
+				// console.log(menu);
+				$ul
+					.append( $('<li>')
+						.append( $('<a>')
+							.text(menu.label)
+							.attr({
+								'href': 'javascript:;',
+								'data-widget-data': JSON.stringify(menu.data)
+							})
+							.click(function(e){
+								e.stopPropagation();
+								_this.close();
+								try {
+									var data = JSON.parse($(this).attr('data-widget-data'));
+									menu.action(data);
+								} catch (e) {
+									console.log('ERROR on contextmenu');
 								}
-							);
-						})
+							})
+						)
 					)
-				)
-			;
+				;
+			})(menu[idx]);
 		}
-		$fieldInner.append( $contextmenu
+
+		$fieldContextMenu.append( $contextmenu
 			.css({
 				'position': 'absolute',
-				'top': y-5,
-				'left': x-5,
+				'top': position.y-5,
+				'left': position.x-5,
 				'z-index': app.widgetsMaxZIndex ++
 			})
 			.click(function(e){
@@ -19051,6 +19086,32 @@ module.exports = function( app, $timelineList, $fieldInner ){
 						break;
 					case 'moveWidget':
 						app.widgetMgr.move( message.id, message.content );
+						break;
+					case 'setParentWidget':
+						app.widgetMgr.setParentWidget( message.id, message.content );
+						var str = '';
+						str += message.owner;
+						str += ' が ';
+						str += '#widget.'+message.content.targetWidgetId;
+						str += ' の親ウィジェットを ';
+						str += '#widget.'+message.content.newParentWidgetId;
+						str += ' に変更しました。';
+						app.insertTimeline( message, $messageUnit
+							.addClass('incense__message-unit--operation')
+							.append( $('<div class="incense__message-unit__operation-message">').text(str) )
+						);
+						break;
+					case 'deleteWidget':
+						app.widgetMgr.delete( message.id, message.content.targetWidgetId );
+						var str = '';
+						str += message.owner;
+						str += ' が ';
+						str += '#widget.'+message.content.targetWidgetId;
+						str += ' を削除しました。';
+						app.insertTimeline( message, $messageUnit
+							.addClass('incense__message-unit--operation')
+							.append( $('<div class="incense__message-unit__operation-message">').text(str) )
+						);
 						break;
 					case 'userLogin':
 						app.userMgr.login( message.connectionId, message.content.userInfo, function(err, userInfo){
@@ -19433,6 +19494,13 @@ module.exports = function( incense, $widget ){
 	this.focus = function(){
 	}
 
+	/**
+	 * widget の内容を端的に説明するテキストを取得する
+	 */
+	this.getSummary = function(){
+		return '--- summary ---';
+	}
+
 	return;
 }
 
@@ -19476,12 +19544,121 @@ module.exports = function( incense, $timelineList, $field, $fieldOuter, $fieldIn
 					'z-index': incense.widgetsMaxZIndex ++
 				});
 			})
-			.on('dblclick contextmenu', function(e){
+			.on('dblclick', function(e){
+				e.stopPropagation();
+			})
+			.on('contextmenu', function(e){
+				var $this = $(this);
+				var widgetId = $this.attr('data-widget-id');
+				_this.unselect();
+				_this.select( widgetId );
+				incense.fieldContextMenu.open(
+					{'x':Number($this.attr('data-offset-x')), 'y':Number($this.attr('data-offset-y'))},
+					(function(){
+						var rtn = [
+							{
+								"label": "親を変更",
+								"data": {
+									'widget-id': widgetId
+								},
+								"action": function(data){
+									var widget = _this.get(data['widget-id']);
+									var $select = $('<select class="form-control">');
+									$select.append( '<option value="">なし</option>' );
+									var allWidgets = _this.getAll();
+									for( var idx in allWidgets ){
+										$select.append( $('<option>')
+											.attr({
+												'value': allWidgets[idx].id
+											})
+											.text( '#widget.' + allWidgets[idx].id + ' - ' + allWidgets[idx].widgetType + ' - ' + allWidgets[idx].getSummary() )
+										);
+									}
+									$select.val(widget.parent);
+									var $body = $('<div>');
+									$body.append( $('<h2>').text( '変更するウィジェット' ) );
+									$body.append( $('<p>').text( '#widget.'+data['widget-id']+' - '+widget.widgetType+' - '+widget.getSummary() ) );
+									$body.append( $('<h2>').text( '新しい親ウィジェット' ) );
+									$body.append( $('<p>').append( $select ) );
+									incense.modal.dialog({
+										'title': '親を変更する',
+										'body': $body,
+										'buttons': [
+											$('<button>')
+												.text('キャンセル')
+												.addClass('btn')
+												.addClass('btn-default')
+												.click(function(){
+													incense.modal.close();
+												}),
+											$('<button>')
+												.text('OK')
+												.addClass('btn')
+												.addClass('btn-primary')
+												.click(function(){
+													var selectedValue = $select.val();
+													if( selectedValue == widget.id ){
+														var src = '<div class="alert alert-danger" role="alert">'
+																+ '	<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>'
+																+ '	<span class="sr-only">Error:</span>'
+																+ '	自分を親にすることはできません。'
+																+ '</div>';
+														$body.find('div.alert.alert-danger').remove();
+														$body.append(src);
+														return;
+													}
+
+													incense.sendMessage(
+														{
+															'content': JSON.stringify({
+																'operation': 'setParentWidget',
+																'targetWidgetId': data['widget-id'],
+																'newParentWidgetId': selectedValue
+															}),
+															'contentType': 'application/x-passiflora-command'
+														},
+														function(result){
+															console.log(result);
+														}
+													);
+													incense.modal.close();
+												})
+										]
+									});
+								}
+							},
+							{
+								"label": "削除",
+								"data": {
+									'widget-id': widgetId
+								},
+								"action": function(data){
+									incense.sendMessage(
+										{
+											'content': JSON.stringify({
+												'operation': 'deleteWidget',
+												'targetWidgetId': data['widget-id']
+											}),
+											'contentType': 'application/x-passiflora-command'
+										},
+										function(result){
+											console.log(result);
+										}
+									);
+								}
+							}
+						];
+						return rtn;
+					})()
+				);
+				e.preventDefault();
 				e.stopPropagation();
 			})
 			.on('click', function(e){
+				var $this = $(this);
 				_this.unselect();
-				_this.select( $(this).attr('data-widget-id') );
+				_this.select( $this.attr('data-widget-id') );
+				incense.fieldContextMenu.close();
 				return false;
 			})
 			.bind('dragstart', function(e){
@@ -19524,6 +19701,20 @@ module.exports = function( incense, $timelineList, $field, $fieldOuter, $fieldIn
 		;
 		incense.updateRelations();
 		this.updateSelection();
+		return;
+	}
+
+	/**
+	 * 親ウィジェットIDを変更する
+	 */
+	this.setParentWidget = function(id, content){
+		try {
+			widgetIndex[content.targetWidgetId].parent = content.newParentWidgetId;
+		} catch (e) {
+		}
+		incense.updateRelations();
+		this.updateSelection();
+		return;
 	}
 
 	/**
@@ -19612,9 +19803,26 @@ module.exports = function( incense, $timelineList, $field, $fieldOuter, $fieldIn
 	}
 
 	/**
+	 * ウィジェットを削除する
+	 */
+	this.delete = function(id, widgetId){
+		this.unselect();
+		try {
+			widgetIndex[widgetId].$.remove();
+			widgetIndex[widgetId] = undefined;
+			delete(widgetIndex[widgetId]);
+		} catch (e) {
+		}
+		incense.updateRelations();
+		this.updateSelection();
+		return;
+	}
+
+	/**
 	 * ウィジェットの一覧を取得する
 	 */
 	this.getList = function( callback ){
+		callback = callback || function(){};
 		callback( widgetIndex );
 		return;
 	}
@@ -19622,14 +19830,16 @@ module.exports = function( incense, $timelineList, $field, $fieldOuter, $fieldIn
 	/**
 	 * ウィジェットの子ウィジェットの一覧を取得する
 	 */
-	this.getChildren = function(parentWidgetId){
+	this.getChildren = function(parentWidgetId, callback){
+		callback = callback || function(){};
 		var rtn = [];
 		for( var idx in widgetIndex ){
 			if( widgetIndex[idx].parent == parentWidgetId ){
 				rtn.push( widgetIndex[idx] );
 			}
 		}
-		return rtn;
+		callback(rtn);
+		return;
 	}
 
 	/**
@@ -20227,31 +20437,40 @@ module.exports = function( incense, $widget ){
 		// var $detailBodyParentIssue = $detailBody.find('.issuetree__parent-issue');
 		// var $detailBodySubIssues = $detailBody.find('.issuetree__sub-issues');
 		$detailBodyParentIssue.html('---');
-		if( _this.parent ){
+		if( _this.parent && incense.widgetMgr.get(_this.parent) ){
 			$detailBodyParentIssue.html('').append( $('<div>')
 				.append( $('<div>').text(incense.widgetMgr.get(_this.parent).issue) )
 				.append( $('<div>').append( incense.widgetMgr.mkLinkToWidget( _this.parent ) ) )
 			);
 		}
 
-		var children =  incense.widgetMgr.getChildren( _this.id );
-		$detailBodySubIssues.html('---');
-		if( children.length ){
-			$detailBodySubIssues.html('');
-			var $ul = $('<ul>');
-			for( var idx in children ){
-				var $li = $('<li>')
-					.append( $('<div>').text(children[idx].issue) )
-					.append( $('<div>').append( incense.widgetMgr.mkLinkToWidget( children[idx].id ) ) )
-				;
-				$ul.append( $li );
+		incense.widgetMgr.getChildren( _this.id, function(children){
+			$detailBodySubIssues.html('---');
+			if( children.length ){
+				$detailBodySubIssues.html('');
+				var $ul = $('<ul>');
+				for( var idx in children ){
+					var $li = $('<li>')
+						.append( $('<div>').text(children[idx].issue) )
+						.append( $('<div>').append( incense.widgetMgr.mkLinkToWidget( children[idx].id ) ) )
+					;
+					$ul.append( $li );
+				}
+				$detailBodySubIssues.append( $ul );
 			}
-			$detailBodySubIssues.append( $ul );
-
-		}
-
+		} );
 		return;
 	} // updateRelations()
+
+	/**
+	 * widget の内容を端的に説明するテキストを取得する
+	 */
+	this.getSummary = function(){
+		var issue = incense.detoxHtml( incense.markdown(this.issue) );
+		var answer = incense.detoxHtml( incense.markdown(this.answer) );
+		var rtn = '問: ' + $(issue).text() + ' - 答: ' + $(answer).text();
+		return rtn;
+	}
 
 	/**
 	 * widget への配信メッセージを受信
@@ -20504,6 +20723,13 @@ module.exports = function( incense, $widget ){
 		}
 	);
 
+
+	/**
+	 * widget の内容を端的に説明するテキストを取得する
+	 */
+	this.getSummary = function(){
+		return this.value;
+	}
 
 	/**
 	 * widget への配信メッセージを受信

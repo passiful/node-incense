@@ -10363,31 +10363,40 @@ module.exports = function( incense, $widget ){
 		// var $detailBodyParentIssue = $detailBody.find('.issuetree__parent-issue');
 		// var $detailBodySubIssues = $detailBody.find('.issuetree__sub-issues');
 		$detailBodyParentIssue.html('---');
-		if( _this.parent ){
+		if( _this.parent && incense.widgetMgr.get(_this.parent) ){
 			$detailBodyParentIssue.html('').append( $('<div>')
 				.append( $('<div>').text(incense.widgetMgr.get(_this.parent).issue) )
 				.append( $('<div>').append( incense.widgetMgr.mkLinkToWidget( _this.parent ) ) )
 			);
 		}
 
-		var children =  incense.widgetMgr.getChildren( _this.id );
-		$detailBodySubIssues.html('---');
-		if( children.length ){
-			$detailBodySubIssues.html('');
-			var $ul = $('<ul>');
-			for( var idx in children ){
-				var $li = $('<li>')
-					.append( $('<div>').text(children[idx].issue) )
-					.append( $('<div>').append( incense.widgetMgr.mkLinkToWidget( children[idx].id ) ) )
-				;
-				$ul.append( $li );
+		incense.widgetMgr.getChildren( _this.id, function(children){
+			$detailBodySubIssues.html('---');
+			if( children.length ){
+				$detailBodySubIssues.html('');
+				var $ul = $('<ul>');
+				for( var idx in children ){
+					var $li = $('<li>')
+						.append( $('<div>').text(children[idx].issue) )
+						.append( $('<div>').append( incense.widgetMgr.mkLinkToWidget( children[idx].id ) ) )
+					;
+					$ul.append( $li );
+				}
+				$detailBodySubIssues.append( $ul );
 			}
-			$detailBodySubIssues.append( $ul );
-
-		}
-
+		} );
 		return;
 	} // updateRelations()
+
+	/**
+	 * widget の内容を端的に説明するテキストを取得する
+	 */
+	this.getSummary = function(){
+		var issue = incense.detoxHtml( incense.markdown(this.issue) );
+		var answer = incense.detoxHtml( incense.markdown(this.answer) );
+		var rtn = '問: ' + $(issue).text() + ' - 答: ' + $(answer).text();
+		return rtn;
+	}
 
 	/**
 	 * widget への配信メッセージを受信

@@ -13,6 +13,15 @@
       height: 100%;
       overflow: auto;
       z-index: 2000; }
+      .incense.incense__board .incense__board-outer .incense__board-contextmenu {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 10000px;
+        height: 10000px;
+        overflow: hidden;
+        z-index: 4000;
+        pointer-events: none; }
       .incense.incense__board .incense__board-outer .incense__board-selection {
         position: absolute;
         top: 0;
@@ -59,18 +68,20 @@
     .incense.incense__timeline textarea {
       width: 100%; }
   .incense .incense-contextmenu {
-    background-color: #fff;
-    border: 1px solid #eee; }
+    background-color: rgba(255, 255, 255, 0.95);
+    border: 1px solid #eee;
+    pointer-events: auto; }
     .incense .incense-contextmenu ul {
       margin: 0;
       padding: 0; }
       .incense .incense-contextmenu ul li {
         list-style-type: none;
         margin: 0;
-        padding: 0; }
+        padding: 0;
+        font-size: 13px; }
         .incense .incense-contextmenu ul li a {
           display: block;
-          padding: 1em 2em;
+          padding: 0.5em 2em;
           text-decoration: none; }
           .incense .incense-contextmenu ul li a:hover {
             background-color: #f8f8f8; }
@@ -134,7 +145,10 @@
       background-color: #f9f9f9;
       text-align: left;
       padding: 12px;
-      border-radius: 10px; }
+      border-radius: 10px;
+      word-wrap: break-word; }
+      .incense .incense__message-unit .incense__message-unit__content p {
+        white-space: pre-wrap; }
       .incense .incense__message-unit .incense__message-unit__content > :first-child {
         margin-top: 0; }
       .incense .incense__message-unit .incense__message-unit__content > :last-child {
@@ -207,7 +221,10 @@
       background-color: #f9f9f9;
       text-align: left;
       padding: 12px;
-      border-radius: 10px; }
+      border-radius: 10px;
+      word-wrap: break-word; }
+      .incense .issuetree .issuetree__content p {
+        white-space: pre-wrap; }
       .incense .issuetree .issuetree__content > :first-child {
         margin-top: 0; }
       .incense .issuetree .issuetree__content > :last-child {

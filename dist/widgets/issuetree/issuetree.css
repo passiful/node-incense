@@ -45,7 +45,10 @@
     background-color: #f9f9f9;
     text-align: left;
     padding: 12px;
-    border-radius: 10px; }
+    border-radius: 10px;
+    word-wrap: break-word; }
+    .issuetree .issuetree__content p {
+      white-space: pre-wrap; }
     .issuetree .issuetree__content > :first-child {
       margin-top: 0; }
     .issuetree .issuetree__content > :last-child {
