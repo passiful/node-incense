@@ -1,7 +1,7 @@
 /**
  * _fieldContextMenu.js
  */
-module.exports = function( app, $fieldInner ){
+module.exports = function( app, $fieldContextMenu ){
 	var _this = this;
 	var $ = require('jquery');
 	var $contextmenu = $('<div class="incense-contextmenu">');
@@ -9,49 +9,43 @@ module.exports = function( app, $fieldInner ){
 	/**
 	 * コンテキストメニューを開く
 	 */
-	this.open = function(x, y){
+	this.open = function(position, menu){
 		// alert(x, y);
-		var $ul = $('<ul>');
-		var widgets = app.widgetList;
+		menu = menu || [];
 
-		for( var widgetName in widgets ){
-			$ul
-				.append( $('<li>')
-					.append( $('<a>')
-						.text(widgets[widgetName].name)
-						.attr({
-							'href': 'javascript:;',
-							'data-widget-name': widgetName
-						})
-						.click(function(e){
-							var widgetName = $(this).attr('data-widget-name');
-							// console.log(widgets[widgetName].name);
-							e.stopPropagation();
-							_this.close();
-							app.sendMessage(
-								{
-									'contentType': 'application/x-passiflora-command',
-									'content': JSON.stringify({
-										'operation':'createWidget',
-										'widgetType': widgetName,
-										'x': x,
-										'y': y
-									})
-								} ,
-								function(rtn){
-									console.log(rtn);
+		var $ul = $('<ul>');
+		for( var idx in menu ){
+			(function(menu){
+				// console.log(menu);
+				$ul
+					.append( $('<li>')
+						.append( $('<a>')
+							.text(menu.label)
+							.attr({
+								'href': 'javascript:;',
+								'data-widget-data': JSON.stringify(menu.data)
+							})
+							.click(function(e){
+								e.stopPropagation();
+								_this.close();
+								try {
+									var data = JSON.parse($(this).attr('data-widget-data'));
+									menu.action(data);
+								} catch (e) {
+									console.log('ERROR on contextmenu');
 								}
-							);
-						})
+							})
+						)
 					)
-				)
-			;
+				;
+			})(menu[idx]);
 		}
-		$fieldInner.append( $contextmenu
+
+		$fieldContextMenu.append( $contextmenu
 			.css({
 				'position': 'absolute',
-				'top': y-5,
-				'left': x-5,
+				'top': position.y-5,
+				'left': position.x-5,
 				'z-index': app.widgetsMaxZIndex ++
 			})
 			.click(function(e){

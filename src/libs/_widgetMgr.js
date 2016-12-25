@@ -37,12 +37,43 @@ module.exports = function( incense, $timelineList, $field, $fieldOuter, $fieldIn
 					'z-index': incense.widgetsMaxZIndex ++
 				});
 			})
-			.on('dblclick contextmenu', function(e){
+			.on('dblclick', function(e){
+				e.stopPropagation();
+			})
+			.on('contextmenu', function(e){
+				var $this = $(this);
+				_this.unselect();
+				_this.select( $this.attr('data-widget-id') );
+				incense.fieldContextMenu.open(
+					{'x':Number($this.attr('data-offset-x')), 'y':Number($this.attr('data-offset-y'))},
+					(function(){
+						var rtn = [
+							{
+								"label": "親を変更",
+								"data": {},
+								"action": function(data){
+									alert('開発中');
+								}
+							},
+							{
+								"label": "削除",
+								"data": {},
+								"action": function(data){
+									alert('開発中');
+								}
+							}
+						];
+						return rtn;
+					})()
+				);
+				e.preventDefault();
 				e.stopPropagation();
 			})
 			.on('click', function(e){
+				var $this = $(this);
 				_this.unselect();
-				_this.select( $(this).attr('data-widget-id') );
+				_this.select( $this.attr('data-widget-id') );
+				incense.fieldContextMenu.close();
 				return false;
 			})
 			.bind('dragstart', function(e){

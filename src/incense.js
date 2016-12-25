@@ -17,6 +17,7 @@ window.Incense = function(){
 		$timelineList,
 		$timelineForm,
 		$field,
+		$fieldContextMenu,
 		$fieldSelection,
 		$fieldRelations,
 		$fieldOuter,
@@ -64,6 +65,7 @@ window.Incense = function(){
 					.addClass('incense__board')
 					.html(
 						'<div class="incense__board-outer">'+
+							'<div class="incense__board-contextmenu"></div>'+
 							'<div class="incense__board-selection"></div>'+
 							'<div class="incense__board-inner"></div>'+
 							'<div class="incense__board-relations"></div>'+
@@ -73,6 +75,7 @@ window.Incense = function(){
 						_this.widgetMgr.unselect();
 					})
 				;
+				$fieldContextMenu = $field.find('.incense__board-contextmenu');
 				$fieldSelection = $field.find('.incense__board-selection');
 				$fieldRelations = $field.find('.incense__board-relations');
 				$fieldOuter = $field.find('.incense__board-outer');
@@ -84,7 +87,7 @@ window.Incense = function(){
 
 
 				// functions Setup
-				_this.fieldContextMenu = new (require('./libs/_fieldContextMenu.js'))(_this, $fieldInner);
+				_this.fieldContextMenu = new (require('./libs/_fieldContextMenu.js'))(_this, $fieldContextMenu);
 				_this.messageOperator = new (require('./libs/_messageOperator.js'))(_this, $timelineList, $fieldInner);
 				_this.widgetBase = require('./libs/_widgetBase.js');
 				_this.widgetMgr = new (require('./libs/_widgetMgr.js'))(_this, $timelineList, $field, $fieldOuter, $fieldInner, $fieldSelection);
@@ -246,7 +249,42 @@ window.Incense = function(){
 				console.log('incense: setting board events...');
 				var mkWidget = function(e){
 					// console.log(e);
-					_this.fieldContextMenu.open(e.offsetX, e.offsetY);
+					_this.fieldContextMenu.open(
+						{'x':e.offsetX, 'y':e.offsetY},
+						(function(){
+							var rtn = [];
+							var widgets = _this.widgetList;
+							for( var widgetName in widgets ){
+								var menu = {};
+								menu.label = widgets[widgetName].name;
+								menu.data = {
+									'widget-name': widgetName,
+									'x': e.offsetX,
+									'y': e.offsetY
+								};
+								menu.action = function(data){
+									// console.log(data);
+									var widgetName = data['widget-name'];
+									incense.sendMessage(
+										{
+											'contentType': 'application/x-passiflora-command',
+											'content': JSON.stringify({
+												'operation':'createWidget',
+												'widgetType': widgetName,
+												'x': data.x,
+												'y': data.y
+											})
+										} ,
+										function(result){
+											console.log(result);
+										}
+									);
+								}
+								rtn.push(menu);
+							}
+							return rtn;
+						})()
+					);
 					e.preventDefault();
 				};
 				$fieldInner

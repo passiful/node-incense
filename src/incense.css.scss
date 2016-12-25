@@ -12,6 +12,16 @@
 			height: 100%;
 			overflow: auto;
 			z-index: 2000;
+			.incense__board-contextmenu{
+				position: absolute;
+				top: 0;
+				left: 0;
+				width: 10000px;
+				height: 10000px;
+				overflow: hidden;
+				z-index: 4000;
+				pointer-events: none;
+			}
 			.incense__board-selection{
 				position: absolute;
 				top: 0;
@@ -71,6 +81,7 @@
 	.incense-contextmenu{
 		background-color: #fff;
 		border: 1px solid #eee;
+		pointer-events: auto;
 		ul{
 			margin: 0;
 			padding: 0;
@@ -78,9 +89,10 @@
 				list-style-type: none;
 				margin: 0;
 				padding: 0;
+				font-size: 13px;
 				a{
 					display:block;
-					padding: 1em 2em;
+					padding: 0.5em 2em;
 					text-decoration: none;
 					&:hover{
 						background-color: #f8f8f8;
