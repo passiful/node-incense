@@ -91,10 +91,13 @@ module.exports = function( incense, $timelineList, $field, $fieldOuter, $fieldIn
 												.click(function(){
 													var selectedValue = $select.val();
 													if( selectedValue == widget.id ){
-														$body.find('p.incense__error').remove();
-														$body.append( $('<p class="incense__error">')
-															.text('自分を親にすることはできません。')
-														);
+														var src = '<div class="alert alert-danger" role="alert">'
+																+ '	<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>'
+																+ '	<span class="sr-only">Error:</span>'
+																+ '	自分を親にすることはできません。'
+																+ '</div>';
+														$body.find('div.alert.alert-danger').remove();
+														$body.append(src);
 														return;
 													}
 

@@ -572,6 +572,16 @@ module.exports = function( incense, $widget ){
 	} // updateRelations()
 
 	/**
+	 * widget の内容を端的に説明するテキストを取得する
+	 */
+	this.getSummary = function(){
+		var issue = incense.detoxHtml( incense.markdown(this.issue) );
+		var answer = incense.detoxHtml( incense.markdown(this.answer) );
+		var rtn = '問: ' + $(issue).text() + ' - 答: ' + $(answer).text();
+		return rtn;
+	}
+
+	/**
 	 * widget への配信メッセージを受信
 	 */
 	this.onMessage = function(message){

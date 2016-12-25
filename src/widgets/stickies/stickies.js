@@ -96,6 +96,13 @@ module.exports = function( incense, $widget ){
 
 
 	/**
+	 * widget の内容を端的に説明するテキストを取得する
+	 */
+	this.getSummary = function(){
+		return this.value;
+	}
+
+	/**
 	 * widget への配信メッセージを受信
 	 */
 	this.onMessage = function(message){
