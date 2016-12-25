@@ -100,6 +100,13 @@ server.listen( 3000, function(){
 - incense.sendMessage( msg, callback ) : メッセージを送信する
 
 
+## 更新履歴 - Change log
+
+### incense@0.0.1 (2016-12-26)
+
+- initial release.
+
+
 ## ライセンス - License
 
 Copyright (c)2016 Tomoya Koyanagi, and Passiful Project<br />
