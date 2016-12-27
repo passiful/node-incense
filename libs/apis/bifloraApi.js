@@ -3,6 +3,7 @@
  */
 module.exports = (function(){
 	// delete(require.cache[require('path').resolve(__filename)]);
+	var it79 = require('iterate79');
 
 	return new (function(){
 		var connectionList = {};
@@ -40,63 +41,84 @@ module.exports = (function(){
 		 * クライアントからのメッセージを受け付ける
 		 */
 		this.message = function( data, callback, main, biflora ){
-			data.microtime = Date.now();
 
-			if(typeof(data.content)===typeof('') && data.contentType == 'text/markdown'){
-				var marked = require('marked');
-				marked.setOptions({
-					renderer: new marked.Renderer(),
-					gfm: true,
-					tables: true,
-					breaks: false,
-					pedantic: false,
-					sanitize: false,
-					smartLists: true,
-					smartypants: false
-				});
-				data.content = marked(data.content);
-				data.contentType = 'text/html';
-			}
+			it79.fnc(
+				{},
+				[
+					function(it1, arg){
+						data.microtime = Date.now();
 
-
-			data.connectionId = biflora.socket.id;
-			// console.log(data);
-
-			if( data.contentType == 'application/x-passiflora-command' ){
-				var tmpContent = JSON.parse(data.content);
-				if( tmpContent.operation == 'userLogin' ){
-					if(!logoutTimer[data.boardId]){
-						logoutTimer[data.boardId] = {};
-					}
-					if( logoutTimer[data.boardId][tmpContent.userInfo.id] ){
-						setUserLoginData(data, tmpContent.userInfo);
-						callback(true);
-						return;
-					}
-
-					for( var idx in connectionList ){
-						if( userList[data.boardId][tmpContent.userInfo.id] ){
-							// 既にログイン済みのため、ログイン処理を行わない
-							console.log( tmpContent.userInfo.id + ' は、既にログインしています。' );
-							callback(true);
-							return;
+						if(typeof(data.content)===typeof('') && data.contentType == 'text/markdown'){
+							var marked = require('marked');
+							marked.setOptions({
+								renderer: new marked.Renderer(),
+								gfm: true,
+								tables: true,
+								breaks: false,
+								pedantic: false,
+								sanitize: false,
+								smartLists: true,
+								smartypants: false
+							});
+							data.content = marked(data.content);
+							data.contentType = 'text/html';
 						}
+
+
+						data.connectionId = biflora.socket.id;
+						// console.log(data);
+						it1.next(arg);
+					},
+					function(it1, arg){
+
+						if( data.contentType == 'application/x-passiflora-command' ){
+							var tmpContent = JSON.parse(data.content);
+							if( tmpContent.operation == 'userLogin' ){
+								// ユーザーがログインを試みた場合
+								if( typeof(logoutTimer[data.boardId]) != typeof({}) ){
+									logoutTimer[data.boardId] = {}; // initialize
+								}
+								if( logoutTimer[data.boardId][tmpContent.userInfo.id] ){
+									setUserLoginData(data, tmpContent.userInfo);
+									callback(true);
+									return;
+								}
+
+								for( var idx in connectionList ){
+									if( userList[data.boardId][tmpContent.userInfo.id] ){
+										// 既にログイン済みのため、ログイン処理を行わない
+										console.log( tmpContent.userInfo.id + ' は、既にログインしています。' );
+										callback(true);
+										return;
+									}
+								}
+								setUserLoginData(data, tmpContent.userInfo);
+								it1.next(arg);
+								return;
+							}
+						}
+
+						it1.next(arg);
+					},
+					function(it1, arg){
+
+						main.dbh.insertMessage(data.boardId, data, function(result){
+							data.id = result.dataValues.id;
+
+							biflora.send('receiveBroadcast', data, function(){
+								console.log('send message');
+							});
+							biflora.sendToRoom('receiveBroadcast', data, data.boardId, function(){
+								console.log('send message to room');
+							});
+							it1.next(arg);
+						});
+					},
+					function(it1, arg){
+						callback(true);
 					}
-					setUserLoginData(data, tmpContent.userInfo);
-				}
-			}
-
-			main.dbh.insertMessage(data.boardId, data, function(result){
-				data.id = result.dataValues.id;
-
-				biflora.send('receiveBroadcast', data, function(){
-					console.log('send message');
-				});
-				biflora.sendToRoom('receiveBroadcast', data, data.boardId, function(){
-					console.log('send message to room');
-				});
-				callback(true);
-			});
+				]
+			);
 			return;
 		}
 
@@ -160,8 +182,8 @@ module.exports = (function(){
 			// console.log(data);
 
 			// タイムアウトをクリア
-			if( !logoutTimer[data.boardId] ){
-				logoutTimer[data.boardId] = {};
+			if( typeof(logoutTimer[data.boardId]) != typeof({}) ){
+				logoutTimer[data.boardId] = {}; // initialize
 			}
 			clearTimeout(logoutTimer[data.boardId][userInfo.id]);
 			logoutTimer[data.boardId][userInfo.id] = (function(data){
