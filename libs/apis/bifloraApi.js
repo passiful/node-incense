@@ -42,7 +42,7 @@ module.exports = (function(){
 		 */
 		this.getMySelf = function( data, callback, main, biflora ){
 			try {
-				main.getUserInfo( biflora.socket, data.userInfo, function(userInfo){
+				main.getUserInfo( biflora.socket, data, function(userInfo){
 					callback(userInfo);
 					return;
 				} );
