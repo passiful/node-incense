@@ -38,6 +38,22 @@ module.exports = (function(){
 		}
 
 		/**
+		 * ログインユーザー自身の情報を取得する
+		 */
+		this.getMySelf = function( data, callback, main, biflora ){
+			try {
+				main.getUserInfo( biflora.socket, data.userInfo, function(userInfo){
+					callback(userInfo);
+					return;
+				} );
+			} catch (e) {
+				// error.
+				callback(false);
+			}
+			return;
+		}
+
+		/**
 		 * クライアントからのメッセージを受け付ける
 		 */
 		this.message = function( data, callback, main, biflora ){
@@ -75,30 +91,42 @@ module.exports = (function(){
 							var tmpContent = JSON.parse(data.content);
 							if( tmpContent.operation == 'userLogin' ){
 								// ユーザーがログインを試みた場合
-								if( typeof(logoutTimer[data.boardId]) != typeof({}) ){
-									logoutTimer[data.boardId] = {}; // initialize
-								}
-								if( logoutTimer[data.boardId][tmpContent.userInfo.id] ){
-									setUserLoginData(data, tmpContent.userInfo);
-									callback(true);
-									return;
-								}
-
-								for( var idx in connectionList ){
-									if( userList[data.boardId][tmpContent.userInfo.id] ){
-										// 既にログイン済みのため、ログイン処理を行わない
-										console.log( tmpContent.userInfo.id + ' は、既にログインしています。' );
+								main.getUserInfo( biflora.socket, tmpContent.userInfo, function(userInfo){
+									if( typeof(logoutTimer[data.boardId]) != typeof({}) ){
+										logoutTimer[data.boardId] = {}; // initialize
+									}
+									if( logoutTimer[data.boardId][tmpContent.userInfo.id] ){
+										setUserLoginData(data, tmpContent.userInfo);
 										callback(true);
 										return;
 									}
-								}
-								setUserLoginData(data, tmpContent.userInfo);
-								it1.next(arg);
+
+									for( var idx in connectionList ){
+										if( userList[data.boardId][tmpContent.userInfo.id] ){
+											// 既にログイン済みのため、ログイン処理を行わない
+											console.log( tmpContent.userInfo.id + ' は、既にログインしています。' );
+											callback(true);
+											return;
+										}
+									}
+									setUserLoginData(data, tmpContent.userInfo);
+									it1.next(arg);
+									return;
+								} );
 								return;
 							}
 						}
 
 						it1.next(arg);
+					},
+					function(it1, arg){
+
+						main.getUserInfo( biflora.socket, {"id":data.owner}, function(userInfo){
+							if(userInfo.id){
+								data.owner = userInfo.id;
+							}
+							it1.next(arg);
+						} );
 					},
 					function(it1, arg){
 

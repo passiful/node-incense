@@ -18338,6 +18338,23 @@ window.Incense = function(){
 			}); })
 			.then(function(){ return new Promise(function(rlv, rjt){
 				// boardId のこれまでのメッセージを取得する
+				console.log('incense: getting myself');
+				biflora.send(
+					'getMySelf',
+					JSON.stringify(userInfo),
+					function(_userInfo){
+						// console.log(_userInfo);
+						if( !_userInfo ){
+							console.error('ERROR: failed to getting login userinfo:', _userInfo);
+						}
+						userInfo = _userInfo;
+						rlv();
+						return;
+					}
+				);
+			}); })
+			.then(function(){ return new Promise(function(rlv, rjt){
+				// boardId のこれまでのメッセージを取得する
 				console.log('incense: getting messages: '+boardId);
 				biflora.send(
 					'getMessageList',

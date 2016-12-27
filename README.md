@@ -29,7 +29,13 @@ biflora.setupWebSocket(
 	server,
 	require('incense').getBifloraApi() ,
 	require('incense').getBifloraMain({
-		'dataDir': '/path/to/datadir/' // <- data directory (Read/Write permission required)
+		'dataDir': '/path/to/datadir/', // <- data directory (Read/Write permission required)
+		'getUserInfo': function( socket, clientDefaultUserInfo, callback ){
+			// provide user info.
+			// eg: {'id': 'user_id', 'name': 'User Name'}
+			callback(clientDefaultUserInfo);
+			return;
+		}
 	})
 );
 
@@ -104,7 +110,7 @@ server.listen( 3000, function(){
 
 ### incense@0.0.2 (2017-??-??)
 
-- ????????????????????
+- サーバーサイドに `getUserInfo()` オプション追加
 
 ### incense@0.0.1 (2016-12-26)
 
