@@ -35,7 +35,7 @@
     "validator": "^5.1.0"
   },
   "devDependencies": {
-    "biflora": "^0.1.0",
+    "biflora": "^0.2.0",
     "body-parser": "^1.15.0",
     "bootstrap": "^3.3.6",
     "config": "^1.19.0",

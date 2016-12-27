@@ -28,12 +28,18 @@ module.exports = (function(){
 		}
 
 
+		/**
+		 * 疎通確認
+		 */
 		this.ping = function( data, callback, main, biflora ){
 			callback('ping OK.');
 			return;
 		}
+
+		/**
+		 * クライアントからのメッセージを受け付ける
+		 */
 		this.message = function( data, callback, main, biflora ){
-			// クライアントからのメッセージを受け付ける
 			data.microtime = Date.now();
 
 			if(typeof(data.content)===typeof('') && data.contentType == 'text/markdown'){
@@ -53,7 +59,7 @@ module.exports = (function(){
 			}
 
 
-			data.connectionId = biflora.socket.bifloraUserInfo.connectionId;
+			data.connectionId = biflora.socket.id;
 			// console.log(data);
 
 			if( data.contentType == 'application/x-passiflora-command' ){
@@ -93,12 +99,20 @@ module.exports = (function(){
 			});
 			return;
 		}
+
+		/**
+		 * DBからメッセージの一覧を取得する
+		 */
 		this.getMessageList = function( data, callback, main, biflora ){
 			main.dbh.getMessageList(data.boardId, {}, function(result){
 				callback(result);
 			});
 			return;
 		}
+
+		/**
+		 * UIを排他ロックしたメッセージを配信する
+		 */
 		this.locker = function( data, callback, main, biflora ){
 			biflora.sendToRoom(
 				'locker',
@@ -119,6 +133,10 @@ module.exports = (function(){
 
 			return;
 		}
+
+		/**
+		 * 接続を切断する
+		 */
 		this.disconnect = function( data, callback, main, biflora ){
 			console.log( 'User Disconnect.' );
 			var userInfo = connectionList[data.connectionId].userInfo;
@@ -132,7 +150,7 @@ module.exports = (function(){
 				'operation': 'userLogout',
 				'userInfo': userInfo
 			});
-			data.connectionId = biflora.socket.bifloraUserInfo.connectionId;
+			data.connectionId = biflora.socket.id;
 			data.contentType = 'application/x-passiflora-command';
 			data.targetWidget = null;
 			data.owner = null;
