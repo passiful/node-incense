@@ -18341,7 +18341,7 @@ window.Incense = function(){
 				console.log('incense: getting myself');
 				biflora.send(
 					'getMySelf',
-					JSON.stringify(userInfo),
+					userInfo,
 					function(_userInfo){
 						// console.log(_userInfo);
 						if( !_userInfo ){
