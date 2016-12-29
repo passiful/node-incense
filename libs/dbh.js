@@ -23,7 +23,7 @@ module.exports = function(conf, main){
 			return;
 		}
 		// console.log(boardId);
-		var dbPath = require('path').resolve(conf.dataDir, ''+boardId, 'db.sqlite');
+		var dbPath = require('path').resolve(this.getPathBoardDataDir(boardId), 'db.sqlite');
 		// console.log(dbPath);
 
 		var sequelize = new Sequelize(undefined, undefined, undefined, {
@@ -54,6 +54,23 @@ module.exports = function(conf, main){
 
 		callback(dbs[boardId]);
 		return;
+	}
+
+	/**
+	 * ボードIDを分解する
+	 */
+	this.divideBoardId = function(boardId){
+		// str.substring(0,2); // 2文字ずつとりだす
+		var ary = utils79.divide(boardId, 2);
+		return ary.join('/');
+	}
+
+	/**
+	 * ボードデータの格納パス名を取得する
+	 */
+	this.getPathBoardDataDir = function(boardId){
+		var path = require('path').resolve(conf.dataDir, this.divideBoardId(boardId), '__data')+'/';
+		return path;
 	}
 
 	/**

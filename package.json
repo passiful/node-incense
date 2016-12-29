@@ -31,7 +31,7 @@
     "twig": "^0.8.9",
     "underscore": "^1.8.3",
     "url-parse": "^1.0.5",
-    "utils79": "^0.0.1",
+    "utils79": "^0.0.2",
     "validator": "^5.1.0"
   },
   "devDependencies": {

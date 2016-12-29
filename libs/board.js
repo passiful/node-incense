@@ -25,11 +25,11 @@ module.exports = function(conf, main){
 			try {
 				var newBoardId = (+new Date());
 				console.log(newBoardId);
-				var newDirPath = require('path').resolve(conf.dataDir, ''+newBoardId);
+				var newDirPath = main.dbh.getPathBoardDataDir(newBoardId);
 				// console.log(newDirPath);
 
 				// ディレクトリ作成
-				fs.mkdirSync(newDirPath);
+				fsX.mkdirpSync(newDirPath);
 				console.log('SUCCESS...!');
 
 				// info.json 生成
@@ -58,7 +58,7 @@ module.exports = function(conf, main){
 	this.getBoardInfo = function(boardId, callback){
 		callback = callback || function(){};
 
-		var dirPath = require('path').resolve(conf.dataDir, ''+boardId);
+		var dirPath = main.dbh.getPathBoardDataDir(boardId);
 
 		if( !utils79.is_dir(dirPath) ){
 			callback(false);

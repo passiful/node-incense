@@ -2,13 +2,50 @@ var assert = require('assert');
 var path = require('path');
 var fs = require('fs');
 var Promise = require("es6-promise").Promise;
+var Inscnse = require('../libs/main.js');
+var incense = Inscnse.getBifloraMain({
+	'dataDir': __dirname + '/../data/'
+});
 
-describe('test', function() {
+describe('Basic', function() {
 
-	it("test", function(done) {
+	it("define", function(done) {
 		this.timeout(60*1000);
-		assert.strictEqual(1, 1);
+		assert.strictEqual(typeof(Inscnse), typeof(function(){}));
+		assert.strictEqual(typeof(Inscnse.getBifloraApi), typeof(function(){}));
+		assert.strictEqual(typeof(Inscnse.getBifloraMain), typeof(function(){}));
 		done();
+	});
+
+	it("incense object", function(done) {
+		this.timeout(60*1000);
+		// console.log(incense);
+		assert.strictEqual(typeof(incense), typeof({}));
+		done();
+	});
+});
+
+describe('Creating new board', function() {
+
+	it("divide board ID", function(done) {
+		this.timeout(60*1000);
+		// console.log(incense);
+		assert.strictEqual(incense.dbh.divideBoardId('abcdefg'), 'ab/cd/ef/g');
+		assert.strictEqual(incense.dbh.divideBoardId('a'), 'a');
+		assert.strictEqual(incense.dbh.divideBoardId('ab'), 'ab');
+		assert.strictEqual(incense.dbh.divideBoardId('abcd'), 'ab/cd');
+		done();
+	});
+
+	it("create", function(done) {
+		this.timeout(60*1000);
+		// console.log(incense);
+		incense.board.createNewBoard({'theme': 'creating test'}, function(newBoardId){
+			console.log(newBoardId);
+
+			assert.strictEqual(typeof(incense), typeof({}));
+			done();
+		});
 	});
 
 });
