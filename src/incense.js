@@ -455,7 +455,7 @@ window.Incense = function(){
 	 */
 	this.insertTimeline = function( message, $messageUnit ){
 		$messageUnit = $messageUnit || $('<div>');
-		$messageUnit
+		var $message = $('<div>')
 			.addClass('incense__message-unit')
 			.attr({
 				'data-message-id': message.id,
@@ -463,13 +463,20 @@ window.Incense = function(){
 			})
 		;
 		if( userInfo.id == message.owner ){
-			$messageUnit
+			$message
 				.addClass('incense__message-unit--myitem')
 			;
 		}
 		// console.log( this.userMgr.getAll() );
+		var ownerInfo = this.userMgr.get(message.owner);
+		$message
+			.append( $('<div class="incense__message-unit__owner">')
+				.append( $('<span class="incense__message-unit__owner-name">').text(ownerInfo.name) )
+				.append( $('<span class="incense__message-unit__owner-id">').text(ownerInfo.id) )
+			)
+		;
 
-		$timelineList.append( $messageUnit );
+		$timelineList.append( $message.append( $messageUnit ) );
 
 		this.adjustTimelineScrolling($timelineList);
 

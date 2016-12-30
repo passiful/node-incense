@@ -107,10 +107,6 @@ module.exports = function( app, $timelineList, $fieldInner ){
 			case 'text/html':
 				var user = app.userMgr.get(message.owner);
 				app.insertTimeline( message, $messageUnit
-					.append( $('<div class="incense__message-unit__owner">')
-						.append( $('<span class="incense__message-unit__owner-name">').text(user.name) )
-						.append( $('<span class="incense__message-unit__owner-id">').text(user.id) )
-					)
 					.append( $('<div class="incense__message-unit__content incense-markdown">').html( incense.detoxHtml( message.content ) ) )
 				);
 				break;
