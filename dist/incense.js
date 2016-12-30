@@ -18689,152 +18689,12 @@ window.Incense = function(){
 	/**
 	 * Markdown 変換する
 	 */
-	this.markdown = function(md){
-		// md = md.replace(/(\r\n|\r|\n)/g, '<br />');
-
-		var marked = require('marked');
-		marked.setOptions({
-			renderer: new marked.Renderer(),
-			gfm: true,
-			tables: true,
-			breaks: false,
-			pedantic: false,
-			sanitize: false,
-			smartLists: true,
-			smartypants: false
-		});
-		var html = marked(md);
-		var $div = $('<div>').html(html);
-		$div.find('a').attr({'target': '_blank'});
-		return $div.html();
-	}
+	this.markdown = require('./libs/_markdown.js');
 
 	/**
 	 * 投稿されたHTMLを無害化する
 	 */
-	this.detoxHtml = function(html){
-		var $div = $('<div>').html(html);
-		$div.find('script').remove();
-		$div.find('style').remove();
-		$div.find('form').remove();
-		$div.find('link').remove();
-		$div.find('meta').remove();
-		$div.find('title').remove();
-		$div.find('[href]')
-			.each(function(){
-				var $this = $(this);
-				var href = $this.attr('href');
-				if( href.match(/^javascript\:/) ){
-					$this.attr({
-						'href': 'javascript:alert(\'Invalidated.\');'
-					}).removeAttr('target');
-				}else{
-					$this.attr({
-						'target': '_blank'
-					});
-				}
-			})
-		;
-		$div.find('*')
-			.removeAttr('style')
-			.removeAttr('class')
-			.removeAttr('onabort')
-			.removeAttr('onauxclick')
-			.removeAttr('onbeforecopy')
-			.removeAttr('onbeforecut')
-			.removeAttr('onbeforepaste')
-			.removeAttr('onbeforeunload')
-			.removeAttr('onblur')
-			.removeAttr('oncancel')
-			.removeAttr('oncanplay')
-			.removeAttr('oncanplaythrough')
-			.removeAttr('onchange')
-			.removeAttr('onclick')
-			.removeAttr('onclose')
-			.removeAttr('oncontextmenu')
-			.removeAttr('oncopy')
-			.removeAttr('oncuechange')
-			.removeAttr('oncut')
-			.removeAttr('ondblclick')
-			.removeAttr('ondrag')
-			.removeAttr('ondragend')
-			.removeAttr('ondragenter')
-			.removeAttr('ondragleave')
-			.removeAttr('ondragover')
-			.removeAttr('ondragstart')
-			.removeAttr('ondrop')
-			.removeAttr('ondurationchange')
-			.removeAttr('onemptied')
-			.removeAttr('onended')
-			.removeAttr('onerror')
-			.removeAttr('onfocus')
-			.removeAttr('ongotpointercapture')
-			.removeAttr('onhashchange')
-			.removeAttr('oninput')
-			.removeAttr('oninvalid')
-			.removeAttr('onkeydown')
-			.removeAttr('onkeypress')
-			.removeAttr('onkeyup')
-			.removeAttr('onlanguagechange')
-			.removeAttr('onload')
-			.removeAttr('onloadeddata')
-			.removeAttr('onloadedmetadata')
-			.removeAttr('onloadstart')
-			.removeAttr('onlostpointercapture')
-			.removeAttr('onmessage')
-			.removeAttr('onmousedown')
-			.removeAttr('onmouseenter')
-			.removeAttr('onmouseleave')
-			.removeAttr('onmousemove')
-			.removeAttr('onmouseout')
-			.removeAttr('onmouseover')
-			.removeAttr('onmouseup')
-			.removeAttr('onmousewheel')
-			.removeAttr('onoffline')
-			.removeAttr('ononline')
-			.removeAttr('onpagehide')
-			.removeAttr('onpageshow')
-			.removeAttr('onpaste')
-			.removeAttr('onpause')
-			.removeAttr('onplay')
-			.removeAttr('onplaying')
-			.removeAttr('onpointercancel')
-			.removeAttr('onpointerdown')
-			.removeAttr('onpointerenter')
-			.removeAttr('onpointerleave')
-			.removeAttr('onpointermove')
-			.removeAttr('onpointerout')
-			.removeAttr('onpointerover')
-			.removeAttr('onpointerup')
-			.removeAttr('onpopstate')
-			.removeAttr('onprogress')
-			.removeAttr('onratechange')
-			.removeAttr('onrejectionhandled')
-			.removeAttr('onreset')
-			.removeAttr('onresize')
-			.removeAttr('onscroll')
-			.removeAttr('onsearch')
-			.removeAttr('onseeked')
-			.removeAttr('onseeking')
-			.removeAttr('onselect')
-			.removeAttr('onselectstart')
-			.removeAttr('onshow')
-			.removeAttr('onstalled')
-			.removeAttr('onstorage')
-			.removeAttr('onsubmit')
-			.removeAttr('onsuspend')
-			.removeAttr('ontimeupdate')
-			.removeAttr('ontoggle')
-			.removeAttr('onunhandledrejection')
-			.removeAttr('onunload')
-			.removeAttr('onvolumechange')
-			.removeAttr('onwaiting')
-			.removeAttr('onwebkitfullscreenchange')
-			.removeAttr('onwebkitfullscreenerror')
-			.removeAttr('onwheel')
-		;
-		return $div.html();
-	}
+	this.detoxHtml = require('./libs/_detoxHtml.js');
 
 	/**
 	 * ログインユーザー情報を取得
@@ -18917,7 +18777,136 @@ window.Incense = function(){
 
 };
 
-},{"./apis/_locker.js":80,"./apis/_receiveBroadcast.js":81,"./libs/_fieldContextMenu.js":83,"./libs/_locker.js":84,"./libs/_messageOperator.js":85,"./libs/_modal.js":86,"./libs/_userMgr.js":87,"./libs/_widgetBase.js":88,"./libs/_widgetMgr.js":89,"./widgets/issuetree/issuetree.js":90,"./widgets/stickies/stickies.js":91,"es6-promise":4,"iterate79":8,"jquery":9,"marked":10,"twig":13,"utils79":15}],83:[function(require,module,exports){
+},{"./apis/_locker.js":80,"./apis/_receiveBroadcast.js":81,"./libs/_detoxHtml.js":83,"./libs/_fieldContextMenu.js":84,"./libs/_locker.js":85,"./libs/_markdown.js":86,"./libs/_messageOperator.js":87,"./libs/_modal.js":88,"./libs/_userMgr.js":89,"./libs/_widgetBase.js":90,"./libs/_widgetMgr.js":91,"./widgets/issuetree/issuetree.js":92,"./widgets/stickies/stickies.js":93,"es6-promise":4,"iterate79":8,"jquery":9,"twig":13,"utils79":15}],83:[function(require,module,exports){
+/**
+ * 投稿されたHTMLを無害化する - _detoxHtml.js
+ */
+module.exports = function( html ){
+    var $ = require('jquery');
+	var $div = $('<div>').html(html);
+	$div.find('script').remove();
+	$div.find('style').remove();
+	$div.find('form').remove();
+	$div.find('link').remove();
+	$div.find('meta').remove();
+	$div.find('title').remove();
+	$div.find('[href]')
+		.each(function(){
+			var $this = $(this);
+			var href = $this.attr('href');
+			if( href.match(/^javascript\:/) ){
+				$this.attr({
+					'href': 'javascript:alert(\'Invalidated.\');'
+				}).removeAttr('target');
+			}else{
+				$this.attr({
+					'target': '_blank'
+				});
+			}
+		})
+	;
+	$div.find('*')
+		.removeAttr('style')
+		.removeAttr('class')
+		.removeAttr('onabort')
+		.removeAttr('onauxclick')
+		.removeAttr('onbeforecopy')
+		.removeAttr('onbeforecut')
+		.removeAttr('onbeforepaste')
+		.removeAttr('onbeforeunload')
+		.removeAttr('onblur')
+		.removeAttr('oncancel')
+		.removeAttr('oncanplay')
+		.removeAttr('oncanplaythrough')
+		.removeAttr('onchange')
+		.removeAttr('onclick')
+		.removeAttr('onclose')
+		.removeAttr('oncontextmenu')
+		.removeAttr('oncopy')
+		.removeAttr('oncuechange')
+		.removeAttr('oncut')
+		.removeAttr('ondblclick')
+		.removeAttr('ondrag')
+		.removeAttr('ondragend')
+		.removeAttr('ondragenter')
+		.removeAttr('ondragleave')
+		.removeAttr('ondragover')
+		.removeAttr('ondragstart')
+		.removeAttr('ondrop')
+		.removeAttr('ondurationchange')
+		.removeAttr('onemptied')
+		.removeAttr('onended')
+		.removeAttr('onerror')
+		.removeAttr('onfocus')
+		.removeAttr('ongotpointercapture')
+		.removeAttr('onhashchange')
+		.removeAttr('oninput')
+		.removeAttr('oninvalid')
+		.removeAttr('onkeydown')
+		.removeAttr('onkeypress')
+		.removeAttr('onkeyup')
+		.removeAttr('onlanguagechange')
+		.removeAttr('onload')
+		.removeAttr('onloadeddata')
+		.removeAttr('onloadedmetadata')
+		.removeAttr('onloadstart')
+		.removeAttr('onlostpointercapture')
+		.removeAttr('onmessage')
+		.removeAttr('onmousedown')
+		.removeAttr('onmouseenter')
+		.removeAttr('onmouseleave')
+		.removeAttr('onmousemove')
+		.removeAttr('onmouseout')
+		.removeAttr('onmouseover')
+		.removeAttr('onmouseup')
+		.removeAttr('onmousewheel')
+		.removeAttr('onoffline')
+		.removeAttr('ononline')
+		.removeAttr('onpagehide')
+		.removeAttr('onpageshow')
+		.removeAttr('onpaste')
+		.removeAttr('onpause')
+		.removeAttr('onplay')
+		.removeAttr('onplaying')
+		.removeAttr('onpointercancel')
+		.removeAttr('onpointerdown')
+		.removeAttr('onpointerenter')
+		.removeAttr('onpointerleave')
+		.removeAttr('onpointermove')
+		.removeAttr('onpointerout')
+		.removeAttr('onpointerover')
+		.removeAttr('onpointerup')
+		.removeAttr('onpopstate')
+		.removeAttr('onprogress')
+		.removeAttr('onratechange')
+		.removeAttr('onrejectionhandled')
+		.removeAttr('onreset')
+		.removeAttr('onresize')
+		.removeAttr('onscroll')
+		.removeAttr('onsearch')
+		.removeAttr('onseeked')
+		.removeAttr('onseeking')
+		.removeAttr('onselect')
+		.removeAttr('onselectstart')
+		.removeAttr('onshow')
+		.removeAttr('onstalled')
+		.removeAttr('onstorage')
+		.removeAttr('onsubmit')
+		.removeAttr('onsuspend')
+		.removeAttr('ontimeupdate')
+		.removeAttr('ontoggle')
+		.removeAttr('onunhandledrejection')
+		.removeAttr('onunload')
+		.removeAttr('onvolumechange')
+		.removeAttr('onwaiting')
+		.removeAttr('onwebkitfullscreenchange')
+		.removeAttr('onwebkitfullscreenerror')
+		.removeAttr('onwheel')
+	;
+	return $div.html();
+}
+
+},{"jquery":9}],84:[function(require,module,exports){
 /**
  * _fieldContextMenu.js
  */
@@ -18992,7 +18981,7 @@ module.exports = function( app, $fieldContextMenu ){
 	return;
 }
 
-},{"jquery":9}],84:[function(require,module,exports){
+},{"jquery":9}],85:[function(require,module,exports){
 /**
  * lockApi - locker.js
  */
@@ -19091,7 +19080,32 @@ module.exports = function( incense ){
 	return;
 }
 
-},{}],85:[function(require,module,exports){
+},{}],86:[function(require,module,exports){
+/**
+ * Markdown 変換する - _markdown.js
+ */
+module.exports = function( md ){
+    var $ = require('jquery');
+	// md = md.replace(/(\r\n|\r|\n)/g, '<br />');
+
+	var marked = require('marked');
+	marked.setOptions({
+		renderer: new marked.Renderer(),
+		gfm: true,
+		tables: true,
+		breaks: false,
+		pedantic: false,
+		sanitize: false,
+		smartLists: true,
+		smartypants: false
+	});
+	var html = marked(md);
+	var $div = $('<div>').html(html);
+	$div.find('a').attr({'target': '_blank'});
+	return $div.html();
+}
+
+},{"jquery":9,"marked":10}],87:[function(require,module,exports){
 /**
  * messageOperator.js
  */
@@ -19330,7 +19344,7 @@ module.exports = function( app, $timelineList, $fieldInner ){
 	return;
 }
 
-},{"iterate79":8,"jquery":9}],86:[function(require,module,exports){
+},{"iterate79":8,"jquery":9}],88:[function(require,module,exports){
 /**
  * _modal.js
  */
@@ -19438,7 +19452,7 @@ module.exports = function($field){
 
 }
 
-},{"jquery":9}],87:[function(require,module,exports){
+},{"jquery":9}],89:[function(require,module,exports){
 /**
  * userMgr.js
  */
@@ -19516,7 +19530,7 @@ module.exports = function( app, $timelineList, $field, $fieldInner ){
 	return;
 }
 
-},{}],88:[function(require,module,exports){
+},{}],90:[function(require,module,exports){
 /**
  * widgets: base class
  */
@@ -19547,7 +19561,7 @@ module.exports = function( incense, $widget ){
 	return;
 }
 
-},{}],89:[function(require,module,exports){
+},{}],91:[function(require,module,exports){
 /**
  * widgetMgr.js
  */
@@ -19933,7 +19947,7 @@ module.exports = function( incense, $timelineList, $field, $fieldOuter, $fieldIn
 	return;
 }
 
-},{"jquery":9,"underscore":14}],90:[function(require,module,exports){
+},{"jquery":9,"underscore":14}],92:[function(require,module,exports){
 /**
  * widgets: issuetree.js
  */
@@ -20671,7 +20685,7 @@ module.exports = function( incense, $widget ){
 	return;
 }
 
-},{"jquery":9}],91:[function(require,module,exports){
+},{"jquery":9}],93:[function(require,module,exports){
 /**
  * widgets: stickies.js
  */
