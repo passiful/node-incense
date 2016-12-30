@@ -141,16 +141,10 @@
 		font-size:13px;
 		padding: 0.5em;
 		margin: 0 0 1px 0;
-		border-bottom: 1px solid #eee;
+		// border-bottom: 1px solid #eee;
 		background-color: #fff;
 		&:hover{
 			background-color: #ffe;
-		}
-
-		&.incense__message-unit--operation{
-			background-color: #eeeef9;
-			color: #77b;
-			font-size: 70%;
 		}
 
 		&:last-child{
@@ -173,8 +167,9 @@
 			margin-left: 0;
 			margin-right: 24px;
 			background-color: #f9f9f9;
+			border: 1px solid #eeeeee;
 			text-align: left;
-			padding: 12px;
+			padding: 0.4em 1.5em;
 			border-radius: 10px;
 			word-wrap: break-word;
 			p{
@@ -187,14 +182,6 @@
 				margin-bottom: 0;
 			}
 		}
-		.incense__message-unit__operation-message{
-			text-align: center;
-		}
-		.incense__message-unit__targetWidget{
-			text-align: right;
-			font-size: 75%;
-			color: #aaa;
-		}
 		&--myitem{
 			.incense__message-unit__owner{
 				text-align: right;
@@ -202,10 +189,24 @@
 			.incense__message-unit__content{
 				margin-left: 24px;
 				margin-right: 0;
-				background-color: #ccf0cc;
+				background-color: #d5ffd5;
+				border: 1px solid #a7efa7;
 			}
 		}
 	}
+	.incense__message-unit__operation{
+		background-color: #eeeef9;
+		color: #77b;
+		font-size: 70%;
+		text-align: center;
+		padding: 0.4em 1em;
+	}
+	.incense__message-unit__targetWidget{
+		text-align: right;
+		font-size: 75%;
+		color: #aaa;
+	}
+
 	.incense-widget{
 		position: absolute;
 		left: 0; top: 0;

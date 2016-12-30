@@ -17,8 +17,6 @@
     height: 300px;
     overflow: auto; }
     .issuetree .issuetree__discussion-timeline--timeline > div {
-      border-bottom: 1px solid #bbb;
-      padding: 0.5em 0;
       font-size: 13px; }
       .issuetree .issuetree__discussion-timeline--timeline > div:last-child {
         border-bottom: none; }
@@ -43,8 +41,9 @@
     margin-left: 0;
     margin-right: 24px;
     background-color: #f9f9f9;
+    border: 1px solid #eeeeee;
     text-align: left;
-    padding: 12px;
+    padding: 0.4em 1.5em;
     border-radius: 10px;
     word-wrap: break-word; }
     .issuetree .issuetree__content p {
@@ -58,7 +57,8 @@
   .issuetree .issuetree--myitem .issuetree__content {
     margin-left: 24px;
     margin-right: 0;
-    background-color: #ccf0cc; }
+    background-color: #d5ffd5;
+    border: 1px solid #a7efa7; }
   .issuetree .issuetree__voteuser {
     padding: 0;
     margin: 0; }

@@ -37,8 +37,7 @@ module.exports = function( app, $timelineList, $fieldInner ){
 						str += message.content.widgetType;
 						str += ' を作成しました。';
 						app.insertTimeline( message, $messageUnit
-							.addClass('incense__message-unit--operation')
-							.append( $('<div class="incense__message-unit__operation-message">').text(str) )
+							.append( $('<div class="incense__message-unit__operation">').text(str) )
 						);
 						break;
 					case 'moveWidget':
@@ -54,8 +53,7 @@ module.exports = function( app, $timelineList, $fieldInner ){
 						str += '#widget.'+message.content.newParentWidgetId;
 						str += ' に変更しました。';
 						app.insertTimeline( message, $messageUnit
-							.addClass('incense__message-unit--operation')
-							.append( $('<div class="incense__message-unit__operation-message">').text(str) )
+							.append( $('<div class="incense__message-unit__operation">').text(str) )
 						);
 						break;
 					case 'deleteWidget':
@@ -66,8 +64,7 @@ module.exports = function( app, $timelineList, $fieldInner ){
 						str += '#widget.'+message.content.targetWidgetId;
 						str += ' を削除しました。';
 						app.insertTimeline( message, $messageUnit
-							.addClass('incense__message-unit--operation')
-							.append( $('<div class="incense__message-unit__operation-message">').text(str) )
+							.append( $('<div class="incense__message-unit__operation">').text(str) )
 						);
 						break;
 					case 'userLogin':
@@ -76,8 +73,7 @@ module.exports = function( app, $timelineList, $fieldInner ){
 							var str = '';
 							str += 'ユーザー "' + message.content.userInfo.name + '" がログインしました。';
 							app.insertTimeline( message, $messageUnit
-								.addClass('incense__message-unit--operation')
-								.append( $('<div class="incense__message-unit__operation-message">').text(str) )
+								.append( $('<div class="incense__message-unit__operation">').text(str) )
 							);
 						} );
 						break;
@@ -93,8 +89,7 @@ module.exports = function( app, $timelineList, $fieldInner ){
 							var str = '';
 							str += 'ユーザー "' + userInfo.name + '" がログアウトしました。';
 							app.insertTimeline( message, $messageUnit
-								.addClass('incense__message-unit--operation')
-								.append( $('<div class="incense__message-unit__operation-message">').text(str) )
+								.append( $('<div class="incense__message-unit__operation">').text(str) )
 							);
 						} );
 						break;

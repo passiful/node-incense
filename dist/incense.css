@@ -119,14 +119,9 @@
     font-size: 13px;
     padding: 0.5em;
     margin: 0 0 1px 0;
-    border-bottom: 1px solid #eee;
     background-color: #fff; }
     .incense .incense__message-unit:hover {
       background-color: #ffe; }
-    .incense .incense__message-unit.incense__message-unit--operation {
-      background-color: #eeeef9;
-      color: #77b;
-      font-size: 70%; }
     .incense .incense__message-unit:last-child {
       border: none; }
     .incense .incense__message-unit .incense__message-unit__owner {
@@ -143,8 +138,9 @@
       margin-left: 0;
       margin-right: 24px;
       background-color: #f9f9f9;
+      border: 1px solid #eeeeee;
       text-align: left;
-      padding: 12px;
+      padding: 0.4em 1.5em;
       border-radius: 10px;
       word-wrap: break-word; }
       .incense .incense__message-unit .incense__message-unit__content p {
@@ -153,18 +149,23 @@
         margin-top: 0; }
       .incense .incense__message-unit .incense__message-unit__content > :last-child {
         margin-bottom: 0; }
-    .incense .incense__message-unit .incense__message-unit__operation-message {
-      text-align: center; }
-    .incense .incense__message-unit .incense__message-unit__targetWidget {
-      text-align: right;
-      font-size: 75%;
-      color: #aaa; }
     .incense .incense__message-unit--myitem .incense__message-unit__owner {
       text-align: right; }
     .incense .incense__message-unit--myitem .incense__message-unit__content {
       margin-left: 24px;
       margin-right: 0;
-      background-color: #ccf0cc; }
+      background-color: #d5ffd5;
+      border: 1px solid #a7efa7; }
+  .incense .incense__message-unit__operation {
+    background-color: #eeeef9;
+    color: #77b;
+    font-size: 70%;
+    text-align: center;
+    padding: 0.4em 1em; }
+  .incense .incense__message-unit__targetWidget {
+    text-align: right;
+    font-size: 75%;
+    color: #aaa; }
   .incense .incense-widget {
     position: absolute;
     left: 0;
@@ -193,8 +194,6 @@
       height: 300px;
       overflow: auto; }
       .incense .issuetree .issuetree__discussion-timeline--timeline > div {
-        border-bottom: 1px solid #bbb;
-        padding: 0.5em 0;
         font-size: 13px; }
         .incense .issuetree .issuetree__discussion-timeline--timeline > div:last-child {
           border-bottom: none; }
@@ -219,8 +218,9 @@
       margin-left: 0;
       margin-right: 24px;
       background-color: #f9f9f9;
+      border: 1px solid #eeeeee;
       text-align: left;
-      padding: 12px;
+      padding: 0.4em 1.5em;
       border-radius: 10px;
       word-wrap: break-word; }
       .incense .issuetree .issuetree__content p {
@@ -234,7 +234,8 @@
     .incense .issuetree .issuetree--myitem .issuetree__content {
       margin-left: 24px;
       margin-right: 0;
-      background-color: #ccf0cc; }
+      background-color: #d5ffd5;
+      border: 1px solid #a7efa7; }
     .incense .issuetree .issuetree__voteuser {
       padding: 0;
       margin: 0; }
