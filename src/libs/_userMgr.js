@@ -3,56 +3,50 @@
  */
 module.exports = function( app, $timelineList, $field, $fieldInner ){
 	var _this = this;
-	var userConnectionList = {};
 	var userList = {};
 
 
 	/**
 	 * ユーザー情報を登録する
 	 */
-	this.login = function(connectionId, userInfo, callback){
+	this.login = function(userInfo, callback){
 		callback = callback || function(err, userInfo){};
-		userConnectionList[connectionId] = userInfo;
-		userList[userInfo.id] = userInfo;
-		callback(null, userConnectionList[connectionId]);
+		var err = null;
+		var rtn = false;
+		try {
+			if( !userInfo.id.length ){
+				callback();return;
+			}else{
+				userList[userInfo.id] = userInfo;
+				rtn = userList[userInfo.id];
+			}
+		} catch (e) {
+			err = '[LOGIN ERROR] invalid user info.';
+			console.error(err, userInfo);
+		}
+		callback(err, rtn);
 		return;
 	}
 
 	/**
 	 * ユーザー情報を削除する
 	 */
-	this.logout = function(connectionId, callback){
+	this.logout = function(userId, callback){
 		callback = callback || function(err, {}){};
 		try {
-			var rtn = userConnectionList[connectionId];
+			// ログアウトしても、ユーザーの情報を忘れる必要はない。
+			// "議論に参加してくれた貢献者" ということで記録に留めることにする。
+			// userList[userId] = undefined;
+			// delete( userList[userId] );
 
-			userList[rtn.id] = undefined;
-			delete( userList[rtn.id] );
-			userConnectionList[connectionId] = undefined;
-			delete( userConnectionList[connectionId] );
-
-			callback( null, rtn );
+			callback( null, userList[userId] );
 			return;
 		} catch (e) {
-			console.error('[ERROR] failed to logout: '+connectionId, rtn);
-			callback('[ERROR] failed to logout: '+connectionId, rtn);
+			console.error('[ERROR] failed to logout: '+userId);
+			callback('[ERROR] failed to logout: '+userId, false);
 			return;
 		}
 		return;
-	}
-
-	/**
-	 * 接続IDからユーザー情報を取得する
-	 */
-	this.getUserByConnectionId = function(connectionId){
-		return userConnectionList[connectionId];
-	}
-
-	/**
-	 * 接続IDからユーザー情報を取得する
-	 */
-	this.getAllConnection = function(){
-		return userConnectionList;
 	}
 
 	/**

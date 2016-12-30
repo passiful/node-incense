@@ -71,11 +71,10 @@ module.exports = function( app, $timelineList, $fieldInner ){
 						);
 						break;
 					case 'userLogin':
-						app.userMgr.login( message.connectionId, message.content.userInfo, function(err, userInfo){
+						app.userMgr.login( message.content.userInfo, function(err, userInfo){
 							// console.log('user "'+userInfo.name+'" Login.');
 							var str = '';
-							str += message.content.userInfo.name;
-							str += ' がログインしました。';
+							str += 'ユーザー "' + message.content.userInfo.name + '" がログインしました。';
 							app.insertTimeline( message, $messageUnit
 								.addClass('incense__message-unit--operation')
 								.append( $('<div class="incense__message-unit__operation-message">').text(str) )
@@ -83,8 +82,8 @@ module.exports = function( app, $timelineList, $fieldInner ){
 						} );
 						break;
 					case 'userLogout':
-						// message.content = JSON.parse(message.content);
-						app.userMgr.logout( message.connectionId, function(err, userInfo){
+						// console.log(message);
+						app.userMgr.logout( message.content.userInfo.id, function(err, userInfo){
 							if(userInfo === undefined){
 								console.error( 'userLogout: userInfo が undefined です。' );
 								return;
@@ -92,8 +91,7 @@ module.exports = function( app, $timelineList, $fieldInner ){
 							// console.log(userInfo);
 							// console.log('user "'+userInfo.name+'" Logout.');
 							var str = '';
-							str += userInfo.name;
-							str += ' がログアウトしました。';
+							str += 'ユーザー "' + userInfo.name + '" がログアウトしました。';
 							app.insertTimeline( message, $messageUnit
 								.addClass('incense__message-unit--operation')
 								.append( $('<div class="incense__message-unit__operation-message">').text(str) )

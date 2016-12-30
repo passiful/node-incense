@@ -7,7 +7,12 @@ module.exports = (function(){
 
 	return new (function(){
 		var connectionList = {};
+			// ↑接続の管理はサーバー側でのみ行う。(クライアント側ではユーザーIDでの管理のみ行う)
 		var userList = {};
+			// ↑この情報は基本的にサーバー側で利用する機会は少ない。
+			// 切断直後の再ログイン時に重複を回避する目的でしか利用していない。
+			// 従って、過去ログからuserListの復元するなどの厳密な管理は不要。
+			// `connectionList` の管理のための補助データとして位置づける。
 		var logoutTimer = {};
 
 		function setUserLoginData(data, userInfo){
@@ -203,40 +208,48 @@ module.exports = (function(){
 			data.connectionId = biflora.socket.id;
 			data.contentType = 'application/x-passiflora-command';
 			data.targetWidget = null;
-			data.owner = null;
+			data.owner = userInfo.id;
 			data.microtime = Date.now();
 			data.boardId = boardId;
 
 			// console.log(data);
 
-			// タイムアウトをクリア
-			if( typeof(logoutTimer[data.boardId]) != typeof({}) ){
-				logoutTimer[data.boardId] = {}; // initialize
-			}
-			clearTimeout(logoutTimer[data.boardId][userInfo.id]);
-			logoutTimer[data.boardId][userInfo.id] = (function(data){
-				return setTimeout(function(){
-					var tmpContent = JSON.parse(data.content);
-
-					// ユーザー情報を削除
-					if(userList[data.boardId]){
-						userList[data.boardId][tmpContent.userInfo.id] = undefined;
-						delete(userList[data.boardId][tmpContent.userInfo.id]);
+			new (function(data, userInfo){
+				try {
+					// タイムアウトをクリア
+					if( typeof(logoutTimer[data.boardId]) != typeof({}) ){
+						logoutTimer[data.boardId] = {}; // initialize
 					}
+					clearTimeout(logoutTimer[data.boardId][userInfo.id]);
+				} catch (e) {
+					console.error( '[ERROR] FAILED to clear logoutTimer.' + data.boardId + ', ' + userInfo.id );
+				}
 
-					main.dbh.insertMessage(data.boardId, data, function(result){
-						data.id = result.dataValues.id;
-						// console.log(result);
-						biflora.send('receiveBroadcast', data, function(){
-							console.log('send LOGOUT message');
+				logoutTimer[data.boardId][userInfo.id] = setTimeout(function(){
+					try {
+						var tmpContent = JSON.parse(data.content);
+
+						// ユーザー情報を削除
+						if(userList[data.boardId]){
+							userList[data.boardId][tmpContent.userInfo.id] = undefined;
+							delete(userList[data.boardId][tmpContent.userInfo.id]);
+						}
+
+						main.dbh.insertMessage(data.boardId, data, function(result){
+							data.id = result.dataValues.id; // これはDBのレコードのID
+							// console.log(result);
+							biflora.send('receiveBroadcast', data, function(){
+								console.log('send LOGOUT message');
+							});
+							biflora.sendToRoom('receiveBroadcast', data, data.boardId, function(){
+								console.log('send LOGOUT message to room');
+							});
 						});
-						biflora.sendToRoom('receiveBroadcast', data, data.boardId, function(){
-							console.log('send LOGOUT message to room');
-						});
-					});
+					} catch (e) {
+						console.error( '[ERROR] FAILED to logoutTimer execution.' );
+					}
 				}, 30*1000);
-			})(data);
-
+			})(data, userInfo);
 			return;
 		}
 
