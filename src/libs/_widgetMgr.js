@@ -253,6 +253,7 @@ module.exports = function( incense, $timelineList, $field, $fieldOuter, $fieldIn
 			})
 		;
 		$fieldSelection.append( $selected );
+		window.location.hash = '#widget.'+id;
 
 		return;
 	}
@@ -364,6 +365,7 @@ module.exports = function( incense, $timelineList, $field, $fieldOuter, $fieldIn
 				_this.unselect();
 				_this.select(widgetId);
 				_this.focus(widgetId);
+				window.location.hash = '#widget.' + widgetId;
 				return false;
 			})
 		;

@@ -18322,14 +18322,6 @@ window.Incense = function(){
 				rlv();
 			}); })
 			.then(function(){ return new Promise(function(rlv, rjt){
-				console.log('incense: setting on window resize event handler...');
-				windowResized();
-				$(window).resize(function(){
-					windowResized();
-				});
-				rlv();
-			}); })
-			.then(function(){ return new Promise(function(rlv, rjt){
 				// (biflora 送信テスト)
 				console.log('incense: biflora test...');
 				biflora.send(
@@ -18354,7 +18346,7 @@ window.Incense = function(){
 				);
 			}); })
 			.then(function(){ return new Promise(function(rlv, rjt){
-				// boardId のこれまでのメッセージを取得する
+				// ログインユーザー自身の情報を取得する
 				console.log('incense: getting myself');
 				biflora.send(
 					'getMySelf',
@@ -18553,6 +18545,8 @@ window.Incense = function(){
 
 				$('body').on('click', function(){
 					_this.fieldContextMenu.close();
+					window.location.hash = '';
+
 				});
 
 				rlv();
@@ -18572,6 +18566,28 @@ window.Incense = function(){
 						rlv();
 					}
 				);
+			}); })
+			.then(function(){ return new Promise(function(rlv, rjt){
+				console.log('incense: setting on window resize event handler...');
+				windowResized();
+				$(window).on('resize', function(){
+					windowResized();
+				});
+				rlv();
+			}); })
+			.then(function(){ return new Promise(function(rlv, rjt){
+				console.log('incense: setting on window hash change event handler...');
+				var hash = window.location.hash;
+				console.log(hash);
+				if( hash.match( /^\#widget\.([0-9]+)$/ ) ){
+					var widgetId = RegExp.$1;
+					setTimeout(function(){
+						_this.widgetMgr.unselect();
+						_this.widgetMgr.select(widgetId);
+						_this.widgetMgr.focus(widgetId);
+					}, 1000);
+				}
+				rlv();
 			}); })
 			.then(function(){ return new Promise(function(rlv, rjt){
 				// 返却
@@ -19787,6 +19803,7 @@ module.exports = function( incense, $timelineList, $field, $fieldOuter, $fieldIn
 			})
 		;
 		$fieldSelection.append( $selected );
+		window.location.hash = '#widget.'+id;
 
 		return;
 	}
@@ -19898,6 +19915,7 @@ module.exports = function( incense, $timelineList, $field, $fieldOuter, $fieldIn
 				_this.unselect();
 				_this.select(widgetId);
 				_this.focus(widgetId);
+				window.location.hash = '#widget.' + widgetId;
 				return false;
 			})
 		;
