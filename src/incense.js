@@ -398,6 +398,7 @@ window.Incense = function(){
 		});
 
 		_this.updateRelations();
+		_this.widgetMgr.updateSelection();
 
 		callback();
 		return;
