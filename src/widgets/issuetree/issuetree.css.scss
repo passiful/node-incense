@@ -19,6 +19,12 @@
 		font-weight: bold;
 		border-left: 3px solid #999;
 		padding: 0 1em;
+
+		.issuetree__edit-button{
+			margin-left: 1em;
+			font-size: 80%;
+			font-weight: normal;
+		}
 	}
 
 	.issuetree__discussion-timeline--timeline{

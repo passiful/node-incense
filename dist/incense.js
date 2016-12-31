@@ -19373,7 +19373,7 @@ module.exports = function($field){
 			+ '  <div class="incense-modal__dialog">'+"\n"
 			+ '    <div class="incense-modal__content">'+"\n"
 			+ '      <div class="incense-modal__header">'+"\n"
-			+ '        <button type="button" class="incense-modal__close" data-dismiss="modal">'+"\n"
+			+ '        <button type="button" class="btn btn-default incense-modal__close" data-dismiss="modal">'+"\n"
 			+ '          <span>&times;</span>'+"\n"
 			+ '        </button>'+"\n"
 			+ '        <h4 class="incense-modal__title"></h4>'+"\n"
@@ -19979,6 +19979,44 @@ module.exports = function( incense, $widget ){
 	this.vote = {};
 	this.status = 'open';
 
+	function editIssue(){
+		mode = 'edit';
+		$detailBodyIssue.append( $detailBodyIssue_textarea.val( _this.issue ) );
+		incense.setBehaviorChatComment(
+			$detailBodyIssue_textarea,
+			{
+				'submit': function(value){
+					applyTextareaEditContent( $detailBodyIssue_textarea, 'issue' );
+				}
+			}
+		);
+		$detailBodyIssue_textarea
+			.on('change blur', function(e){
+				applyTextareaEditContent( $detailBodyIssue_textarea, 'issue' );
+			})
+		;
+		$detailBodyIssue_textarea.focus();
+	}
+
+	function editAnswer(){
+		mode = 'edit';
+		$detailBodyAnswer.append( $detailBodyAnswer_textarea.val( _this.answer ) );
+		incense.setBehaviorChatComment(
+			$detailBodyAnswer_textarea,
+			{
+				'submit': function(value){
+					applyTextareaEditContent( $detailBodyAnswer_textarea, 'answer' );
+				}
+			}
+		);
+		$detailBodyAnswer_textarea
+			.on('change blur', function(e){
+				applyTextareaEditContent( $detailBodyAnswer_textarea, 'answer' );
+			})
+		;
+		$detailBodyAnswer_textarea.focus();
+	}
+
 	var $widgetBody = $('<div class="issuetree issuetree--widget issuetree--status-no-active">')
 		.append( $('<div class="row">')
 			.append( $('<div class="col-sm-6">')
@@ -20000,13 +20038,27 @@ module.exports = function( incense, $widget ){
 		.append( $('<div class="row">')
 			.append( $('<div class="col-sm-6">')
 				.append( $('<div class="issuetree__block">')
-					.append( $('<div class="issuetree__heading">').text( '問' ) )
+					.append( $('<div class="issuetree__heading">').text( '問' )
+						.append( $('<a href="javascript:;" class="issuetree__edit-button">')
+							.text('編集')
+							.click(function(){
+								editIssue();
+							})
+						)
+					)
 					.append( $('<div class="issuetree__issue incense-markdown">').html( incense.detoxHtml( incense.markdown(this.issue) ) || 'no-set' ) )
 				)
 			)
 			.append( $('<div class="col-sm-6">')
 				.append( $('<div class="issuetree__block">')
-					.append( $('<div class="issuetree__heading">').text( '答' ) )
+					.append( $('<div class="issuetree__heading">').text( '答' )
+						.append( $('<a href="javascript:;" class="issuetree__edit-button">')
+							.text('編集')
+							.click(function(){
+								editAnswer();
+							})
+						)
+					)
 					.append( $('<div class="issuetree__answer incense-markdown">').html( incense.detoxHtml( incense.markdown(this.answer) ) || 'no-answer' ) )
 				)
 			)
@@ -20127,22 +20179,7 @@ module.exports = function( incense, $widget ){
 	;
 	$detailBodyIssue
 		.dblclick(function(e){
-			mode = 'edit';
-			$detailBodyIssue.append( $detailBodyIssue_textarea.val( _this.issue ) );
-			incense.setBehaviorChatComment(
-				$detailBodyIssue_textarea,
-				{
-					'submit': function(value){
-						applyTextareaEditContent( $detailBodyIssue_textarea, 'issue' );
-					}
-				}
-			);
-			$detailBodyIssue_textarea
-				.on('change blur', function(e){
-					applyTextareaEditContent( $detailBodyIssue_textarea, 'issue' );
-				})
-			;
-			$detailBodyIssue_textarea.focus();
+			editIssue();
 		})
 		.click(function(e){
 			e.stopPropagation();
@@ -20168,22 +20205,7 @@ module.exports = function( incense, $widget ){
 	;
 	$detailBodyAnswer
 		.dblclick(function(e){
-			mode = 'edit';
-			$detailBodyAnswer.append( $detailBodyAnswer_textarea.val( _this.answer ) );
-			incense.setBehaviorChatComment(
-				$detailBodyAnswer_textarea,
-				{
-					'submit': function(value){
-						applyTextareaEditContent( $detailBodyAnswer_textarea, 'answer' );
-					}
-				}
-			);
-			$detailBodyAnswer_textarea
-				.on('change blur', function(e){
-					applyTextareaEditContent( $detailBodyAnswer_textarea, 'answer' );
-				})
-			;
-			$detailBodyAnswer_textarea.focus();
+			editAnswer();
 		})
 		.click(function(e){
 			e.stopPropagation();
@@ -20235,7 +20257,7 @@ module.exports = function( incense, $widget ){
 	 */
 	function openDetailWindow(){
 		incense.modal.dialog({
-			'title': 'issue',
+			'title': 'Issue #widget.'+_this.id,
 			'body': $detailBody,
 			'buttons': [
 				$('<button>')

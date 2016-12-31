@@ -9,7 +9,7 @@ module.exports = function($field){
 			+ '  <div class="incense-modal__dialog">'+"\n"
 			+ '    <div class="incense-modal__content">'+"\n"
 			+ '      <div class="incense-modal__header">'+"\n"
-			+ '        <button type="button" class="incense-modal__close" data-dismiss="modal">'+"\n"
+			+ '        <button type="button" class="btn btn-default incense-modal__close" data-dismiss="modal">'+"\n"
 			+ '          <span>&times;</span>'+"\n"
 			+ '        </button>'+"\n"
 			+ '        <h4 class="incense-modal__title"></h4>'+"\n"
