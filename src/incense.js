@@ -321,12 +321,13 @@ window.Incense = function(){
 								var targetWidgetId = event.dataTransfer.getData("widget-id");
 								var fromOffsetX = event.dataTransfer.getData("offset-x");
 								var fromOffsetY = event.dataTransfer.getData("offset-y");
+
 								// console.log(targetWidgetId, fromX, fromY);
 								// console.log(e.offsetX, e.offsetY);
 								// console.log(e);
-								var toX = $fieldOuter.scrollLeft() + e.pageX - fromOffsetX - $fieldOuter.offset().left;
+								var toX = e.offsetX - fromOffsetX;
 								if( toX < 0 ){ toX = 0; }
-								var toY = $fieldOuter.scrollTop() + e.pageY - fromOffsetY - $fieldOuter.offset().top;
+								var toY = e.offsetY - fromOffsetY;
 								if( toY < 0 ){ toY = 0; }
 								_this.sendMessage(
 									{
@@ -556,7 +557,8 @@ window.Incense = function(){
 	this.zoom = function( rate ){
 		zoomRate = rate;
 		$fieldOuter.find('>div').css({
-			'transform': 'scale('+zoomRate+','+zoomRate+')'
+			'transform': 'scale('+zoomRate+','+zoomRate+')',
+			'transform-origin': '0 0'
 		});
 	}
 

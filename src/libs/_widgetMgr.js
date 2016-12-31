@@ -164,6 +164,43 @@ module.exports = function( incense, $timelineList, $field, $fieldOuter, $fieldIn
 				event.dataTransfer.setData("offset-y", e.offsetY );
 				// console.log(e);
 			})
+			.bind('dragover', function(e){
+				e.stopPropagation();
+				e.preventDefault();
+				// console.log(e);
+			})
+			.bind('dragleave', function(e){
+				e.stopPropagation();
+				e.preventDefault();
+				// console.log(e);
+			})
+			.bind('drop', function(e){
+				e.stopPropagation();
+				e.preventDefault();
+				// console.log(e);
+				var event = e.originalEvent;
+				var method = event.dataTransfer.getData("method");
+				switch(method){
+					case 'moveWidget':
+						var targetWidgetId = event.dataTransfer.getData("widget-id");
+						var fromOffsetX = event.dataTransfer.getData("offset-x");
+						var fromOffsetY = event.dataTransfer.getData("offset-y");
+						incense.sendMessage(
+							{
+								'content': JSON.stringify({
+									'operation': 'setParentWidget',
+									'targetWidgetId': targetWidgetId,
+									'newParentWidgetId': $(this).attr('data-widget-id')
+								}),
+								'contentType': 'application/x-passiflora-command'
+							},
+							function(result){
+								console.log(result);
+							}
+						);
+						break;
+				}
+			})
 		);
 		// console.log(content);
 		widgetIndex[id] = _.defaults( new incense.widgetList[content.widgetType].api(incense, $widget), new (incense.widgetBase)(incense, $widget) );
