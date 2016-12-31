@@ -25,40 +25,6 @@
   .issuetree .issuetree__issue {
     font-weight: bold;
     font-size: 24px; }
-  .issuetree .issuetree__owner {
-    font-weight: bold;
-    font-size: small; }
-    .issuetree .issuetree__owner-id {
-      margin-left: 1em;
-      color: #999;
-      font-size: 80%;
-      font-weight: normal; }
-      .issuetree .issuetree__owner-id:before {
-        content: "@"; }
-  .issuetree .issuetree__content {
-    font-size: normal;
-    font-weight: normal;
-    margin-left: 0;
-    margin-right: 24px;
-    background-color: #f9f9f9;
-    border: 1px solid #eeeeee;
-    text-align: left;
-    padding: 0.4em 1.5em;
-    border-radius: 10px;
-    word-wrap: break-word; }
-    .issuetree .issuetree__content p {
-      white-space: pre-wrap; }
-    .issuetree .issuetree__content > :first-child {
-      margin-top: 0; }
-    .issuetree .issuetree__content > :last-child {
-      margin-bottom: 0; }
-  .issuetree .issuetree--myitem .issuetree__owner {
-    text-align: right; }
-  .issuetree .issuetree--myitem .issuetree__content {
-    margin-left: 24px;
-    margin-right: 0;
-    background-color: #d5ffd5;
-    border: 1px solid #a7efa7; }
   .issuetree .issuetree__voteuser {
     padding: 0;
     margin: 0; }

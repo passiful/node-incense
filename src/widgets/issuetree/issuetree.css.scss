@@ -43,51 +43,7 @@
 		font-weight: bold;
 		font-size: 24px;
 	}
-	.issuetree__owner{
-		font-weight: bold;
-		font-size: small;
-		&-id{
-			margin-left: 1em;
-			color: #999;
-			font-size: 80%;
-			font-weight: normal;
-			&:before{
-				content: "@";
-			}
-		}
-	}
-	.issuetree__content{
-		font-size: normal;
-		font-weight: normal;
-		margin-left: 0;
-		margin-right: 24px;
-		background-color: #f9f9f9;
-		border: 1px solid #eeeeee;
-		text-align: left;
-		padding: 0.4em 1.5em;
-		border-radius: 10px;
-		word-wrap: break-word;
-		p{
-			white-space: pre-wrap;
-		}
-		>:first-child{
-			margin-top: 0;
-		}
-		>:last-child{
-			margin-bottom: 0;
-		}
-	}
-	.issuetree--myitem{
-		.issuetree__owner{
-			text-align: right;
-		}
-		.issuetree__content{
-			margin-left: 24px;
-			margin-right: 0;
-			background-color: #d5ffd5;
-			border: 1px solid #a7efa7;
-		}
-	}
+
 	.issuetree__voteuser{
 		padding: 0;
 		margin: 0;

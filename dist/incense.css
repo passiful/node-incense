@@ -116,6 +116,13 @@
       padding: 10px 0 0 0;
       border-top: 1px solid #ddd; }
   .incense .incense__message-unit {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: row;
+            flex-direction: row;
     font-size: 13px;
     padding: 0.5em;
     margin: 0 0 1px 0;
@@ -124,6 +131,20 @@
       background-color: #ffe; }
     .incense .incense__message-unit:last-child {
       border: none; }
+    .incense .incense__message-unit .incense__message-unit__owner-icon {
+      display: block;
+      width: 30px;
+      height: 30px;
+      overflow: hidden;
+      background-color: #ddd;
+      margin-right: 10px;
+      border-radius: 50%; }
+      .incense .incense__message-unit .incense__message-unit__owner-icon img {
+        width: 100%;
+        height: 100%; }
+    .incense .incense__message-unit .incense__message-unit__message-body {
+      display: block;
+      width: calc(100% - 40px); }
     .incense .incense__message-unit .incense__message-unit__owner {
       font-weight: bold; }
       .incense .incense__message-unit .incense__message-unit__owner-id {
@@ -149,13 +170,21 @@
         margin-top: 0; }
       .incense .incense__message-unit .incense__message-unit__content > :last-child {
         margin-bottom: 0; }
-    .incense .incense__message-unit--myitem .incense__message-unit__owner {
-      text-align: right; }
-    .incense .incense__message-unit--myitem .incense__message-unit__content {
-      margin-left: 24px;
-      margin-right: 0;
-      background-color: #d5ffd5;
-      border: 1px solid #a7efa7; }
+    .incense .incense__message-unit--myitem {
+      -webkit-box-orient: horizontal;
+      -webkit-box-direction: reverse;
+          -ms-flex-direction: row-reverse;
+              flex-direction: row-reverse; }
+      .incense .incense__message-unit--myitem .incense__message-unit__owner-icon {
+        margin-right: 0px;
+        margin-left: 10px; }
+      .incense .incense__message-unit--myitem .incense__message-unit__owner {
+        text-align: right; }
+      .incense .incense__message-unit--myitem .incense__message-unit__content {
+        margin-left: 24px;
+        margin-right: 0;
+        background-color: #d5ffd5;
+        border: 1px solid #a7efa7; }
   .incense .incense__message-unit__operation {
     background-color: #eeeef9;
     color: #77b;
@@ -202,40 +231,6 @@
     .incense .issuetree .issuetree__issue {
       font-weight: bold;
       font-size: 24px; }
-    .incense .issuetree .issuetree__owner {
-      font-weight: bold;
-      font-size: small; }
-      .incense .issuetree .issuetree__owner-id {
-        margin-left: 1em;
-        color: #999;
-        font-size: 80%;
-        font-weight: normal; }
-        .incense .issuetree .issuetree__owner-id:before {
-          content: "@"; }
-    .incense .issuetree .issuetree__content {
-      font-size: normal;
-      font-weight: normal;
-      margin-left: 0;
-      margin-right: 24px;
-      background-color: #f9f9f9;
-      border: 1px solid #eeeeee;
-      text-align: left;
-      padding: 0.4em 1.5em;
-      border-radius: 10px;
-      word-wrap: break-word; }
-      .incense .issuetree .issuetree__content p {
-        white-space: pre-wrap; }
-      .incense .issuetree .issuetree__content > :first-child {
-        margin-top: 0; }
-      .incense .issuetree .issuetree__content > :last-child {
-        margin-bottom: 0; }
-    .incense .issuetree .issuetree--myitem .issuetree__owner {
-      text-align: right; }
-    .incense .issuetree .issuetree--myitem .issuetree__content {
-      margin-left: 24px;
-      margin-right: 0;
-      background-color: #d5ffd5;
-      border: 1px solid #a7efa7; }
     .incense .issuetree .issuetree__voteuser {
       padding: 0;
       margin: 0; }

@@ -138,6 +138,8 @@
 		}
 	}
 	.incense__message-unit{
+		display: flex;
+		flex-direction: row;
 		font-size:13px;
 		padding: 0.5em;
 		margin: 0 0 1px 0;
@@ -149,6 +151,23 @@
 
 		&:last-child{
 			border: none;
+		}
+		.incense__message-unit__owner-icon{
+			display: block;
+			width: 30px;
+			height: 30px;
+			overflow: hidden;
+			background-color: #ddd;
+			margin-right: 10px;
+			border-radius: 50%;
+			img{
+				width: 100%;
+				height: 100%;
+			}
+		}
+		.incense__message-unit__message-body{
+			display: block;
+			width: calc(100% - 40px);
 		}
 		.incense__message-unit__owner{
 			font-weight: bold;
@@ -183,6 +202,12 @@
 			}
 		}
 		&--myitem{
+			flex-direction: row-reverse;
+
+			.incense__message-unit__owner-icon{
+				margin-right: 0px;
+				margin-left: 10px;
+			}
 			.incense__message-unit__owner{
 				text-align: right;
 			}

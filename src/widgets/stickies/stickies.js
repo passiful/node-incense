@@ -121,7 +121,7 @@ module.exports = function( incense, $widget ){
 			userMessage = 'stickies の内容 "'+before + '" を削除しました。';
 		}
 		incense.insertTimeline( message, $messageUnit
-			.append( $('<div>').text(userMessage) )
+			.append( $('<div class="incense__message-unit__operation">').text(userMessage) )
 			.append( $('<div class="incense__message-unit__targetWidget">').append( incense.widgetMgr.mkLinkToWidget( message.targetWidget ) ) )
 		);
 

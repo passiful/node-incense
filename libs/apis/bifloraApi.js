@@ -4,6 +4,9 @@
 module.exports = (function(){
 	// delete(require.cache[require('path').resolve(__filename)]);
 	var it79 = require('iterate79');
+	var utils79 = require('utils79');
+
+	var icon_default = 'data:image/png;base64,'+utils79.base64_encode( require('fs').readFileSync(__dirname+'/../resources/icon_default.png') );
 
 	return new (function(){
 		var connectionList = {};
@@ -16,6 +19,9 @@ module.exports = (function(){
 		var logoutTimer = {};
 
 		function setUserLoginData(data, userInfo){
+			console.log('------------=------------');
+			console.log('setting user login data;');
+			console.log(data.connectionId);
 			connectionList[data.connectionId] = {
 				'connectionId': data.connectionId,
 				'userInfo': userInfo,
@@ -25,11 +31,13 @@ module.exports = (function(){
 				userList[data.boardId] = {};
 			}
 			userList[data.boardId][userInfo.id] = connectionList[data.connectionId];
-			console.log('------------=------------=------------=------------=------------=------------');
+
 			if(logoutTimer[data.boardId]){
 				clearTimeout( logoutTimer[data.boardId][userInfo.id] );
 				delete( logoutTimer[data.boardId][userInfo.id] );
 			}
+			console.log(connectionList);
+			console.log('/ ------------=------------');
 			return true;
 		}
 
@@ -97,24 +105,35 @@ module.exports = (function(){
 							if( tmpContent.operation == 'userLogin' ){
 								// ユーザーがログインを試みた場合
 								main.getUserInfo( biflora.socket, tmpContent.userInfo, function(userInfo){
+									if( userInfo === false ){
+										callback(false);
+										return;
+									}
+									if( !userInfo.icon ){
+										userInfo.icon = icon_default;
+									}
 									if( typeof(logoutTimer[data.boardId]) != typeof({}) ){
 										logoutTimer[data.boardId] = {}; // initialize
 									}
-									if( logoutTimer[data.boardId][tmpContent.userInfo.id] ){
-										setUserLoginData(data, tmpContent.userInfo);
+									if( logoutTimer[data.boardId][userInfo.id] ){
+										console.log( userInfo.id + ' のログアウトタイマーをキャンセルしました。' );
+										setUserLoginData(data, userInfo);
 										callback(true);
 										return;
 									}
 
 									for( var idx in connectionList ){
-										if( userList[data.boardId][tmpContent.userInfo.id] ){
+										if( userList[data.boardId][userInfo.id] ){
 											// 既にログイン済みのため、ログイン処理を行わない
-											console.log( tmpContent.userInfo.id + ' は、既にログインしています。' );
+											console.log( userInfo.id + ' は、既にログインしています。' );
 											callback(true);
 											return;
 										}
 									}
-									setUserLoginData(data, tmpContent.userInfo);
+
+									setUserLoginData(data, userInfo);
+									tmpContent.userInfo = userInfo;
+									data.content = JSON.stringify(tmpContent);
 									it1.next(arg);
 									return;
 								} );

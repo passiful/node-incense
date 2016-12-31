@@ -366,6 +366,7 @@ window.Incense = function(){
 						'contentType': 'application/x-passiflora-command'
 					},
 					function(rtn){
+						// console.log(rtn);
 						rlv();
 					}
 				);
@@ -453,8 +454,8 @@ window.Incense = function(){
 	/**
 	 * メインタイムラインにメッセージを表示する
 	 */
-	this.insertTimeline = function( message, $messageUnit ){
-		$messageUnit = $messageUnit || $('<div>');
+	this.insertTimeline = function( message, $messageContent ){
+		$messageContent = $messageContent || $('<div>');
 		var $message = $('<div>')
 			.addClass('incense__message-unit')
 			.attr({
@@ -469,14 +470,32 @@ window.Incense = function(){
 		}
 		// console.log( this.userMgr.getAll() );
 		var ownerInfo = this.userMgr.get(message.owner);
+		$userIcon = $('<div class="incense__message-unit__owner-icon">');
+		if( ownerInfo.icon ){
+			$userIcon
+				.append( $('<img>')
+					.attr({
+						'src': ownerInfo.icon
+					})
+					.css({
+						'width': 30,
+						'height': 30
+					})
+				)
+			;
+		}
 		$message
-			.append( $('<div class="incense__message-unit__owner">')
-				.append( $('<span class="incense__message-unit__owner-name">').text(ownerInfo.name) )
-				.append( $('<span class="incense__message-unit__owner-id">').text(ownerInfo.id) )
+			.append( $userIcon )
+			.append( $('<div class="incense__message-unit__message-body">')
+				.append( $('<div class="incense__message-unit__owner">')
+					.append( $('<span class="incense__message-unit__owner-name">').text(ownerInfo.name) )
+					.append( $('<span class="incense__message-unit__owner-id">').text(ownerInfo.id) )
+				)
+				.append( $messageContent )
 			)
 		;
 
-		$timelineList.append( $message.append( $messageUnit ) );
+		$timelineList.append( $message );
 
 		this.adjustTimelineScrolling($timelineList);
 

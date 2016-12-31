@@ -32,7 +32,12 @@ biflora.setupWebSocket(
 		'dataDir': '/path/to/datadir/', // <- data directory (Read/Write permission required)
 		'getUserInfo': function( socket, clientDefaultUserInfo, callback ){
 			// provide user info.
-			// eg: {'id': 'user_id', 'name': 'User Name'}
+			// e.g. {
+			//     'id': 'user_id',
+			//     'name': 'User Name',
+			//     'url': 'http://example.com/',
+			//     'icon': 'http://example.com/sample.png'
+			// }
 			callback(clientDefaultUserInfo);
 			return;
 		}
@@ -113,6 +118,7 @@ server.listen( 3000, function(){
 - ウィンドウサイズ変更時に、選択状態の表示を更新するようにした。
 - `#widget.36` のようなハッシュをつけてアクセスすると、ウィジェットにフォーカスした画面からスタートできるようになった。
 - ログイン、ログアウトまわりの処理を調整した。
+- ユーザー情報に `url` と `icon` を追加。
 
 ### incense@0.1.0 (2016-12-29)
 

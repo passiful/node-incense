@@ -10,12 +10,13 @@ module.exports = function( app, $timelineList, $field, $fieldInner ){
 	 * ユーザー情報を登録する
 	 */
 	this.login = function(userInfo, callback){
+		// console.log(userInfo);
 		callback = callback || function(err, userInfo){};
 		var err = null;
 		var rtn = false;
 		try {
 			if( !userInfo.id.length ){
-				callback();return;
+				callback(err, rtn);return;
 			}else{
 				userList[userInfo.id] = userInfo;
 				rtn = userList[userInfo.id];
