@@ -490,6 +490,7 @@ window.Incense = function(){
 			.append( $userIcon )
 			.append( $('<div class="incense__message-unit__message-body">')
 				.append( $('<div class="incense__message-unit__owner">')
+					.attr({'title': new Date(message.microtime)})
 					.append( $('<span class="incense__message-unit__owner-name">').text(ownerInfo.name) )
 					.append( $('<span class="incense__message-unit__owner-id">').text(ownerInfo.id) )
 				)
@@ -578,7 +579,7 @@ window.Incense = function(){
 
 		function getCenterOfGravity($elm){
 			// console.log($elm.position().left, $elm.outerWidth());
-			console.log(($elm.position().left*(1/zoomRate)), $elm.outerWidth());
+			// console.log(($elm.position().left*(1/zoomRate)), $elm.outerWidth());
 			var toX = 0 + ($elm.position().left*(1/zoomRate)) + $elm.outerWidth()/2;
 			if( toX < 0 ){ toX = 0; }
 			var toY = 0 + ($elm.position().top*(1/zoomRate)) + $elm.outerHeight()/2;
