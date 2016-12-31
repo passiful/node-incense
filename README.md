@@ -90,7 +90,9 @@ server.listen( 3000, function(){
 					'boardId': 1234567890, // <- discussion board name
 					'userInfo': {
 						'id': 'tester', // <- login user id
-						'name': 'Test User' // <- login user name
+						'name': 'Test User', // <- login user name
+					    'url': 'http://example.com/', // <- login user profile page
+					    'icon': 'http://example.com/sample.png' // <- login user icon
 					}
 				},
 				function(){
