@@ -18220,6 +18220,7 @@ window.Incense = function(){
 		$fieldOuter,
 		$fieldInner;
 	var boardId;
+	var zoomRate = 1;
 
 	/**
 	 * 初期化
@@ -18744,6 +18745,23 @@ window.Incense = function(){
 			callback( widgetList );
 		});
 		return;
+	}
+
+	/**
+	 * ボードの拡大率を設定する
+	 */
+	this.zoom = function( rate ){
+		zoomRate = rate;
+		$fieldOuter.find('>div').css({
+			'transform': 'scale('+zoomRate+','+zoomRate+')'
+		});
+	}
+
+	/**
+	 * ボードの拡大率を取得する
+	 */
+	this.getZoomRate = function( rate ){
+		return zoomRate;
 	}
 
 	/**

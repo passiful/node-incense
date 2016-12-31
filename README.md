@@ -111,6 +111,8 @@ server.listen( 3000, function(){
 - incense.getBoardId() : ボードIDを取得する
 - incense.getWidgetList( callback ) : ウィジェットの一覧を取得する
 - incense.sendMessage( msg, callback ) : メッセージを送信する
+- incense.zoom() : ボードの拡大率を設定する
+- incense.getZoomRate() : ボードの拡大率を取得する
 
 
 ## 更新履歴 - Change log
@@ -121,6 +123,7 @@ server.listen( 3000, function(){
 - `#widget.36` のようなハッシュをつけてアクセスすると、ウィジェットにフォーカスした画面からスタートできるようになった。
 - ログイン、ログアウトまわりの処理を調整した。
 - ユーザー情報に `url` と `icon` を追加。
+- ズームAPI `zoom()` 、 `getZoomRate()` 追加。
 
 ### incense@0.1.0 (2016-12-29)
 
