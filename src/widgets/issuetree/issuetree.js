@@ -569,10 +569,15 @@ module.exports = function( incense, $widget ){
 		// var $detailBodySubIssues = $detailBody.find('.issuetree__sub-issues');
 		$detailBodyParentIssue.html('---');
 		if( _this.parent && incense.widgetMgr.get(_this.parent) ){
-			$detailBodyParentIssue.html('').append( $('<div>')
-				.append( $('<div>').text(incense.widgetMgr.get(_this.parent).issue) )
-				.append( $('<div>').append( incense.widgetMgr.mkLinkToWidget( _this.parent ) ) )
-			);
+			var $link = incense.widgetMgr.mkLinkToWidget( _this.parent );
+			$detailBodyParentIssue.html('')
+				.append( $link
+					.html('')
+					.addClass('issuetree__issue-unit')
+					.append( $('<div>').text(incense.widgetMgr.get(_this.parent).issue) )
+					.append( $('<div class="issuetree__issue-unit--widget-id">').append( '#widget.'+_this.parent ) )
+				)
+			;
 		}
 
 		incense.widgetMgr.getChildren( _this.id, function(children){
@@ -582,8 +587,12 @@ module.exports = function( incense, $widget ){
 				var $ul = $('<ul>');
 				for( var idx in children ){
 					var $li = $('<li>')
-						.append( $('<div>').text(children[idx].issue) )
-						.append( $('<div>').append( incense.widgetMgr.mkLinkToWidget( children[idx].id ) ) )
+						.append( incense.widgetMgr.mkLinkToWidget( children[idx].id )
+							.html('')
+							.addClass('issuetree__issue-unit')
+							.append( $('<div>').text(children[idx].issue) )
+							.append( $('<div class="issuetree__issue-unit--widget-id">').append( '#widget.'+children[idx].id ) )
+						)
 					;
 					$ul.append( $li );
 				}

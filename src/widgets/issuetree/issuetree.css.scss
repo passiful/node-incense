@@ -71,11 +71,9 @@
 
 
 	.issuetree__parent-issue{
-		border: 1px solid #999;
-		padding: 1em;
-		border-radius: 0.5em;
 		margin: 0.5em 0;
 	}
+
 	.issuetree__sub-issues{
 		margin: 0.5em 0;
 		ul{
@@ -83,11 +81,28 @@
 			li{
 				display: block;
 				list-style-type: none;
-				border: 1px solid #999;
-				padding: 1em;
-				border-radius: 0.5em;
-				margin: 0.5em 0;
+				padding: 0;
+				margin: 0;
 			}
+		}
+	}
+
+	.issuetree__issue-unit{
+		display: block;
+		border: 1px solid #eee;
+		background-color: #f9f9f9;
+		color: #006;
+		font-size: 80%;
+		padding: 1em;
+		border-radius: 3px;
+		margin: 5px 0;
+		&--widget-id{
+			text-align: right;
+			font-size: 80%;
+		}
+		&:hover{
+			text-decoration: none;
+			background-color: #f0f0f0;
 		}
 	}
 
