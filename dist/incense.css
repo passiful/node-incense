@@ -52,8 +52,6 @@
     position: absolute;
     top: 0;
     right: 0;
-    width: 30%;
-    height: 100%;
     overflow: hidden; }
     .incense.incense__timeline .incense__timeline_list {
       position: absolute;
