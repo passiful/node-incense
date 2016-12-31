@@ -206,23 +206,21 @@
     font-size: 100%; }
   .incense .issuetree {
     background-color: #fff; }
-    .incense .issuetree.issuetree--status-active {
-      border-left: 7px solid #fe9; }
-    .incense .issuetree.issuetree--status-fixed {
-      border-left: 7px solid #6e9; }
-    .incense .issuetree.issuetree--status-no-active {
-      border-left: 7px solid #666; }
     .incense .issuetree .issuetree__block {
       padding: 5px 0;
       margin: 0.5em 0; }
     .incense .issuetree .issuetree__heading {
       font-weight: bold;
-      border-left: 3px solid #999;
+      border-left: 3px solid #3399ff;
       padding: 0 1em; }
       .incense .issuetree .issuetree__heading .issuetree__edit-button {
         margin-left: 1em;
         font-size: 80%;
         font-weight: normal; }
+    .incense .issuetree.issuetree--status-active .issuetree__heading {
+      border-left-color: #fe9; }
+    .incense .issuetree.issuetree--status-fixed .issuetree__heading {
+      border-left-color: #6e9; }
     .incense .issuetree .issuetree__discussion-timeline--timeline {
       height: 300px;
       overflow: auto; }
@@ -278,12 +276,19 @@
         background-color: #f0f0f0; }
     .incense .issuetree--widget {
       border: 1px solid #ddd;
+      border-left: 7px solid #3399ff;
       padding: 5px;
       font-size: 11px;
       width: 240px; }
       .incense .issuetree--widget .issuetree__issue {
         font-size: 11px;
         font-weight: bold; }
+      .incense .issuetree--widget.issuetree--status-active {
+        border-left: 7px solid #fe9; }
+      .incense .issuetree--widget.issuetree--status-fixed {
+        border-left: 7px solid #6e9; }
+      .incense .issuetree--widget.issuetree--status-no-active {
+        border-left: 7px solid #3399ff; }
   .incense .stickies {
     font-size: 11px;
     min-width: 80px;

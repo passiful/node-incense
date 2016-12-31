@@ -1,15 +1,9 @@
 .issuetree{
-	background-color: #fff;
+	$color--stats-active: #fe9;
+	$color--stats-fixed: #6e9;
+	$color--stats-no-active: #3399ff;
 
-	&.issuetree--status-active{
-		border-left: 7px solid #fe9;
-	}
-	&.issuetree--status-fixed{
-		border-left: 7px solid #6e9;
-	}
-	&.issuetree--status-no-active{
-		border-left: 7px solid #666;
-	}
+	background-color: #fff;
 
 	.issuetree__block{
 		padding:5px 0;
@@ -17,13 +11,23 @@
 	}
 	.issuetree__heading{
 		font-weight: bold;
-		border-left: 3px solid #999;
+		border-left: 3px solid $color--stats-no-active;
 		padding: 0 1em;
 
 		.issuetree__edit-button{
 			margin-left: 1em;
 			font-size: 80%;
 			font-weight: normal;
+		}
+	}
+	&.issuetree--status-active{
+		.issuetree__heading{
+			border-left-color: $color--stats-active;
+		}
+	}
+	&.issuetree--status-fixed{
+		.issuetree__heading{
+			border-left-color: $color--stats-fixed;
 		}
 	}
 
@@ -106,14 +110,27 @@
 		}
 	}
 
+	&--modal{
+	}
+
 	&--widget{
 		border: 1px solid #ddd;
+		border-left: 7px solid $color--stats-no-active;
 		padding: 5px;
 		font-size: 11px;
 		width: 240px;
 		.issuetree__issue{
 			font-size: 11px;
 			font-weight: bold;
+		}
+		&.issuetree--status-active{
+			border-left: 7px solid $color--stats-active;
+		}
+		&.issuetree--status-fixed{
+			border-left: 7px solid $color--stats-fixed;
+		}
+		&.issuetree--status-no-active{
+			border-left: 7px solid $color--stats-no-active;
 		}
 	}
 

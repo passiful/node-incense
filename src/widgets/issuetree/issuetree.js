@@ -10,6 +10,7 @@ module.exports = function( incense, $widget ){
 	this.answer = '1. 賛成'+"\n"+'2. 反対';
 	this.vote = {};
 	this.status = 'open';
+	this.commentCount = 0;
 
 	function editIssue(){
 		mode = 'edit';
@@ -49,7 +50,7 @@ module.exports = function( incense, $widget ){
 		$detailBodyAnswer_textarea.focus();
 	}
 
-	var $widgetBody = $('<div class="issuetree issuetree--widget issuetree--status-no-active">')
+	var $widgetBody = $('<div class="issuetree issuetree--widget">')
 		.append( $('<div class="row">')
 			.append( $('<div class="col-sm-6">')
 				.append( $('<div class="issuetree__block">')
@@ -66,7 +67,7 @@ module.exports = function( incense, $widget ){
 		)
 		.append( $('<div class="issuetree__comment-count">') )
 	;
-	var $detailBody = $('<div class="issuetree">')
+	var $detailBody = $('<div class="issuetree issuetree--modal">')
 		.append( $('<div class="row">')
 			.append( $('<div class="col-sm-6">')
 				.append( $('<div class="issuetree__block">')
@@ -106,7 +107,7 @@ module.exports = function( incense, $widget ){
 								.append( $('<span>')
 									.text('あなたの現在の立場 : ')
 								)
-								.append( $('<select>') )
+								.append( $('<select style="max-width: 100%;">') )
 							)
 							.append( $('<textarea class="form-control issuetree__discussion-timeline--chat-comment">') )
 						)
@@ -302,8 +303,7 @@ module.exports = function( incense, $widget ){
 			]
 		});
 
-		updateStatus();
-		updateAnswer();
+		updateView();
 		updateRelations();
 
 		setTimeout(function(){
@@ -329,9 +329,10 @@ module.exports = function( incense, $widget ){
 	;
 
 	/**
-	 * 答欄を更新する
+	 * 表示を更新する
 	 */
-	function updateAnswer(){
+	function updateView(callback){
+		callback = callback || function(){};
 		var optionValueList = {};
 		var myAnswer = _this.vote[incense.getUserInfo().id];
 		$detailBodyAnswer.html( incense.detoxHtml( incense.markdown(_this.answer) ) || 'no-answer' );
@@ -445,22 +446,19 @@ module.exports = function( incense, $widget ){
 
 		$widgetBody
 			.removeClass('issuetree--status-active')
-			.removeClass('issuetree--status-no-active')
+			.removeClass('issuetree--status-fixed')
+		;
+		$detailBody
+			.removeClass('issuetree--status-active')
 			.removeClass('issuetree--status-fixed')
 		;
 		if( _this.status == 'close' ){
-			$widgetBody
-				.addClass('issuetree--status-fixed')
-			;
+			$widgetBody.addClass('issuetree--status-fixed');
+			$detailBody.addClass('issuetree--status-fixed');
 		}else{
-			if( maxAnswerCount > 1 || otherVoteCount ){
-				$widgetBody
-					.addClass('issuetree--status-active')
-				;
-			}else{
-				$widgetBody
-					.addClass('issuetree--status-no-active')
-				;
+			if( _this.commentCount >= 1 ){
+				$widgetBody.addClass('issuetree--status-active');
+				$detailBody.addClass('issuetree--status-active');
 			}
 		}
 
@@ -494,16 +492,8 @@ module.exports = function( incense, $widget ){
 				.text(myAnswer)
 			);
 		}
-		// console.log(optionValueList);
-		// console.log(optionValueList);
-		// $yourStanceSelector
-	}
 
-	/**
-	 * 課題のステータス表示を更新する
-	 */
-	function updateStatus(callback){
-		callback = callback || function(){};
+		// updateStatus --------
 		$detailBodyStatus
 			.html('')
 			.append(
@@ -538,7 +528,7 @@ module.exports = function( incense, $widget ){
 			)
 		;
 
-	} // updateStatus()
+	} // updateView()
 
 	/**
 	 * 投票操作のメッセージを送信する
@@ -660,9 +650,11 @@ module.exports = function( incense, $widget ){
 			case 'comment':
 				// コメントの投稿
 				userMessage = incense.detoxHtml( incense.markdown( message.content.comment ) );
+				this.commentCount ++;
+				updateView();
 
 				var totalCommentCount = $detailBodyTimeline.find('>div').size();
-				$widgetBody.find('.issuetree__comment-count').text( (totalCommentCount+1) + '件のコメント' );
+				$widgetBody.find('.issuetree__comment-count').text( (this.commentCount) + '件のコメント' );
 
 				// 詳細画面のディスカッションに追加
 				$detailBodyTimeline.append( mkTimelineElement(
@@ -700,7 +692,7 @@ module.exports = function( incense, $widget ){
 			case 'update_answer':
 				// 答の更新
 				_this.answer = message.content.val;
-				updateAnswer();
+				updateView();
 
 				// 詳細画面のディスカッションに追加
 				$detailBodyTimeline.append( mkTimelineElement(
@@ -718,8 +710,7 @@ module.exports = function( incense, $widget ){
 			case 'changeStatusTo':
 				// console.log(message.content);
 				_this.status = message.content.option;
-				updateStatus();
-				updateAnswer();
+				updateView();
 
 				var timelineMessage = user.name + ' は、問を' + (_this.status=='open'?'再び開きました':'完了しました') + '。';
 
@@ -739,7 +730,7 @@ module.exports = function( incense, $widget ){
 			case 'vote':
 				// 投票更新
 				_this.vote[message.owner] = message.content.option;
-				updateAnswer();
+				updateView();
 
 				// 詳細画面のディスカッションに追加
 				$detailBodyTimeline.append( mkTimelineElement(
