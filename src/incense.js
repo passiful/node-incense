@@ -577,9 +577,11 @@ window.Incense = function(){
 		// <path stroke="black" stroke-width="2" fill="none" d="M120,170 180,170 150,230z" />
 
 		function getCenterOfGravity($elm){
-			var toX = 0 - $field.offset().left + $fieldOuter.scrollLeft() + $elm.offset().left + $elm.outerWidth()/2;
+			// console.log($elm.position().left, $elm.outerWidth());
+			console.log(($elm.position().left*(1/zoomRate)), $elm.outerWidth());
+			var toX = 0 + ($elm.position().left*(1/zoomRate)) + $elm.outerWidth()/2;
 			if( toX < 0 ){ toX = 0; }
-			var toY = 0 - $field.offset().top + $fieldOuter.scrollTop() + $elm.offset().top + $elm.outerHeight()/2;
+			var toY = 0 + ($elm.position().top*(1/zoomRate)) + $elm.outerHeight()/2;
 			if( toY < 0 ){ toY = 0; }
 			return {'x':toX, 'y':toY};
 		}
