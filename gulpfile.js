@@ -4,6 +4,7 @@ console.log(conf);
 
 var gulp = require('gulp');
 var sass = require('gulp-sass');//CSSコンパイラ
+var sassInlineImage = require('sass-inline-image');//gulp-sass で inline-image を使えるようにする
 var autoprefixer = require("gulp-autoprefixer");//CSSにベンダープレフィックスを付与してくれる
 var uglify = require("gulp-uglify");//JavaScriptファイルの圧縮ツール
 var concat = require('gulp-concat');//ファイルの結合ツール
@@ -36,7 +37,9 @@ gulp.task("replace-package-dist", function() {
 gulp.task('.css.scss', function(){
 	gulp.src(["src/**/*.css.scss","!src/**/_*.css.scss"])
 		.pipe(plumber())
-		.pipe(sass())
+		.pipe(sass({
+			functions: sassInlineImage({ /* options */ })
+		}))
 		.pipe(autoprefixer())
 		.pipe(rename({extname: ''}))
 		.pipe(gulp.dest( './dist/' ))
