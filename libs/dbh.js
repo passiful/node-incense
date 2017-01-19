@@ -35,6 +35,8 @@ module.exports = function(conf, main){
 		var tbls = {};
 		tbls.timeline = sequelize.define('timeline',
 			{
+				'boardId': { type: Sequelize.STRING },
+				'boardMessageId': { type: Sequelize.BIGINT },
 				'content': { type: Sequelize.STRING },
 				'contentType': { type: Sequelize.STRING },
 				'targetWidget': { type: Sequelize.STRING },
@@ -86,6 +88,8 @@ module.exports = function(conf, main){
 		this.initDb(boardId, function(){
 
 			dbs[boardId].tbls.timeline.create({
+				'boardId': boardId,
+				'boardMessageId': message.boardMessageId,
 				'content': message.content,
 				'contentType': message.contentType,
 				'targetWidget': message.targetWidget,
@@ -114,7 +118,11 @@ module.exports = function(conf, main){
 		this.initDb(boardId, function(){
 
 			dbs[boardId].tbls.timeline
-				.findAndCountAll({})
+				.findAndCountAll({
+					"where":{
+						"boardId": boardId
+					}
+				})
 				.then(function(result) {
 					result.rows = JSON.parse(JSON.stringify(result.rows));
 					// console.log(result);
