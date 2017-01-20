@@ -18205,7 +18205,6 @@ window.Incense = function(){
 	var it79 = require('iterate79');
 	var twig = require('twig');
 	var biflora,
-		Keypress,
 		userInfo = {
 			'id': '',
 			'name': ''
@@ -18407,48 +18406,10 @@ window.Incense = function(){
 					}
 				);
 
-				if( !window.keypress ){
-					console.error('incense: window.keypress is not exists.');
-					rlv();
-					return;
-				}
-				var cmdKeyName = (function(ua){
-					// console.log(ua);
-					var idxOf = ua.indexOf( 'Mac OS X' );
-					if( idxOf >= 0 ){
-						return 'cmd';
-					}
-					return 'ctrl';
-				})(window.navigator.userAgent);
-				// console.log(cmdKeyName);
+				require('./libs/_keypress.js')(_this, function(){
 
-				Keypress = new window.keypress.Listener();
-				_this.Keypress = Keypress;
-				Keypress.simple_combo("backspace", function(e) {
-					switch(e.target.tagName.toLowerCase()){
-						case 'input': case 'textarea':
-						return true; break;
-					}
-					e.preventDefault();
 				});
-				Keypress.simple_combo("delete", function(e) {
-					switch(e.target.tagName.toLowerCase()){
-						case 'input': case 'textarea':
-						return true; break;
-					}
-					e.preventDefault();
-				});
-				Keypress.simple_combo("escape", function(e) {
-					switch(e.target.tagName.toLowerCase()){
-						case 'input': case 'textarea':
-						return true; break;
-					}
-					e.preventDefault();
-				});
-				// Keypress.simple_combo(cmdKeyName+" x", function(e) {
-				// 	px.message('cmd x');
-				// 	e.preventDefault();
-				// });
+
 				rlv();
 			}); })
 			.then(function(){ return new Promise(function(rlv, rjt){
@@ -18845,7 +18806,7 @@ window.Incense = function(){
 
 };
 
-},{"./apis/_locker.js":80,"./apis/_receiveBroadcast.js":81,"./libs/_detoxHtml.js":83,"./libs/_fieldContextMenu.js":84,"./libs/_locker.js":85,"./libs/_markdown.js":86,"./libs/_messageOperator.js":87,"./libs/_modal.js":88,"./libs/_userMgr.js":89,"./libs/_widgetBase.js":90,"./libs/_widgetMgr.js":91,"./widgets/issuetree/issuetree.js":92,"./widgets/stickies/stickies.js":93,"es6-promise":4,"iterate79":8,"jquery":9,"twig":13,"utils79":15}],83:[function(require,module,exports){
+},{"./apis/_locker.js":80,"./apis/_receiveBroadcast.js":81,"./libs/_detoxHtml.js":83,"./libs/_fieldContextMenu.js":84,"./libs/_keypress.js":85,"./libs/_locker.js":86,"./libs/_markdown.js":87,"./libs/_messageOperator.js":88,"./libs/_modal.js":89,"./libs/_userMgr.js":90,"./libs/_widgetBase.js":91,"./libs/_widgetMgr.js":92,"./widgets/issuetree/issuetree.js":93,"./widgets/stickies/stickies.js":94,"es6-promise":4,"iterate79":8,"jquery":9,"twig":13,"utils79":15}],83:[function(require,module,exports){
 /**
  * 投稿されたHTMLを無害化する - _detoxHtml.js
  */
@@ -19051,6 +19012,79 @@ module.exports = function( app, $fieldContextMenu ){
 
 },{"jquery":9}],85:[function(require,module,exports){
 /**
+ * keypress.js
+ */
+module.exports = function( incense ){
+	var Keypress;
+	var cmdKeyName = (function(ua){
+		// console.log(ua);
+		var idxOf = ua.indexOf( 'Mac OS X' );
+		if( idxOf >= 0 ){
+			return 'cmd';
+		}
+		return 'ctrl';
+	})(window.navigator.userAgent);
+	// console.log(cmdKeyName);
+
+
+	if( !window.keypress ){
+		console.error('incense: window.keypress is not exists.');
+		rlv();
+		return;
+	}
+
+	Keypress = new window.keypress.Listener();
+	incense.Keypress = Keypress;
+	Keypress.simple_combo("backspace", function(e) {
+		switch(e.target.tagName.toLowerCase()){
+			case 'input': case 'textarea':
+			return true; break;
+		}
+		e.preventDefault();
+	});
+	Keypress.simple_combo("delete", function(e) {
+		switch(e.target.tagName.toLowerCase()){
+			case 'input': case 'textarea':
+			return true; break;
+		}
+		e.preventDefault();
+	});
+	Keypress.simple_combo("escape", function(e) {
+		switch(e.target.tagName.toLowerCase()){
+			case 'input': case 'textarea':
+			return true; break;
+		}
+		e.preventDefault();
+	});
+
+	Keypress.simple_combo(cmdKeyName+" -", function(e) {
+		var zoomRate = incense.getZoomRate();
+		zoomRate = zoomRate - 0.2;
+		if( zoomRate < 0.2 ){
+			zoomRate = 0.2;
+		}
+		incense.zoom( zoomRate );
+		e.preventDefault();
+	});
+	Keypress.simple_combo(cmdKeyName+" =", function(e) {
+		var zoomRate = incense.getZoomRate();
+		zoomRate = zoomRate + 0.2;
+		if( zoomRate > 3 ){
+			zoomRate = 3;
+		}
+		incense.zoom( zoomRate );
+		e.preventDefault();
+	});
+	Keypress.simple_combo(cmdKeyName+" 0", function(e) {
+		incense.zoom( 1 );
+		e.preventDefault();
+	});
+
+	return;
+}
+
+},{}],86:[function(require,module,exports){
+/**
  * lockApi - locker.js
  */
 module.exports = function( incense ){
@@ -19148,7 +19182,7 @@ module.exports = function( incense ){
 	return;
 }
 
-},{}],86:[function(require,module,exports){
+},{}],87:[function(require,module,exports){
 /**
  * Markdown 変換する - _markdown.js
  */
@@ -19173,7 +19207,7 @@ module.exports = function( md ){
 	return $div.html();
 }
 
-},{"jquery":9,"marked":10}],87:[function(require,module,exports){
+},{"jquery":9,"marked":10}],88:[function(require,module,exports){
 /**
  * messageOperator.js
  */
@@ -19405,7 +19439,7 @@ module.exports = function( app, $timelineList, $fieldInner ){
 	return;
 }
 
-},{"es6-promise":4,"iterate79":8,"jquery":9}],88:[function(require,module,exports){
+},{"es6-promise":4,"iterate79":8,"jquery":9}],89:[function(require,module,exports){
 /**
  * _modal.js
  */
@@ -19514,7 +19548,7 @@ module.exports = function($field){
 
 }
 
-},{"jquery":9}],89:[function(require,module,exports){
+},{"jquery":9}],90:[function(require,module,exports){
 /**
  * userMgr.js
  */
@@ -19593,7 +19627,7 @@ module.exports = function( app, $timelineList, $field, $fieldInner ){
 	return;
 }
 
-},{}],90:[function(require,module,exports){
+},{}],91:[function(require,module,exports){
 /**
  * widgets: base class
  */
@@ -19624,7 +19658,7 @@ module.exports = function( incense, $widget ){
 	return;
 }
 
-},{}],91:[function(require,module,exports){
+},{}],92:[function(require,module,exports){
 /**
  * widgetMgr.js
  */
@@ -20047,7 +20081,7 @@ module.exports = function( incense, $timelineList, $field, $fieldOuter, $fieldIn
 	return;
 }
 
-},{"jquery":9,"underscore":14}],92:[function(require,module,exports){
+},{"jquery":9,"underscore":14}],93:[function(require,module,exports){
 /**
  * widgets: issuetree.js
  */
@@ -20823,7 +20857,7 @@ module.exports = function( incense, $widget ){
 	return;
 }
 
-},{"jquery":9}],93:[function(require,module,exports){
+},{"jquery":9}],94:[function(require,module,exports){
 /**
  * widgets: stickies.js
  */

@@ -8,7 +8,6 @@ window.Incense = function(){
 	var it79 = require('iterate79');
 	var twig = require('twig');
 	var biflora,
-		Keypress,
 		userInfo = {
 			'id': '',
 			'name': ''
@@ -210,48 +209,10 @@ window.Incense = function(){
 					}
 				);
 
-				if( !window.keypress ){
-					console.error('incense: window.keypress is not exists.');
-					rlv();
-					return;
-				}
-				var cmdKeyName = (function(ua){
-					// console.log(ua);
-					var idxOf = ua.indexOf( 'Mac OS X' );
-					if( idxOf >= 0 ){
-						return 'cmd';
-					}
-					return 'ctrl';
-				})(window.navigator.userAgent);
-				// console.log(cmdKeyName);
+				require('./libs/_keypress.js')(_this, function(){
 
-				Keypress = new window.keypress.Listener();
-				_this.Keypress = Keypress;
-				Keypress.simple_combo("backspace", function(e) {
-					switch(e.target.tagName.toLowerCase()){
-						case 'input': case 'textarea':
-						return true; break;
-					}
-					e.preventDefault();
 				});
-				Keypress.simple_combo("delete", function(e) {
-					switch(e.target.tagName.toLowerCase()){
-						case 'input': case 'textarea':
-						return true; break;
-					}
-					e.preventDefault();
-				});
-				Keypress.simple_combo("escape", function(e) {
-					switch(e.target.tagName.toLowerCase()){
-						case 'input': case 'textarea':
-						return true; break;
-					}
-					e.preventDefault();
-				});
-				// Keypress.simple_combo(cmdKeyName+" x", function(e) {
-				// 	px.message('cmd x');
-				// 	e.preventDefault();
-				// });
+
 				rlv();
 			}); })
 			.then(function(){ return new Promise(function(rlv, rjt){
