@@ -13,6 +13,12 @@
 			overflow: auto;
 			z-index: 2000;
 
+			>div{
+				transition-property: transform;
+				transition-duration: 0.2s;
+				transition-timing-function: linear;
+			}
+
 			.incense__board-contextmenu{
 				position: absolute;
 				top: 0;

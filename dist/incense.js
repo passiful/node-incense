@@ -18755,18 +18755,34 @@ window.Incense = function(){
 	/**
 	 * ボードの拡大率を設定する
 	 */
-	this.zoom = function( rate ){
-		zoomRate = rate;
+	this.zoom = function( rateTo ){
+		var scrollInfo = {
+			"width": $fieldOuter.width(),
+			"height": $fieldOuter.height(),
+			"scrollTop": $fieldOuter.scrollTop(),
+			"scrollLeft": $fieldOuter.scrollLeft()
+		};
+		var currentRate = (1/zoomRate);
+		var center = {
+			"top": (scrollInfo.scrollTop + (scrollInfo.height/2)) * (1/zoomRate),
+			"left": (scrollInfo.scrollLeft + (scrollInfo.width/2)) * (1/zoomRate)
+		};
+
+		zoomRate = rateTo;
 		$fieldOuter.find('>div').css({
 			'transform': 'scale('+zoomRate+','+zoomRate+')',
 			'transform-origin': '0 0'
 		});
+		$fieldOuter.animate({
+			'scrollTop': (center.top * zoomRate) - (scrollInfo.height/2),
+			'scrollLeft': (center.left * zoomRate) - (scrollInfo.width/2)
+		}, { 'duration': 200, 'easing': 'linear' });
 	}
 
 	/**
 	 * ボードの拡大率を取得する
 	 */
-	this.getZoomRate = function( rate ){
+	this.getZoomRate = function(){
 		return zoomRate;
 	}
 
