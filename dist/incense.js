@@ -19427,7 +19427,7 @@ module.exports = function($field){
 			+ '      </div>'+"\n"
 			+ '    </div><!-- /.incense-modal__content -->'+"\n"
 			+ '  </div><!-- /.incense-modal__dialog -->'+"\n"
-			+ '</div><!-- /.incense-modal -->'
+			+ '<!-- /.incense-modal --></div>'
 	;
 
 	var $dialog;
@@ -19488,6 +19488,7 @@ module.exports = function($field){
 			$dialog.hide();
 			setTimeout(function(){
 				incense.widgetMgr.updateSelection();
+				$dialog.remove();
 				callback();
 			}, 110);
 			return $dialog;
