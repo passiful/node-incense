@@ -9832,17 +9832,22 @@ module.exports = function( incense, $widget ){
 	function editIssue(){
 		mode = 'edit';
 		$detailBodyIssue.append( $detailBodyIssue_textarea.val( _this.issue ) );
+		$detailBody.find('.issuetree__edit-button').hide();
 		incense.setBehaviorChatComment(
 			$detailBodyIssue_textarea,
 			{
 				'submit': function(value){
 					applyTextareaEditContent( $detailBodyIssue_textarea, 'issue' );
+					$detailBody.find('.issuetree__edit-button').show();
+					setTimeout(function(){editAnswer();}, 100);
 				}
 			}
 		);
 		$detailBodyIssue_textarea
 			.on('change blur', function(e){
 				applyTextareaEditContent( $detailBodyIssue_textarea, 'issue' );
+				$detailBody.find('.issuetree__edit-button').show();
+				setTimeout(function(){editAnswer();}, 100);
 			})
 		;
 		$detailBodyIssue_textarea.focus();
@@ -9851,17 +9856,20 @@ module.exports = function( incense, $widget ){
 	function editAnswer(){
 		mode = 'edit';
 		$detailBodyAnswer.append( $detailBodyAnswer_textarea.val( _this.answer ) );
+		$detailBody.find('.issuetree__edit-button').hide();
 		incense.setBehaviorChatComment(
 			$detailBodyAnswer_textarea,
 			{
 				'submit': function(value){
 					applyTextareaEditContent( $detailBodyAnswer_textarea, 'answer' );
+					$detailBody.find('.issuetree__edit-button').show();
 				}
 			}
 		);
 		$detailBodyAnswer_textarea
 			.on('change blur', function(e){
 				applyTextareaEditContent( $detailBodyAnswer_textarea, 'answer' );
+				$detailBody.find('.issuetree__edit-button').show();
 			})
 		;
 		$detailBodyAnswer_textarea.focus();
