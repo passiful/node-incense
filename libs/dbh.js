@@ -6,6 +6,7 @@ module.exports = function(conf, main){
 	var fs = require('fs');
 	var fsX = require('fs-extra');
 	var utils79 = require('utils79');
+	var it79 = require('iterate79');
 	var Sequelize = require('sequelize');
 	var sqlite = require('sqlite3');
 	var dbs = {};
@@ -35,8 +36,8 @@ module.exports = function(conf, main){
 		var tbls = {};
 		tbls.timeline = sequelize.define('timeline',
 			{
-				'boardId': { type: Sequelize.STRING },
-				'boardMessageId': { type: Sequelize.BIGINT },
+				'boardId': { type: Sequelize.STRING, unique: 'boardMessageUniqueKey', allowNull: false },
+				'boardMessageId': { type: Sequelize.BIGINT, unique: 'boardMessageUniqueKey', allowNull: false },
 				'content': { type: Sequelize.STRING },
 				'contentType': { type: Sequelize.STRING },
 				'targetWidget': { type: Sequelize.STRING },
@@ -87,19 +88,46 @@ module.exports = function(conf, main){
 
 		this.initDb(boardId, function(){
 
-			dbs[boardId].tbls.timeline.create({
-				'boardId': boardId,
-				'boardMessageId': message.boardMessageId,
-				'content': message.content,
-				'contentType': message.contentType,
-				'targetWidget': message.targetWidget,
-				'owner': message.owner,
-				'connectionId': message.connectionId,
-				'microtime': message.microtime
-			}).then(function(record){
-				// console.log(record);
-				callback(record);
-			});
+			var retryCounter = 0;
+			it79.fnc(
+				{},
+				{
+					"insert": function(it1, data){
+						retryCounter ++;
+						if( retryCounter > 50 ){
+							// 50回やっても成功しないなら、諦めて離脱する
+							callback(false);
+							return;
+						}
+
+						dbs[boardId].tbls.timeline.max(
+							'boardMessageId',
+							{
+								'where': { 'boardId': boardId }
+							}
+						).then(function(maxBoardMessageId){
+							if(!maxBoardMessageId||typeof(maxBoardMessageId)!==typeof(1)){maxBoardMessageId = 0;}
+
+							dbs[boardId].tbls.timeline.create({
+								'boardId': boardId,
+								'boardMessageId': maxBoardMessageId+1,
+								'content': message.content,
+								'contentType': message.contentType,
+								'targetWidget': message.targetWidget,
+								'owner': message.owner,
+								'connectionId': message.connectionId,
+								'microtime': message.microtime
+							}).then(function(record){
+								// successful
+								callback(record);
+							}).catch(function(){
+								// retry
+								it1.goto("insert", data);
+							});
+						});
+					}
+				}
+			);
 
 		});
 		return;

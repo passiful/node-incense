@@ -155,12 +155,10 @@ module.exports = (function(){
 					function(it1, arg){
 
 						main.dbh.insertMessage(data.boardId, data, function(result){
-							data.id = result.dataValues.id;
-
-							biflora.send('receiveBroadcast', data, function(){
+							biflora.send('receiveBroadcast', result.dataValues, function(){
 								console.log('send message');
 							});
-							biflora.sendToRoom('receiveBroadcast', data, data.boardId, function(){
+							biflora.sendToRoom('receiveBroadcast', result.dataValues, data.boardId, function(){
 								console.log('send message to room');
 							});
 							it1.next(arg);
