@@ -450,6 +450,9 @@ window.Incense = function(){
 			}
 			return;
 		});
+		$textarea.on('dblclick', function(e){
+			e.stopPropagation();
+		});
 		return $textarea;
 	} // setBehaviorChatComment()
 
