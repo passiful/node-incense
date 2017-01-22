@@ -210,6 +210,8 @@
     background-color: #eee; }
   .incense .incense-markdown * {
     font-size: 100%; }
+  .incense .incense-no-pointer-event {
+    pointer-events: none; }
   .incense .issuetree {
     background-color: #fff; }
     .incense .issuetree .issuetree__block {

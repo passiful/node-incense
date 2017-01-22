@@ -18477,16 +18477,20 @@ window.Incense = function(){
 						switch(method){
 							case 'moveWidget':
 								var targetWidgetId = event.dataTransfer.getData("widget-id");
-								var fromOffsetX = event.dataTransfer.getData("offset-x");
-								var fromOffsetY = event.dataTransfer.getData("offset-y");
+								var fromOffsetX = Number(event.dataTransfer.getData("offset-x"));
+								var fromOffsetY = Number(event.dataTransfer.getData("offset-y"));
+								var fromPageX = Number(event.dataTransfer.getData("page-x"));
+								var fromPageY = Number(event.dataTransfer.getData("page-y"));
 
-								// console.log(targetWidgetId, fromX, fromY);
-								// console.log(e.offsetX, e.offsetY);
-								// console.log(e);
-								var toX = e.offsetX - fromOffsetX;
+								var targetWidget = _this.widgetMgr.get(targetWidgetId);
+								var beforeOffsetX = Number(targetWidget.$.attr('data-offset-x'));
+								var beforeOffsetY = Number(targetWidget.$.attr('data-offset-y'));
+
+								var toX = beforeOffsetX + (e.pageX - fromPageX)*(1/incense.getZoomRate());
 								if( toX < 0 ){ toX = 0; }
-								var toY = e.offsetY - fromOffsetY;
+								var toY = beforeOffsetY + (e.pageY - fromPageY)*(1/incense.getZoomRate());
 								if( toY < 0 ){ toY = 0; }
+
 								_this.sendMessage(
 									{
 										'contentType': 'application/x-passiflora-command',
@@ -19823,6 +19827,8 @@ module.exports = function( incense, $timelineList, $field, $fieldOuter, $fieldIn
 				event.dataTransfer.setData("widget-id", $this.attr('data-widget-id') );
 				event.dataTransfer.setData("offset-x", e.offsetX );
 				event.dataTransfer.setData("offset-y", e.offsetY );
+				event.dataTransfer.setData("page-x", e.pageX );
+				event.dataTransfer.setData("page-y", e.pageY );
 				// console.log(e);
 			})
 			.bind('dragover', function(e){
@@ -19836,8 +19842,6 @@ module.exports = function( incense, $timelineList, $field, $fieldOuter, $fieldIn
 				// console.log(e);
 			})
 			.bind('drop', function(e){
-				e.stopPropagation();
-				e.preventDefault();
 				// console.log(e);
 				var event = e.originalEvent;
 				var method = event.dataTransfer.getData("method");
@@ -19846,6 +19850,13 @@ module.exports = function( incense, $timelineList, $field, $fieldOuter, $fieldIn
 						var targetWidgetId = event.dataTransfer.getData("widget-id");
 						var fromOffsetX = event.dataTransfer.getData("offset-x");
 						var fromOffsetY = event.dataTransfer.getData("offset-y");
+						var fromPageX = event.dataTransfer.getData("page-x");
+						var fromPageY = event.dataTransfer.getData("page-y");
+						if( targetWidgetId == $(this).attr('data-widget-id') ){
+							// 自分にドロップしていたら
+							return;
+							break;
+						}
 						incense.sendMessage(
 							{
 								'content': JSON.stringify({
@@ -19861,6 +19872,8 @@ module.exports = function( incense, $timelineList, $field, $fieldOuter, $fieldIn
 						);
 						break;
 				}
+				e.stopPropagation();
+				e.preventDefault();
 			})
 		);
 		// console.log(content);

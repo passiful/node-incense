@@ -249,6 +249,9 @@
 			font-size: 100%;
 		}
 	}
+	.incense-no-pointer-event{
+		pointer-events: none;
+	}
 
 	@import "./libs/bootstrap/dist/css/bootstrap.css";
 	@import "./widgets/issuetree/issuetree.css.scss";
