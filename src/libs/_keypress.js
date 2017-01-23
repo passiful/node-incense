@@ -42,6 +42,11 @@ module.exports = function( incense ){
 			return true; break;
 		}
 		e.preventDefault();
+		if( incense.modal.isOpened() ){
+			incense.modal.close();
+		}else if( incense.widgetDetailModal.isOpened() ){
+			incense.widgetDetailModal.close();
+		}
 	});
 
 	Keypress.simple_combo(cmdKeyName+" -", function(e) {

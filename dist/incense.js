@@ -19090,6 +19090,11 @@ module.exports = function( incense ){
 			return true; break;
 		}
 		e.preventDefault();
+		if( incense.modal.isOpened() ){
+			incense.modal.close();
+		}else if( incense.widgetDetailModal.isOpened() ){
+			incense.widgetDetailModal.close();
+		}
 	});
 
 	Keypress.simple_combo(cmdKeyName+" -", function(e) {
@@ -19548,7 +19553,7 @@ module.exports = function($field){
 			callback();
 		});
 		return $dialog;
-	}//dialog()
+	} // open()
 
 	/**
 	 * ダイアログを閉じる
@@ -19559,13 +19564,24 @@ module.exports = function($field){
 			$dialog.hide();
 			setTimeout(function(){
 				$dialog.remove();
+				$dialog = undefined;
 				callback();
 			}, 110);
 			return $dialog;
 		}
 		callback();
 		return $dialog;
-	}//close()
+	} // close()
+
+	/**
+	 * modal dialog が開いているか確認する
+	 */
+	this.isOpened = function(){
+		if($dialog){
+			return true;
+		}
+		return false;
+	}
 
 }
 
@@ -19753,7 +19769,7 @@ module.exports = function($field){
 			callback();
 		});
 		return $dialog;
-	}//dialog()
+	} // open()
 
 	/**
 	 * ダイアログを閉じる
@@ -19766,6 +19782,7 @@ module.exports = function($field){
 			setTimeout(function(){
 				incense.widgetMgr.updateSelection();
 				$dialog.remove();
+				$dialog = undefined;
 				callback();
 			}, 0);
 			return $dialog;
@@ -19773,7 +19790,17 @@ module.exports = function($field){
 		incense.widgetMgr.updateSelection();
 		callback();
 		return $dialog;
-	}//close()
+	} // close()
+
+	/**
+	 * modal dialog が開いているか確認する
+	 */
+	this.isOpened = function(){
+		if($dialog){
+			return true;
+		}
+		return false;
+	}
 
 }
 

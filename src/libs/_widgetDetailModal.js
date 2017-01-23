@@ -71,7 +71,7 @@ module.exports = function($field){
 			callback();
 		});
 		return $dialog;
-	}//dialog()
+	} // open()
 
 	/**
 	 * ダイアログを閉じる
@@ -84,6 +84,7 @@ module.exports = function($field){
 			setTimeout(function(){
 				incense.widgetMgr.updateSelection();
 				$dialog.remove();
+				$dialog = undefined;
 				callback();
 			}, 0);
 			return $dialog;
@@ -91,6 +92,16 @@ module.exports = function($field){
 		incense.widgetMgr.updateSelection();
 		callback();
 		return $dialog;
-	}//close()
+	} // close()
+
+	/**
+	 * modal dialog が開いているか確認する
+	 */
+	this.isOpened = function(){
+		if($dialog){
+			return true;
+		}
+		return false;
+	}
 
 }

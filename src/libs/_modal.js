@@ -71,7 +71,7 @@ module.exports = function($field){
 			callback();
 		});
 		return $dialog;
-	}//dialog()
+	} // open()
 
 	/**
 	 * ダイアログを閉じる
@@ -82,12 +82,23 @@ module.exports = function($field){
 			$dialog.hide();
 			setTimeout(function(){
 				$dialog.remove();
+				$dialog = undefined;
 				callback();
 			}, 110);
 			return $dialog;
 		}
 		callback();
 		return $dialog;
-	}//close()
+	} // close()
+
+	/**
+	 * modal dialog が開いているか確認する
+	 */
+	this.isOpened = function(){
+		if($dialog){
+			return true;
+		}
+		return false;
+	}
 
 }
