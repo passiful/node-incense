@@ -81,37 +81,8 @@ module.exports = function( incense, $widget ){
 				)
 				.append( $('<div class="issuetree__block">')
 					.append( $('<div class="issuetree__heading">').text( '子課題' ) )
-					.append( $('<button class="btn btn-default">')
+					.append( $('<button class="btn btn-default issuetree__create-child-button">')
 						.text('新しい子課題を作成')
-						.on('click', function(e){
-							incense.sendMessage(
-								{
-									'contentType': 'application/x-passiflora-command',
-									'content': JSON.stringify({
-										'operation':'createWidget',
-										'widgetType': _this.widgetType,
-										'x': incense.$field.scrollLeft() + $widget.offset().left + $widget.outerWidth() + 10,
-										'y': incense.$field.scrollTop() + $widget.offset().top + 10,
-										'parent': _this.id
-									})
-								} ,
-								function(rtn){
-									// console.log(rtn);
-									incense.sendMessage(
-										{
-											'content': JSON.stringify({
-												'command': 'update_relations'
-											}),
-											'contentType': 'application/x-passiflora-widget-message',
-											'targetWidget': _this.id
-										},
-										function(){
-											console.log('issuetree: update relations.');
-										}
-									);
-								}
-							);
-						})
 					)
 					.append( $('<div class="issuetree__sub-issues">') )
 				)
@@ -189,42 +160,6 @@ module.exports = function( incense, $widget ){
 	_this.$detailBodyParentIssue = _this.$detailBody.find('.issuetree__parent-issue');
 	_this.$detailBodySubIssues = _this.$detailBody.find('.issuetree__sub-issues');
 
-	incense.setBehaviorChatComment(
-		_this.$detailBody.find('textarea.issuetree__discussion-timeline--chat-comment'),
-		{
-			'submit': function(value){
-				function sendComment(value, stance, callback){
-					callback = callback || function(){};
-					incense.sendMessage(
-						{
-							'content': JSON.stringify({
-								'command': 'comment',
-								'comment': value,
-								'stance': stance
-							}),
-							'contentType': 'application/x-passiflora-widget-message',
-							'targetWidget': _this.id
-						},
-						function(){
-							console.log('issuetree chat-comment submited.');
-							callback();
-						}
-					);
-				}
-
-				var myAnswer = _this.vote[incense.getUserInfo().id];
-				var newAnswer = _this.$yourStanceSelector.val();
-				if( newAnswer.length && newAnswer != myAnswer ){
-					sendVoteMessage(newAnswer, function(){
-						sendComment(value, newAnswer);
-					});
-				}else{
-					sendComment(value, (myAnswer || ''));
-				}
-			}
-		}
-	);
-
 	/**
 	 * 詳細画面を開く
 	 */
@@ -266,6 +201,74 @@ module.exports = function( incense, $widget ){
 				})
 				.on('click', function(e){
 					e.stopPropagation();
+				})
+			;
+
+			incense.setBehaviorChatComment(
+				_this.$detailBody.find('textarea.issuetree__discussion-timeline--chat-comment'),
+				{
+					'submit': function(value){
+						function sendComment(value, stance, callback){
+							callback = callback || function(){};
+							incense.sendMessage(
+								{
+									'content': JSON.stringify({
+										'command': 'comment',
+										'comment': value,
+										'stance': stance
+									}),
+									'contentType': 'application/x-passiflora-widget-message',
+									'targetWidget': _this.id
+								},
+								function(){
+									console.log('issuetree chat-comment submited.');
+									callback();
+								}
+							);
+						}
+
+						var myAnswer = _this.vote[incense.getUserInfo().id];
+						var newAnswer = _this.$yourStanceSelector.val();
+						if( newAnswer.length && newAnswer != myAnswer ){
+							sendVoteMessage(newAnswer, function(){
+								sendComment(value, newAnswer);
+							});
+						}else{
+							sendComment(value, (myAnswer || ''));
+						}
+					}
+				}
+			);
+
+			_this.$detailBody.find('.issuetree__create-child-button')
+				.on('click', function(e){
+					incense.sendMessage(
+						{
+							'contentType': 'application/x-passiflora-command',
+							'content': JSON.stringify({
+								'operation':'createWidget',
+								'widgetType': _this.widgetType,
+								'x': incense.$field.scrollLeft() + $widget.offset().left + $widget.outerWidth() + 10,
+								'y': incense.$field.scrollTop() + $widget.offset().top + 10,
+								'parent': _this.id
+							})
+						} ,
+						function(rtn){
+							// console.log(rtn);
+							incense.sendMessage(
+								{
+									'content': JSON.stringify({
+										'command': 'update_relations'
+									}),
+									'contentType': 'application/x-passiflora-widget-message',
+									'targetWidget': _this.id
+								},
+								function(){
+									console.log('issuetree: update relations.');
+								}
+							);
+						}
+					);
 				})
 			;
 
