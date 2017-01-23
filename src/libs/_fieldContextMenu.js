@@ -25,7 +25,7 @@ module.exports = function( app, $fieldContextMenu ){
 								'href': 'javascript:;',
 								'data-widget-data': JSON.stringify(menu.data)
 							})
-							.click(function(e){
+							.on('click', function(e){
 								e.stopPropagation();
 								_this.close();
 								try {
@@ -41,20 +41,23 @@ module.exports = function( app, $fieldContextMenu ){
 			})(menu[idx]);
 		}
 
+		var zoomRate = (1/incense.getZoomRate());
 		$fieldContextMenu.append( $contextmenu
 			.css({
 				'position': 'absolute',
-				'top': position.y-5,
-				'left': position.x-5,
-				'z-index': app.widgetsMaxZIndex ++
+				'top': position.y - 5*zoomRate,
+				'left': position.x - 5*zoomRate,
+				'z-index': app.widgetsMaxZIndex ++,
+				'transform': 'scale('+zoomRate+','+zoomRate+')',
+				'transform-origin': '0 0'
 			})
-			.click(function(e){
+			.on('click', function(e){
 				e.stopPropagation();
 			})
-			.dblclick(function(e){
+			.on('dblclick', function(e){
 				e.stopPropagation();
 			})
-			.contextmenu(function(e){
+			.on('contextmenu', function(e){
 				e.stopPropagation();
 			})
 			.html('')

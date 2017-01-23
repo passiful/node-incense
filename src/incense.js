@@ -82,6 +82,7 @@ window.Incense = function(){
 				$fieldInner = $field.find('.incense__board-inner');
 
 				_this.$field = $field;
+				_this.$fieldOuter = $fieldOuter;
 				_this.$fieldInner = $fieldInner;
 				$fieldRelations.append( $('<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 10000 10000">') );
 
@@ -227,8 +228,13 @@ window.Incense = function(){
 				console.log('incense: setting board events...');
 				var mkWidget = function(e){
 					// console.log(e);
+					var zoomRate = incense.getZoomRate();
+					var position = {
+						'x': ($fieldOuter.scrollLeft() + e.pageX)/zoomRate - $fieldOuter.offset().left/zoomRate,
+						'y': ($fieldOuter.scrollTop() + e.pageY)/zoomRate - $fieldOuter.offset().top/zoomRate
+					};
 					_this.fieldContextMenu.open(
-						{'x':e.offsetX, 'y':e.offsetY},
+						position,
 						(function(){
 							var rtn = [];
 							var widgets = _this.widgetList;
@@ -237,8 +243,8 @@ window.Incense = function(){
 								menu.label = widgets[widgetName].name;
 								menu.data = {
 									'widget-name': widgetName,
-									'x': e.offsetX,
-									'y': e.offsetY
+									'x': position.x,
+									'y': position.y
 								};
 								menu.action = function(data){
 									// console.log(data);
@@ -531,6 +537,8 @@ window.Incense = function(){
 	 * ボードの拡大率を設定する
 	 */
 	this.zoom = function( rateTo ){
+		_this.fieldContextMenu.close(); // コンテキストメニューを閉じる
+
 		var scrollInfo = {
 			"width": $fieldOuter.width(),
 			"height": $fieldOuter.height(),

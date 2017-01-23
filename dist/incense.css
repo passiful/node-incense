@@ -75,7 +75,7 @@
       width: 100%; }
   .incense .incense-contextmenu {
     background-color: rgba(255, 255, 255, 0.95);
-    border: 1px solid #eee;
+    border: 1px solid #ddd;
     pointer-events: auto; }
     .incense .incense-contextmenu ul {
       margin: 0;
@@ -84,10 +84,13 @@
         list-style-type: none;
         margin: 0;
         padding: 0;
-        font-size: 13px; }
+        font-size: 13px;
+        border-top: 1px dashed #eee; }
+        .incense .incense-contextmenu ul li:first-child {
+          border-top: none; }
         .incense .incense-contextmenu ul li a {
           display: block;
-          padding: 0.5em 2em;
+          padding: 3px 36px 3px 12px;
           text-decoration: none; }
           .incense .incense-contextmenu ul li a:hover {
             background-color: #f8f8f8; }

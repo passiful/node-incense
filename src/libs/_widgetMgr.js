@@ -45,8 +45,15 @@ module.exports = function( incense, $timelineList, $field, $fieldOuter, $fieldIn
 				var widgetId = $this.attr('data-widget-id');
 				_this.unselect();
 				_this.select( widgetId );
+
+				var zoomRate = incense.getZoomRate();
+				var position = {
+					'x': (incense.$fieldOuter.scrollLeft() + e.pageX)/zoomRate - incense.$fieldOuter.offset().left/zoomRate,
+					'y': (incense.$fieldOuter.scrollTop() + e.pageY)/zoomRate - incense.$fieldOuter.offset().top/zoomRate
+				};
+
 				incense.fieldContextMenu.open(
-					{'x':Number($this.attr('data-offset-x')), 'y':Number($this.attr('data-offset-y'))},
+					position,
 					(function(){
 						var rtn = [
 							{

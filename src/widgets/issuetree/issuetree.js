@@ -248,8 +248,8 @@ module.exports = function( incense, $widget ){
 							'content': JSON.stringify({
 								'operation':'createWidget',
 								'widgetType': _this.widgetType,
-								'x': incense.$field.scrollLeft() + $widget.offset().left + $widget.outerWidth() + 10,
-								'y': incense.$field.scrollTop() + $widget.offset().top + 10,
+								'x': incense.$fieldOuter.scrollLeft() + $widget.offset().left + $widget.outerWidth() + 10,
+								'y': incense.$fieldOuter.scrollTop() + $widget.offset().top + 10,
 								'parent': _this.id
 							})
 						} ,

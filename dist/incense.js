@@ -18279,6 +18279,7 @@ window.Incense = function(){
 				$fieldInner = $field.find('.incense__board-inner');
 
 				_this.$field = $field;
+				_this.$fieldOuter = $fieldOuter;
 				_this.$fieldInner = $fieldInner;
 				$fieldRelations.append( $('<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 10000 10000">') );
 
@@ -18424,8 +18425,13 @@ window.Incense = function(){
 				console.log('incense: setting board events...');
 				var mkWidget = function(e){
 					// console.log(e);
+					var zoomRate = incense.getZoomRate();
+					var position = {
+						'x': ($fieldOuter.scrollLeft() + e.pageX)/zoomRate - $fieldOuter.offset().left/zoomRate,
+						'y': ($fieldOuter.scrollTop() + e.pageY)/zoomRate - $fieldOuter.offset().top/zoomRate
+					};
 					_this.fieldContextMenu.open(
-						{'x':e.offsetX, 'y':e.offsetY},
+						position,
 						(function(){
 							var rtn = [];
 							var widgets = _this.widgetList;
@@ -18434,8 +18440,8 @@ window.Incense = function(){
 								menu.label = widgets[widgetName].name;
 								menu.data = {
 									'widget-name': widgetName,
-									'x': e.offsetX,
-									'y': e.offsetY
+									'x': position.x,
+									'y': position.y
 								};
 								menu.action = function(data){
 									// console.log(data);
@@ -18728,6 +18734,8 @@ window.Incense = function(){
 	 * ボードの拡大率を設定する
 	 */
 	this.zoom = function( rateTo ){
+		_this.fieldContextMenu.close(); // コンテキストメニューを閉じる
+
 		var scrollInfo = {
 			"width": $fieldOuter.width(),
 			"height": $fieldOuter.height(),
@@ -18974,7 +18982,7 @@ module.exports = function( app, $fieldContextMenu ){
 								'href': 'javascript:;',
 								'data-widget-data': JSON.stringify(menu.data)
 							})
-							.click(function(e){
+							.on('click', function(e){
 								e.stopPropagation();
 								_this.close();
 								try {
@@ -18990,20 +18998,23 @@ module.exports = function( app, $fieldContextMenu ){
 			})(menu[idx]);
 		}
 
+		var zoomRate = (1/incense.getZoomRate());
 		$fieldContextMenu.append( $contextmenu
 			.css({
 				'position': 'absolute',
-				'top': position.y-5,
-				'left': position.x-5,
-				'z-index': app.widgetsMaxZIndex ++
+				'top': position.y - 5*zoomRate,
+				'left': position.x - 5*zoomRate,
+				'z-index': app.widgetsMaxZIndex ++,
+				'transform': 'scale('+zoomRate+','+zoomRate+')',
+				'transform-origin': '0 0'
 			})
-			.click(function(e){
+			.on('click', function(e){
 				e.stopPropagation();
 			})
-			.dblclick(function(e){
+			.on('dblclick', function(e){
 				e.stopPropagation();
 			})
-			.contextmenu(function(e){
+			.on('contextmenu', function(e){
 				e.stopPropagation();
 			})
 			.html('')
@@ -19801,8 +19812,15 @@ module.exports = function( incense, $timelineList, $field, $fieldOuter, $fieldIn
 				var widgetId = $this.attr('data-widget-id');
 				_this.unselect();
 				_this.select( widgetId );
+
+				var zoomRate = incense.getZoomRate();
+				var position = {
+					'x': (incense.$fieldOuter.scrollLeft() + e.pageX)/zoomRate - incense.$fieldOuter.offset().left/zoomRate,
+					'y': (incense.$fieldOuter.scrollTop() + e.pageY)/zoomRate - incense.$fieldOuter.offset().top/zoomRate
+				};
+
 				incense.fieldContextMenu.open(
-					{'x':Number($this.attr('data-offset-x')), 'y':Number($this.attr('data-offset-y'))},
+					position,
 					(function(){
 						var rtn = [
 							{
@@ -20436,8 +20454,8 @@ module.exports = function( incense, $widget ){
 							'content': JSON.stringify({
 								'operation':'createWidget',
 								'widgetType': _this.widgetType,
-								'x': incense.$field.scrollLeft() + $widget.offset().left + $widget.outerWidth() + 10,
-								'y': incense.$field.scrollTop() + $widget.offset().top + 10,
+								'x': incense.$fieldOuter.scrollLeft() + $widget.offset().left + $widget.outerWidth() + 10,
+								'y': incense.$fieldOuter.scrollTop() + $widget.offset().top + 10,
 								'parent': _this.id
 							})
 						} ,
