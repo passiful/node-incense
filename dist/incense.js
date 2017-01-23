@@ -18366,9 +18366,9 @@ window.Incense = function(){
 			}); })
 			.then(function(){ return new Promise(function(rlv, rjt){
 				// ボードの中央へスクロール移動
-				$fieldOuter.scrollTop( $fieldInner.height()/2 - $fieldOuter.height()/2 );
-				$fieldOuter.scrollLeft( $fieldInner.width()/2 - $fieldOuter.width()/2 );
-				rlv();
+				_this.scrollToBoardCenter(function(){
+					rlv();
+				});
 			}); })
 			.then(function(){ return new Promise(function(rlv, rjt){
 				// boardId のこれまでのメッセージを取得する
@@ -18724,9 +18724,22 @@ window.Incense = function(){
 	 * ウィジェットの一覧を取得する
 	 */
 	this.getWidgetList = function( callback ){
+		callback = callback||function(){};
 		_this.widgetMgr.getList(function(widgetList){
 			callback( widgetList );
 		});
+		return;
+	}
+
+	/**
+	 * ボードの中央へスクロール
+	 */
+	this.scrollToBoardCenter = function( callback ){
+		callback = callback||function(){};
+		var zoomRate = this.getZoomRate();
+		$fieldOuter.scrollTop( $fieldInner.height()/2*zoomRate - $fieldOuter.height()/2 );
+		$fieldOuter.scrollLeft( $fieldInner.width()/2*zoomRate - $fieldOuter.width()/2 );
+		callback();
 		return;
 	}
 

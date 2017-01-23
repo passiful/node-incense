@@ -113,6 +113,7 @@ server.listen( 3000, function(){
 - incense.sendMessage( msg, callback ) : メッセージを送信する
 - incense.zoom() : ボードの拡大率を設定する
 - incense.getZoomRate() : ボードの拡大率を取得する
+- incense.scrollToBoardCenter() : ボードの中央へスクロール移動する
 
 
 ## 更新履歴 - Change log
@@ -120,6 +121,7 @@ server.listen( 3000, function(){
 ### incense@0.1.2 (2017-??-??)
 
 - zoom位置をboardの中心に合わせるようにした。
+- `scrollToBoardCenter()` 追加
 - textarea編集中のダブルクリックイベントを無効化。
 - データベース構造に関する修正。(複数のボードデータを1つのデータベースで管理できるようにする準備として)
 - issuetree: 問と答の編集を連続的に行えるようにカーソル移動ロジックを調整した。
