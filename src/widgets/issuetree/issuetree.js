@@ -301,13 +301,13 @@ module.exports = function( incense, $widget ){
 			'title': 'Issue #widget.'+_this.id,
 			'body': $detailBody,
 			'buttons': [
-				$('<button>')
-					.text('閉じる')
-					.addClass('btn')
-					.addClass('btn-default')
-					.click(function(){
-						incense.widgetDetailModal.close();
-					})
+				// $('<button>')
+				// 	.text('閉じる')
+				// 	.addClass('btn')
+				// 	.addClass('btn-default')
+				// 	.click(function(){
+				// 		incense.widgetDetailModal.close();
+				// 	})
 			]
 		});
 

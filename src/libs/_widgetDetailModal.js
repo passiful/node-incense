@@ -44,7 +44,7 @@ module.exports = function($field){
 			opt.body = opt.body||$('<div>');
 			opt.buttons = opt.buttons||[
 				$('<button class="btn btn-primary">').text('OK').click(function(){
-					this.close();
+					_this.close();
 				})
 			];
 
