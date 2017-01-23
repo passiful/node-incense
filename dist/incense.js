@@ -18364,6 +18364,12 @@ window.Incense = function(){
 				);
 			}); })
 			.then(function(){ return new Promise(function(rlv, rjt){
+				// ボードの中央へスクロール移動
+				$fieldOuter.scrollTop( $fieldInner.height()/2 - $fieldOuter.height()/2 );
+				$fieldOuter.scrollLeft( $fieldInner.width()/2 - $fieldOuter.width()/2 );
+				rlv();
+			}); })
+			.then(function(){ return new Promise(function(rlv, rjt){
 				// boardId のこれまでのメッセージを取得する
 				console.log('incense: getting messages: '+boardId);
 				biflora.send(
