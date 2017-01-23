@@ -9,7 +9,7 @@ module.exports = function($field){
 			+ '  <div class="incense-wd-modal__dialog">'+"\n"
 			+ '    <div class="incense-wd-modal__content">'+"\n"
 			+ '      <div class="incense-wd-modal__header">'+"\n"
-			+ '        <button type="button" class="btn btn-default incense-wd-modal__close" data-dismiss="modal">'+"\n"
+			+ '        <button type="button" class="btn btn-default incense-wd-modal__close">'+"\n"
 			+ '          <span>&times;</span>'+"\n"
 			+ '        </button>'+"\n"
 			+ '        <h4 class="incense-wd-modal__title"></h4>'+"\n"
@@ -27,7 +27,8 @@ module.exports = function($field){
 	/**
 	 * ダイアログを表示する
 	 */
-	this.open = function(opt){
+	this.open = function(opt, callback){
+		callback = callback || function(){};
 		this.close(function(){
 
 			$dialog = $(tpl);
@@ -63,10 +64,11 @@ module.exports = function($field){
 			$dialog.find('.incense-wd-modal__title').append(opt.title);
 			$dialog.find('.incense-wd-modal__body').append(opt.body);
 			$dialog.find('.incense-wd-modal__footer').append(opt.buttons);
-			$dialog.find('.incense-wd-modal__header button.incense-wd-modal__close').click(function(e){
+			$dialog.find('.incense-wd-modal__header button.incense-wd-modal__close').on('click', function(e){
 				_this.close();
 			});
 
+			callback();
 		});
 		return $dialog;
 	}//dialog()
@@ -76,13 +78,14 @@ module.exports = function($field){
 	 */
 	this.close = function(callback){
 		callback = callback || function(){};
+
 		if($dialog){
 			$dialog.hide();
 			setTimeout(function(){
 				incense.widgetMgr.updateSelection();
 				$dialog.remove();
 				callback();
-			}, 110);
+			}, 0);
 			return $dialog;
 		}
 		incense.widgetMgr.updateSelection();

@@ -406,7 +406,7 @@ module.exports = function( incense, $timelineList, $field, $fieldOuter, $fieldIn
 				'data-widget-id': targetWidget
 			})
 			.text('#widget.'+targetWidget)
-			.click(function(e){
+			.on('click', function(e){
 				var widgetId = $(this).attr('data-widget-id');
 				_this.unselect();
 				_this.select(widgetId);

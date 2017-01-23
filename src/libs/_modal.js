@@ -27,7 +27,8 @@ module.exports = function($field){
 	/**
 	 * ダイアログを表示する
 	 */
-	this.open = function(opt){
+	this.open = function(opt, callback){
+		callback = callback||function(){};
 		this.close(function(){
 
 			$dialog = $(tpl);
@@ -67,6 +68,7 @@ module.exports = function($field){
 				_this.close();
 			});
 
+			callback();
 		});
 		return $dialog;
 	}//dialog()
