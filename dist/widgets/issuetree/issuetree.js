@@ -10114,7 +10114,7 @@ module.exports = function( incense, $widget ){
 	 * 詳細画面を開く
 	 */
 	function openDetailWindow(){
-		incense.modal.dialog({
+		incense.widgetDetailModal.open({
 			'title': 'Issue #widget.'+_this.id,
 			'body': $detailBody,
 			'buttons': [
@@ -10123,7 +10123,7 @@ module.exports = function( incense, $widget ){
 					.addClass('btn')
 					.addClass('btn-default')
 					.click(function(){
-						incense.modal.close();
+						incense.widgetDetailModal.close();
 					})
 			]
 		});

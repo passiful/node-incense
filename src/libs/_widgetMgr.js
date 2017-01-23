@@ -73,7 +73,7 @@ module.exports = function( incense, $timelineList, $field, $fieldOuter, $fieldIn
 									$body.append( $('<p>').text( '#widget.'+data['widget-id']+' - '+widget.widgetType+' - '+widget.getSummary() ) );
 									$body.append( $('<h2>').text( '新しい親ウィジェット' ) );
 									$body.append( $('<p>').append( $select ) );
-									incense.modal.dialog({
+									incense.modal.open({
 										'title': '親を変更する',
 										'body': $body,
 										'buttons': [
@@ -270,7 +270,7 @@ module.exports = function( incense, $timelineList, $field, $fieldOuter, $fieldIn
 		;
 		this.updateSelection();
 
-		incense.modal.close(function(){
+		incense.widgetDetailModal.close(function(){
 			widget.focus();
 		});
 		return;

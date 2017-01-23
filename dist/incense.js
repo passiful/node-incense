@@ -18289,6 +18289,7 @@ window.Incense = function(){
 				_this.widgetBase = require('./libs/_widgetBase.js');
 				_this.widgetMgr = new (require('./libs/_widgetMgr.js'))(_this, $timelineList, $field, $fieldOuter, $fieldInner, $fieldSelection);
 				_this.modal = new (require('./libs/_modal.js'))($field);
+				_this.widgetDetailModal = new (require('./libs/_widgetDetailModal.js'))($field);
 				_this.userMgr = new (require('./libs/_userMgr.js'))(_this, $timelineList, $field, $fieldInner);
 				_this.locker = new (require('./libs/_locker.js'))(_this);
 
@@ -18810,7 +18811,7 @@ window.Incense = function(){
 
 };
 
-},{"./apis/_locker.js":80,"./apis/_receiveBroadcast.js":81,"./libs/_detoxHtml.js":83,"./libs/_fieldContextMenu.js":84,"./libs/_keypress.js":85,"./libs/_locker.js":86,"./libs/_markdown.js":87,"./libs/_messageOperator.js":88,"./libs/_modal.js":89,"./libs/_userMgr.js":90,"./libs/_widgetBase.js":91,"./libs/_widgetMgr.js":92,"./widgets/issuetree/issuetree.js":93,"./widgets/stickies/stickies.js":94,"es6-promise":4,"iterate79":8,"jquery":9,"twig":13,"utils79":15}],83:[function(require,module,exports){
+},{"./apis/_locker.js":80,"./apis/_receiveBroadcast.js":81,"./libs/_detoxHtml.js":83,"./libs/_fieldContextMenu.js":84,"./libs/_keypress.js":85,"./libs/_locker.js":86,"./libs/_markdown.js":87,"./libs/_messageOperator.js":88,"./libs/_modal.js":89,"./libs/_userMgr.js":90,"./libs/_widgetBase.js":91,"./libs/_widgetDetailModal.js":92,"./libs/_widgetMgr.js":93,"./widgets/issuetree/issuetree.js":94,"./widgets/stickies/stickies.js":95,"es6-promise":4,"iterate79":8,"jquery":9,"twig":13,"utils79":15}],83:[function(require,module,exports){
 /**
  * 投稿されたHTMLを無害化する - _detoxHtml.js
  */
@@ -19473,7 +19474,7 @@ module.exports = function($field){
 	/**
 	 * ダイアログを表示する
 	 */
-	this.dialog = function(opt){
+	this.open = function(opt){
 		this.close(function(){
 
 			$dialog = $(tpl);
@@ -19525,30 +19526,14 @@ module.exports = function($field){
 		if($dialog){
 			$dialog.hide();
 			setTimeout(function(){
-				incense.widgetMgr.updateSelection();
 				$dialog.remove();
 				callback();
 			}, 110);
 			return $dialog;
 		}
-		incense.widgetMgr.updateSelection();
 		callback();
 		return $dialog;
 	}//close()
-
-
-	/**
-	 * イベントリスナー
-	 */
-	// $(window).on( 'resize', function(e){
-	// 	if( typeof($dialog) !== typeof( $('<div>') ) ){return;}
-	// 	$dialog
-	// 		.css({
-	// 			'width': $(window).width(),
-	// 			'height': $(window).height()
-	// 		})
-	// 	;
-	// } );
 
 }
 
@@ -19664,6 +19649,101 @@ module.exports = function( incense, $widget ){
 
 },{}],92:[function(require,module,exports){
 /**
+ * _widgetDetailModal.js
+ */
+module.exports = function($field){
+	var _this = this;
+	var $ = require('jquery');
+
+	var tpl = '<div class="incense-wd-modal">'+"\n"
+			+ '  <div class="incense-wd-modal__dialog">'+"\n"
+			+ '    <div class="incense-wd-modal__content">'+"\n"
+			+ '      <div class="incense-wd-modal__header">'+"\n"
+			+ '        <button type="button" class="btn btn-default incense-wd-modal__close" data-dismiss="modal">'+"\n"
+			+ '          <span>&times;</span>'+"\n"
+			+ '        </button>'+"\n"
+			+ '        <h4 class="incense-wd-modal__title"></h4>'+"\n"
+			+ '      </div>'+"\n"
+			+ '      <div class="incense-wd-modal__body"></div>'+"\n"
+			+ '      <div class="incense-wd-modal__footer">'+"\n"
+			+ '      </div>'+"\n"
+			+ '    </div><!-- /.incense-wd-modal__content -->'+"\n"
+			+ '  </div><!-- /.incense-wd-modal__dialog -->'+"\n"
+			+ '<!-- /.incense-wd-modal --></div>'
+	;
+
+	var $dialog;
+
+	/**
+	 * ダイアログを表示する
+	 */
+	this.open = function(opt){
+		this.close(function(){
+
+			$dialog = $(tpl);
+			$dialog.on('click', function(e){
+				e.stopPropagation();
+			});
+
+			$field
+				.append($dialog)
+			;
+
+			opt = opt||{};
+			opt.title = opt.title||'command:';
+			opt.body = opt.body||$('<div>');
+			opt.buttons = opt.buttons||[
+				$('<button class="btn btn-primary">').text('OK').click(function(){
+					this.close();
+				})
+			];
+
+			for( var i in opt.buttons ){
+				var $btnElm = $(opt.buttons[i]);
+				$btnElm.each(function(){
+					if(!$(this).hasClass('btn')){
+						$(this).addClass('btn').addClass('btn-secondary');
+					}
+				});
+				opt.buttons[i] = $btnElm;
+			}
+
+			// var $dialogButtons = $('<div class="incense-wd-modal__footer">').append(opt.buttons);
+
+			$dialog.find('.incense-wd-modal__title').append(opt.title);
+			$dialog.find('.incense-wd-modal__body').append(opt.body);
+			$dialog.find('.incense-wd-modal__footer').append(opt.buttons);
+			$dialog.find('.incense-wd-modal__header button.incense-wd-modal__close').click(function(e){
+				_this.close();
+			});
+
+		});
+		return $dialog;
+	}//dialog()
+
+	/**
+	 * ダイアログを閉じる
+	 */
+	this.close = function(callback){
+		callback = callback || function(){};
+		if($dialog){
+			$dialog.hide();
+			setTimeout(function(){
+				incense.widgetMgr.updateSelection();
+				$dialog.remove();
+				callback();
+			}, 110);
+			return $dialog;
+		}
+		incense.widgetMgr.updateSelection();
+		callback();
+		return $dialog;
+	}//close()
+
+}
+
+},{"jquery":9}],93:[function(require,module,exports){
+/**
  * widgetMgr.js
  */
 module.exports = function( incense, $timelineList, $field, $fieldOuter, $fieldInner, $fieldSelection ){
@@ -19738,7 +19818,7 @@ module.exports = function( incense, $timelineList, $field, $fieldOuter, $fieldIn
 									$body.append( $('<p>').text( '#widget.'+data['widget-id']+' - '+widget.widgetType+' - '+widget.getSummary() ) );
 									$body.append( $('<h2>').text( '新しい親ウィジェット' ) );
 									$body.append( $('<p>').append( $select ) );
-									incense.modal.dialog({
+									incense.modal.open({
 										'title': '親を変更する',
 										'body': $body,
 										'buttons': [
@@ -19935,7 +20015,7 @@ module.exports = function( incense, $timelineList, $field, $fieldOuter, $fieldIn
 		;
 		this.updateSelection();
 
-		incense.modal.close(function(){
+		incense.widgetDetailModal.close(function(){
 			widget.focus();
 		});
 		return;
@@ -20094,7 +20174,7 @@ module.exports = function( incense, $timelineList, $field, $fieldOuter, $fieldIn
 	return;
 }
 
-},{"jquery":9,"underscore":14}],93:[function(require,module,exports){
+},{"jquery":9,"underscore":14}],94:[function(require,module,exports){
 /**
  * widgets: issuetree.js
  */
@@ -20394,7 +20474,7 @@ module.exports = function( incense, $widget ){
 	 * 詳細画面を開く
 	 */
 	function openDetailWindow(){
-		incense.modal.dialog({
+		incense.widgetDetailModal.open({
 			'title': 'Issue #widget.'+_this.id,
 			'body': $detailBody,
 			'buttons': [
@@ -20403,7 +20483,7 @@ module.exports = function( incense, $widget ){
 					.addClass('btn')
 					.addClass('btn-default')
 					.click(function(){
-						incense.modal.close();
+						incense.widgetDetailModal.close();
 					})
 			]
 		});
@@ -20870,7 +20950,7 @@ module.exports = function( incense, $widget ){
 	return;
 }
 
-},{"jquery":9}],94:[function(require,module,exports){
+},{"jquery":9}],95:[function(require,module,exports){
 /**
  * widgets: stickies.js
  */

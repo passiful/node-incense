@@ -1,25 +1,25 @@
 /**
- * _modal.js
+ * _widgetDetailModal.js
  */
 module.exports = function($field){
 	var _this = this;
 	var $ = require('jquery');
 
-	var tpl = '<div class="incense-modal">'+"\n"
-			+ '  <div class="incense-modal__dialog">'+"\n"
-			+ '    <div class="incense-modal__content">'+"\n"
-			+ '      <div class="incense-modal__header">'+"\n"
-			+ '        <button type="button" class="btn btn-default incense-modal__close" data-dismiss="modal">'+"\n"
+	var tpl = '<div class="incense-wd-modal">'+"\n"
+			+ '  <div class="incense-wd-modal__dialog">'+"\n"
+			+ '    <div class="incense-wd-modal__content">'+"\n"
+			+ '      <div class="incense-wd-modal__header">'+"\n"
+			+ '        <button type="button" class="btn btn-default incense-wd-modal__close" data-dismiss="modal">'+"\n"
 			+ '          <span>&times;</span>'+"\n"
 			+ '        </button>'+"\n"
-			+ '        <h4 class="incense-modal__title"></h4>'+"\n"
+			+ '        <h4 class="incense-wd-modal__title"></h4>'+"\n"
 			+ '      </div>'+"\n"
-			+ '      <div class="incense-modal__body"></div>'+"\n"
-			+ '      <div class="incense-modal__footer">'+"\n"
+			+ '      <div class="incense-wd-modal__body"></div>'+"\n"
+			+ '      <div class="incense-wd-modal__footer">'+"\n"
 			+ '      </div>'+"\n"
-			+ '    </div><!-- /.incense-modal__content -->'+"\n"
-			+ '  </div><!-- /.incense-modal__dialog -->'+"\n"
-			+ '<!-- /.incense-modal --></div>'
+			+ '    </div><!-- /.incense-wd-modal__content -->'+"\n"
+			+ '  </div><!-- /.incense-wd-modal__dialog -->'+"\n"
+			+ '<!-- /.incense-wd-modal --></div>'
 	;
 
 	var $dialog;
@@ -58,12 +58,12 @@ module.exports = function($field){
 				opt.buttons[i] = $btnElm;
 			}
 
-			// var $dialogButtons = $('<div class="incense-modal__footer">').append(opt.buttons);
+			// var $dialogButtons = $('<div class="incense-wd-modal__footer">').append(opt.buttons);
 
-			$dialog.find('.incense-modal__title').append(opt.title);
-			$dialog.find('.incense-modal__body').append(opt.body);
-			$dialog.find('.incense-modal__footer').append(opt.buttons);
-			$dialog.find('.incense-modal__header button.incense-modal__close').click(function(e){
+			$dialog.find('.incense-wd-modal__title').append(opt.title);
+			$dialog.find('.incense-wd-modal__body').append(opt.body);
+			$dialog.find('.incense-wd-modal__footer').append(opt.buttons);
+			$dialog.find('.incense-wd-modal__header button.incense-wd-modal__close').click(function(e){
 				_this.close();
 			});
 
@@ -79,11 +79,13 @@ module.exports = function($field){
 		if($dialog){
 			$dialog.hide();
 			setTimeout(function(){
+				incense.widgetMgr.updateSelection();
 				$dialog.remove();
 				callback();
 			}, 110);
 			return $dialog;
 		}
+		incense.widgetMgr.updateSelection();
 		callback();
 		return $dialog;
 	}//close()

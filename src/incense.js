@@ -92,6 +92,7 @@ window.Incense = function(){
 				_this.widgetBase = require('./libs/_widgetBase.js');
 				_this.widgetMgr = new (require('./libs/_widgetMgr.js'))(_this, $timelineList, $field, $fieldOuter, $fieldInner, $fieldSelection);
 				_this.modal = new (require('./libs/_modal.js'))($field);
+				_this.widgetDetailModal = new (require('./libs/_widgetDetailModal.js'))($field);
 				_this.userMgr = new (require('./libs/_userMgr.js'))(_this, $timelineList, $field, $fieldInner);
 				_this.locker = new (require('./libs/_locker.js'))(_this);
 
