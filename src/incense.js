@@ -23,6 +23,7 @@ window.Incense = function(){
 		$fieldInner;
 	var boardId;
 	var zoomRate = 1;
+	var lastTimelineMessage = {};
 
 	/**
 	 * 初期化
@@ -454,7 +455,10 @@ window.Incense = function(){
 	 * メインタイムラインにメッセージを表示する
 	 */
 	this.insertTimeline = function( message, $messageContent ){
+		console.log(message);
 		$messageContent = $messageContent || $('<div>');
+		$messageContent.css({'margin-bottom': 3});
+		var $messageBodyContent = $('<div class="incense__message-unit__message-body-content">');
 		var $message = $('<div>')
 			.addClass('incense__message-unit')
 			.attr({
@@ -483,22 +487,47 @@ window.Incense = function(){
 				)
 			;
 		}
-		$message
-			.append( $userIcon )
-			.append( $('<div class="incense__message-unit__message-body">')
-				.append( $('<div class="incense__message-unit__owner">')
-					.attr({'title': new Date(message.microtime)})
-					.append( $('<span class="incense__message-unit__owner-name">').text(ownerInfo.name) )
-					.append( $('<span class="incense__message-unit__owner-id">').text(ownerInfo.id) )
-				)
-				.append( $messageContent )
-			)
-		;
 
-		$timelineList.append( $message );
+		if( lastTimelineMessage.owner == message.owner && lastTimelineMessage.targetWidget == message.targetWidget ){
+			$messageBodyContent = lastTimelineMessage.$messageBodyContent;
+			$messageBodyContent
+				.append( $messageContent )
+			;
+		}else{
+			var $messageBody = $('<div class="incense__message-unit__message-body">');
+			$message
+				.append( $userIcon )
+				.append( $messageBody
+					.append( $('<div class="incense__message-unit__owner">')
+						.attr({'title': new Date(message.microtime)})
+						.append( $('<span class="incense__message-unit__owner-name">').text(ownerInfo.name) )
+						.append( $('<span class="incense__message-unit__owner-id">').text(ownerInfo.id) )
+					)
+					.append( $messageBodyContent
+						.append($messageContent)
+					)
+				)
+			;
+			if( message.targetWidget ){
+				$messageBody
+					.append( $('<div class="incense__message-unit__targetWidget">')
+						.append(
+							incense.widgetMgr.mkLinkToWidget( message.targetWidget )
+						)
+					)
+				;
+			}
+			$timelineList.append( $message );
+		}
+
 
 		this.adjustTimelineScrolling($timelineList);
 
+		lastTimelineMessage = {
+			'owner': message.owner,
+			'targetWidget': message.targetWidget,
+			'$messageBodyContent': $messageBodyContent
+		};
 		return;
 	}
 

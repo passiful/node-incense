@@ -122,7 +122,7 @@ module.exports = function( incense, $widget ){
 		}
 		incense.insertTimeline( message, $messageUnit
 			.append( $('<div class="incense__message-unit__operation">').text(userMessage) )
-			.append( $('<div class="incense__message-unit__targetWidget">').append( incense.widgetMgr.mkLinkToWidget( message.targetWidget ) ) )
+			// .append( $('<div class="incense__message-unit__targetWidget">').append( incense.widgetMgr.mkLinkToWidget( message.targetWidget ) ) )
 		);
 
 	}

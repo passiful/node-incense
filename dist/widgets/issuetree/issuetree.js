@@ -10517,7 +10517,7 @@ module.exports = function( incense, $widget ){
 				// メインチャットに追加
 				incense.insertTimeline( message, $messageUnit
 					.append( $('<div class="incense__message-unit__content incense-markdown">').html(userMessage) )
-					.append( $('<div class="incense__message-unit__targetWidget">').append( incense.widgetMgr.mkLinkToWidget( message.targetWidget ) ) )
+					// .append( $('<div class="incense__message-unit__targetWidget">').append( incense.widgetMgr.mkLinkToWidget( message.targetWidget ) ) )
 				);
 				break;
 
@@ -10536,7 +10536,7 @@ module.exports = function( incense, $widget ){
 				// メインチャットに追加
 				incense.insertTimeline( message, $messageUnit
 					.append( $('<div class="incense__message-unit__operation">').html('問を "' + _this.issue + '" に変更しました。') )
-					.append( $('<div class="incense__message-unit__targetWidget">').append( incense.widgetMgr.mkLinkToWidget( message.targetWidget ) ) )
+					// .append( $('<div class="incense__message-unit__targetWidget">').append( incense.widgetMgr.mkLinkToWidget( message.targetWidget ) ) )
 				);
 				break;
 
@@ -10554,7 +10554,7 @@ module.exports = function( incense, $widget ){
 				// メインチャットに追加
 				incense.insertTimeline( message, $messageUnit
 					.append( $('<div class="incense__message-unit__operation">').html('答を "' + _this.answer + '" に変更しました。') )
-					.append( $('<div class="incense__message-unit__targetWidget">').append( incense.widgetMgr.mkLinkToWidget( message.targetWidget ) ) )
+					// .append( $('<div class="incense__message-unit__targetWidget">').append( incense.widgetMgr.mkLinkToWidget( message.targetWidget ) ) )
 				);
 				break;
 
@@ -10574,7 +10574,7 @@ module.exports = function( incense, $widget ){
 				// メインチャットに追加
 				incense.insertTimeline( message, $messageUnit
 					.append( $('<div class="incense__message-unit__operation">').text( timelineMessage ) )
-					.append( $('<div class="incense__message-unit__targetWidget">').append( incense.widgetMgr.mkLinkToWidget( message.targetWidget ) ) )
+					// .append( $('<div class="incense__message-unit__targetWidget">').append( incense.widgetMgr.mkLinkToWidget( message.targetWidget ) ) )
 				);
 				break;
 
@@ -10592,7 +10592,7 @@ module.exports = function( incense, $widget ){
 				// メインチャットに追加
 				incense.insertTimeline( message, $messageUnit
 					.append( $('<div class="incense__message-unit__operation">').text(message.owner + ' が、 "' + message.content.option + '" に投票しました。') )
-					.append( $('<div class="incense__message-unit__targetWidget">').append( incense.widgetMgr.mkLinkToWidget( message.targetWidget ) ) )
+					// .append( $('<div class="incense__message-unit__targetWidget">').append( incense.widgetMgr.mkLinkToWidget( message.targetWidget ) ) )
 				);
 				break;
 
