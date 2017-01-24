@@ -73,13 +73,22 @@
 			width: 100%;
 		}
 		.incense__timeline_form{
+			display: flex;
 			position:absolute;
 			left:0;
 			bottom:0;
 			width: 100%;
-		}
-		textarea{
-			width: 100%;
+			height: 40px;
+			textarea{
+				box-sizing: border-box;
+				width: calc(100% - 60px);
+				height: 100%;
+			}
+			button{
+				box-sizing: border-box;
+				width: 60px;
+				height: 100%;
+			}
 		}
 
 	}

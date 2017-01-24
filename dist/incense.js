@@ -18250,7 +18250,10 @@ window.Incense = function(){
 					.addClass('incense__timeline')
 					.html(
 						'<div class="incense__timeline_list"></div>'+
-						'<div class="incense__timeline_form"><textarea class="form-control board__main-chat-comment"></textarea></div>'
+						'<div class="incense__timeline_form">'+
+						'<textarea class="form-control incense__board__main-chat-comment"></textarea>'+
+						'<button class="btn btn-primary">send</button>'+
+						'</div>'
 					)
 				;
 				$timelineList = $timeline.find('.incense__timeline_list');
@@ -18395,30 +18398,43 @@ window.Incense = function(){
 				// キーボードイベントセット
 				console.log('incense: setting Keyboard events...');
 
+				var submitFnc = function( value ){
+					var msg = {
+						'content': value,
+						'contentType': 'text/markdown'
+					};
+					_this.sendMessage(
+						msg,
+						function(rtn){
+							console.log('Your message was sent.');
+						}
+					);
+				}
 				_this.setBehaviorChatComment(
-					$timelineForm.find('textarea.board__main-chat-comment'),
+					$timelineForm.find('textarea.incense__board__main-chat-comment'),
 					{
-						'submit': function(value){
-							var msg = {
-								'content': value,
-								'contentType': 'text/markdown'
-							};
-							_this.sendMessage(
-								msg,
-								function(rtn){
-									console.log('Your message was sent.');
-								}
-							);
-
+						'submit': function( value ){
+							submitFnc( value );
 						}
 					}
 				);
+				$timelineForm.find('button')
+					.on('click', function(e){
+						var $textarea = $timelineForm.find('textarea.incense__board__main-chat-comment');
+						var value = $textarea.val();
+						if( !value ){
+							return;
+						}
+						$textarea.val('');
+						submitFnc( value );
+					})
+				;
 
 				require('./libs/_keypress.js')(_this, function(){
-
 				});
 
 				rlv();
+
 			}); })
 			.then(function(){ return new Promise(function(rlv, rjt){
 				// フィールドのイベントセット
