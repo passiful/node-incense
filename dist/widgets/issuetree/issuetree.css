@@ -22,8 +22,17 @@
       font-size: 13px; }
       .issuetree .issuetree__discussion-timeline--timeline > div:last-child {
         border-bottom: none; }
-  .issuetree .issuetree__discussion-timeline--form textarea {
-    width: 100%; }
+  .issuetree .issuetree__discussion-timeline--form__inputform {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    height: 80px; }
+    .issuetree .issuetree__discussion-timeline--form__inputform textarea {
+      width: calc(100% - 80px);
+      height: 100%; }
+    .issuetree .issuetree__discussion-timeline--form__inputform button {
+      width: -80px;
+      height: 100%; }
   .issuetree .issuetree__issue {
     font-weight: bold;
     font-size: 24px; }

@@ -9882,7 +9882,10 @@ module.exports = function( incense, $widget ){
 								)
 								.append( $('<select style="max-width: 100%;">') )
 							)
-							.append( $('<textarea class="form-control issuetree__discussion-timeline--chat-comment">') )
+							.append( $('<div class="issuetree__discussion-timeline--form__inputform">')
+								.append( $('<textarea class="form-control issuetree__discussion-timeline--chat-comment">') )
+								.append( $('<button class="btn btn-primary">send</button>') )
+							)
 						)
 					)
 				)
@@ -10021,41 +10024,55 @@ module.exports = function( incense, $widget ){
 				})
 			;
 
+			var submitFnc = function(value){
+				function sendComment(value, stance, callback){
+					callback = callback || function(){};
+					incense.sendMessage(
+						{
+							'content': JSON.stringify({
+								'command': 'comment',
+								'comment': value,
+								'stance': stance
+							}),
+							'contentType': 'application/x-passiflora-widget-message',
+							'targetWidget': _this.id
+						},
+						function(){
+							console.log('issuetree chat-comment submited.');
+							callback();
+						}
+					);
+				}
+
+				var myAnswer = _this.vote[incense.getUserInfo().id];
+				var newAnswer = _this.$yourStanceSelector.val();
+				if( newAnswer.length && newAnswer != myAnswer ){
+					sendVoteMessage(newAnswer, function(){
+						sendComment(value, newAnswer);
+					});
+				}else{
+					sendComment(value, (myAnswer || ''));
+				}
+			}
 			incense.setBehaviorChatComment(
-				_this.$detailBody.find('textarea.issuetree__discussion-timeline--chat-comment'),
+				_this.$detailBody.find('.issuetree__discussion-timeline--form__inputform textarea.issuetree__discussion-timeline--chat-comment'),
 				{
 					'submit': function(value){
-						function sendComment(value, stance, callback){
-							callback = callback || function(){};
-							incense.sendMessage(
-								{
-									'content': JSON.stringify({
-										'command': 'comment',
-										'comment': value,
-										'stance': stance
-									}),
-									'contentType': 'application/x-passiflora-widget-message',
-									'targetWidget': _this.id
-								},
-								function(){
-									console.log('issuetree chat-comment submited.');
-									callback();
-								}
-							);
-						}
-
-						var myAnswer = _this.vote[incense.getUserInfo().id];
-						var newAnswer = _this.$yourStanceSelector.val();
-						if( newAnswer.length && newAnswer != myAnswer ){
-							sendVoteMessage(newAnswer, function(){
-								sendComment(value, newAnswer);
-							});
-						}else{
-							sendComment(value, (myAnswer || ''));
-						}
+						submitFnc(value);
 					}
 				}
 			);
+			_this.$detailBody.find('.issuetree__discussion-timeline--form__inputform button')
+				.on('click', function(e){
+					var $textarea = _this.$detailBody.find('.issuetree__discussion-timeline--form__inputform textarea.issuetree__discussion-timeline--chat-comment');
+					var value = $textarea.val();
+					if( !value ){
+						return;
+					}
+					$textarea.val('');
+					submitFnc( value );
+				})
+			;
 
 			_this.$detailBody.find('.issuetree__create-child-button')
 				.on('click', function(e){
