@@ -11,6 +11,7 @@ module.exports = function( incense, $widget ){
 	this.vote = {};
 	this.status = 'open';
 	this.commentCount = 0;
+	this.lastTimelineMessage = {};
 
 	_this.$widgetBody = $('<div class="issuetree issuetree--widget">')
 		.append( $('<div class="row">')
@@ -649,9 +650,17 @@ module.exports = function( incense, $widget ){
 		var user = incense.userMgr.get(message.owner);
 
 		function mkTimelineElement( $messageContent ){
-			var $rtn = $('<div class="incense__message-unit">');
+			var $messageBodyContent = $('<div class="incense__message-unit__message-body-content">');
+			$messageContent.css({'margin-bottom': 3});
+			var $message = $('<div>')
+				.addClass('incense__message-unit')
+				.attr({
+					'data-message-id': message.id,
+					'data-message-owner': message.owner
+				})
+			;
 			if( user.id == incense.getUserInfo().id ){
-				$rtn.addClass('incense__message-unit--myitem');
+				$message.addClass('incense__message-unit--myitem');
 			}
 			$userIcon = $('<div class="incense__message-unit__owner-icon">');
 			if( user.icon ){
@@ -667,17 +676,35 @@ module.exports = function( incense, $widget ){
 					)
 				;
 			}
-			$rtn
-				.append( $userIcon )
-				.append( $('<div class="incense__message-unit__message-body">')
-					.append( $('<div class="incense__message-unit__owner">')
-						.append( $('<span class="incense__message-unit__owner-name">').text(user.name) )
-						.append( $('<span class="incense__message-unit__owner-id">').text(user.id) )
-					)
+
+			if( _this.lastTimelineMessage.owner == message.owner && _this.lastTimelineMessage.targetWidget == message.targetWidget && _this.lastTimelineMessage.microtime > message.microtime-(5*60*1000) ){
+				$messageBodyContent = _this.lastTimelineMessage.$messageBodyContent;
+				$messageBodyContent
 					.append( $messageContent )
-				)
-			;
-			return $rtn;
+				;
+			}else{
+				$message
+					.append( $userIcon )
+					.append( $('<div class="incense__message-unit__message-body">')
+						.append( $('<div class="incense__message-unit__owner">')
+							.append( $('<span class="incense__message-unit__owner-name">').text(user.name) )
+							.append( $('<span class="incense__message-unit__owner-id">').text(user.id) )
+						)
+						.append( $messageBodyContent
+							.append($messageContent)
+						)
+					)
+				;
+				_this.$detailBodyTimeline.append( $message );
+			}
+
+			_this.lastTimelineMessage = {
+				'owner': message.owner,
+				'targetWidget': message.targetWidget,
+				'microtime': message.microtime,
+				'$messageBodyContent': $messageBodyContent
+			};
+			return $message;
 		}
 
 		switch( message.content.command ){
@@ -691,9 +718,9 @@ module.exports = function( incense, $widget ){
 				_this.$widgetBody.find('.issuetree__comment-count').text( (this.commentCount) + '件のコメント' );
 
 				// 詳細画面のディスカッションに追加
-				_this.$detailBodyTimeline.append( mkTimelineElement(
+				mkTimelineElement(
 					$('<div class="incense__message-unit__content incense-markdown">').html(userMessage)
-				) );
+				);
 				// 	.addClass( user.id == incense.getUserInfo().id ? 'issuetree--myitem' : '' )
 				incense.adjustTimelineScrolling( _this.$detailBodyTimeline );
 
@@ -711,9 +738,9 @@ module.exports = function( incense, $widget ){
 				$widget.find('.issuetree__issue').html( incense.detoxHtml( incense.markdown(_this.issue) ) || 'no-set' );
 
 				// 詳細画面のディスカッションに追加
-				_this.$detailBodyTimeline.append( mkTimelineElement(
+				mkTimelineElement(
 					$('<div class="incense__message-unit__operation">').html(message.owner + ' が、問を "' + _this.issue + '" に変更しました。')
-				) );
+				);
 				incense.adjustTimelineScrolling( _this.$detailBodyTimeline );
 
 				// メインチャットに追加
@@ -729,9 +756,9 @@ module.exports = function( incense, $widget ){
 				updateView();
 
 				// 詳細画面のディスカッションに追加
-				_this.$detailBodyTimeline.append( mkTimelineElement(
+				mkTimelineElement(
 					$('<div class="incense__message-unit__operation">').html(message.owner + ' が、答を "' + _this.answer + '" に変更しました。')
-				) );
+				);
 				incense.adjustTimelineScrolling( _this.$detailBodyTimeline );
 
 				// メインチャットに追加
@@ -749,9 +776,9 @@ module.exports = function( incense, $widget ){
 				var timelineMessage = user.name + ' は、問を' + (_this.status=='open'?'再び開きました':'完了しました') + '。';
 
 				// 詳細画面のディスカッションに追加
-				_this.$detailBodyTimeline.append( mkTimelineElement(
+				mkTimelineElement(
 					$('<div class="incense__message-unit__operation">').text( timelineMessage )
-				) );
+				);
 				incense.adjustTimelineScrolling( _this.$detailBodyTimeline );
 
 				// メインチャットに追加
@@ -767,9 +794,9 @@ module.exports = function( incense, $widget ){
 				updateView();
 
 				// 詳細画面のディスカッションに追加
-				_this.$detailBodyTimeline.append( mkTimelineElement(
+				mkTimelineElement(
 					$('<div class="incense__message-unit__operation">').text(user.name + ' が、 "' + message.content.option + '" に投票しました。')
-				) );
+				);
 				incense.adjustTimelineScrolling( _this.$detailBodyTimeline );
 
 				// メインチャットに追加

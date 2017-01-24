@@ -455,7 +455,7 @@ window.Incense = function(){
 	 * メインタイムラインにメッセージを表示する
 	 */
 	this.insertTimeline = function( message, $messageContent ){
-		console.log(message);
+		// console.log(message);
 		$messageContent = $messageContent || $('<div>');
 		$messageContent.css({'margin-bottom': 3});
 		var $messageBodyContent = $('<div class="incense__message-unit__message-body-content">');
@@ -488,7 +488,7 @@ window.Incense = function(){
 			;
 		}
 
-		if( lastTimelineMessage.owner == message.owner && lastTimelineMessage.targetWidget == message.targetWidget ){
+		if( lastTimelineMessage.owner == message.owner && lastTimelineMessage.targetWidget == message.targetWidget && lastTimelineMessage.microtime > message.microtime-(5*60*1000) ){
 			$messageBodyContent = lastTimelineMessage.$messageBodyContent;
 			$messageBodyContent
 				.append( $messageContent )
@@ -520,12 +520,12 @@ window.Incense = function(){
 			$timelineList.append( $message );
 		}
 
-
 		this.adjustTimelineScrolling($timelineList);
 
 		lastTimelineMessage = {
 			'owner': message.owner,
 			'targetWidget': message.targetWidget,
+			'microtime': message.microtime,
 			'$messageBodyContent': $messageBodyContent
 		};
 		return;
