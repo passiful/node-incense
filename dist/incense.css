@@ -143,6 +143,9 @@
     height: 100%;
     overflow: auto;
     background-color: rgba(0, 0, 0, 0.05); }
+    @media all and (max-width: 780px) {
+      .incense .incense-wd-modal {
+        position: fixed; } }
     .incense .incense-wd-modal__dialog {
       width: calc(100% - 20px);
       height: calc(100% - 20px);

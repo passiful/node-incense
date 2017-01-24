@@ -160,6 +160,9 @@
 
 	.incense-wd-modal{
 		position: absolute;
+		@media all and (max-width: 780px){
+			position: fixed;
+		}
 		top: 0;
 		left: 0;
 		z-index: 9999;
