@@ -24,7 +24,7 @@ module.exports = function(conf, main){
 			return;
 		}
 		// console.log(boardId);
-		var dbPath = require('path').resolve(this.getPathBoardDataDir(boardId), 'db.sqlite');
+		var dbPath = require('path').resolve(conf.dataDir, '__database.sqlite');
 		// console.log(dbPath);
 
 		var sequelize = new Sequelize(undefined, undefined, undefined, {
