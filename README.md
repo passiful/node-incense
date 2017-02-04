@@ -124,7 +124,10 @@ server.listen( 3000, function(){
 - `scrollToBoardCenter()` 追加
 - textarea編集中のダブルクリックイベントを無効化。
 - データベース構造に関する修正。(複数のボードデータを1つのデータベースで管理できるようにする準備として)
-- issuetree: 問と答の編集を連続的に行えるようにカーソル移動ロジックを調整した。
+- issuetree を discussiontree に改名。
+- discussiontree: 答の初期値を 空欄 に変更。
+- discussiontree: 問と答の編集を連続的に行えるようにカーソル移動ロジックを調整した。
+- discussiontree: Vote 機能を GOOD! 機能に改名。
 - ボードの拡大・縮小をキーボードショートカットでできるようにした。(dmauro-Keypress が必要)
 - データベースを統合した。ボードごとに別のDBを持つのではなく、共通のDBファイルを持つように変更。
 - その他不具合などの修正。

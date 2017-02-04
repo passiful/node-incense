@@ -33,7 +33,7 @@
     .discussiontree .discussiontree__discussion-timeline--form__inputform button {
       width: -80px;
       height: 100%; }
-  .discussiontree .discussiontree__issue {
+  .discussiontree .discussiontree__question {
     font-weight: bold;
     font-size: 24px; }
   .discussiontree .discussiontree__voteuser {
@@ -51,18 +51,18 @@
       border-radius: 0.5em; }
       .discussiontree .discussiontree__voteuser li.discussiontree__voteuser--me {
         background-color: #999; }
-  .discussiontree .discussiontree__parent-issue {
+  .discussiontree .discussiontree__parent-question {
     margin: 0.5em 0; }
-  .discussiontree .discussiontree__sub-issues {
+  .discussiontree .discussiontree__sub-questions {
     margin: 0.5em 0; }
-    .discussiontree .discussiontree__sub-issues ul {
+    .discussiontree .discussiontree__sub-questions ul {
       padding: 0; }
-      .discussiontree .discussiontree__sub-issues ul li {
+      .discussiontree .discussiontree__sub-questions ul li {
         display: block;
         list-style-type: none;
         padding: 0;
         margin: 0; }
-  .discussiontree .discussiontree__issue-unit {
+  .discussiontree .discussiontree__question-unit {
     display: block;
     border: 1px solid #eee;
     background-color: #f9f9f9;
@@ -71,10 +71,10 @@
     padding: 1em;
     border-radius: 3px;
     margin: 5px 0; }
-    .discussiontree .discussiontree__issue-unit--widget-id {
+    .discussiontree .discussiontree__question-unit--widget-id {
       text-align: right;
       font-size: 80%; }
-    .discussiontree .discussiontree__issue-unit:hover {
+    .discussiontree .discussiontree__question-unit:hover {
       text-decoration: none;
       background-color: #f0f0f0; }
   .discussiontree--widget {
@@ -83,7 +83,7 @@
     padding: 5px;
     font-size: 11px;
     width: 240px; }
-    .discussiontree--widget .discussiontree__issue {
+    .discussiontree--widget .discussiontree__question {
       font-size: 11px;
       font-weight: bold; }
     .discussiontree--widget.discussiontree--status-active {

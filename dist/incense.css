@@ -331,7 +331,7 @@
       .incense .discussiontree .discussiontree__discussion-timeline--form__inputform button {
         width: -80px;
         height: 100%; }
-    .incense .discussiontree .discussiontree__issue {
+    .incense .discussiontree .discussiontree__question {
       font-weight: bold;
       font-size: 24px; }
     .incense .discussiontree .discussiontree__voteuser {
@@ -349,18 +349,18 @@
         border-radius: 0.5em; }
         .incense .discussiontree .discussiontree__voteuser li.discussiontree__voteuser--me {
           background-color: #999; }
-    .incense .discussiontree .discussiontree__parent-issue {
+    .incense .discussiontree .discussiontree__parent-question {
       margin: 0.5em 0; }
-    .incense .discussiontree .discussiontree__sub-issues {
+    .incense .discussiontree .discussiontree__sub-questions {
       margin: 0.5em 0; }
-      .incense .discussiontree .discussiontree__sub-issues ul {
+      .incense .discussiontree .discussiontree__sub-questions ul {
         padding: 0; }
-        .incense .discussiontree .discussiontree__sub-issues ul li {
+        .incense .discussiontree .discussiontree__sub-questions ul li {
           display: block;
           list-style-type: none;
           padding: 0;
           margin: 0; }
-    .incense .discussiontree .discussiontree__issue-unit {
+    .incense .discussiontree .discussiontree__question-unit {
       display: block;
       border: 1px solid #eee;
       background-color: #f9f9f9;
@@ -369,10 +369,10 @@
       padding: 1em;
       border-radius: 3px;
       margin: 5px 0; }
-      .incense .discussiontree .discussiontree__issue-unit--widget-id {
+      .incense .discussiontree .discussiontree__question-unit--widget-id {
         text-align: right;
         font-size: 80%; }
-      .incense .discussiontree .discussiontree__issue-unit:hover {
+      .incense .discussiontree .discussiontree__question-unit:hover {
         text-decoration: none;
         background-color: #f0f0f0; }
     .incense .discussiontree--widget {
@@ -381,7 +381,7 @@
       padding: 5px;
       font-size: 11px;
       width: 240px; }
-      .incense .discussiontree--widget .discussiontree__issue {
+      .incense .discussiontree--widget .discussiontree__question {
         font-size: 11px;
         font-weight: bold; }
       .incense .discussiontree--widget.discussiontree--status-active {
