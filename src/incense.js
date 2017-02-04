@@ -107,9 +107,9 @@ window.Incense = function(){
 						'name': 'Stickies',
 						'api': require('./widgets/stickies/stickies.js')
 					},
-					'issuetree': {
-						'name': 'Issue Tree',
-						'api': require('./widgets/issuetree/issuetree.js')
+					'discussiontree': {
+						'name': 'Discussion Tree',
+						'api': require('./widgets/discussiontree/discussiontree.js')
 					}
 				};
 

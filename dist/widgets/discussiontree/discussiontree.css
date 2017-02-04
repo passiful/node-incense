@@ -1,0 +1,94 @@
+.discussiontree {
+  background-color: #fff; }
+  .discussiontree .discussiontree__block {
+    padding: 5px 0;
+    margin: 0.5em 0; }
+  .discussiontree .discussiontree__heading {
+    font-weight: bold;
+    border-left: 3px solid #3399ff;
+    padding: 0 1em; }
+    .discussiontree .discussiontree__heading .discussiontree__edit-button {
+      margin-left: 1em;
+      font-size: 80%;
+      font-weight: normal; }
+  .discussiontree.discussiontree--status-active .discussiontree__heading {
+    border-left-color: #fe9; }
+  .discussiontree.discussiontree--status-fixed .discussiontree__heading {
+    border-left-color: #6e9; }
+  .discussiontree .discussiontree__discussion-timeline--timeline {
+    height: 300px;
+    overflow: auto; }
+    .discussiontree .discussiontree__discussion-timeline--timeline > div {
+      font-size: 13px; }
+      .discussiontree .discussiontree__discussion-timeline--timeline > div:last-child {
+        border-bottom: none; }
+  .discussiontree .discussiontree__discussion-timeline--form__inputform {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    height: 80px; }
+    .discussiontree .discussiontree__discussion-timeline--form__inputform textarea {
+      width: calc(100% - 80px);
+      height: 100%; }
+    .discussiontree .discussiontree__discussion-timeline--form__inputform button {
+      width: -80px;
+      height: 100%; }
+  .discussiontree .discussiontree__issue {
+    font-weight: bold;
+    font-size: 24px; }
+  .discussiontree .discussiontree__voteuser {
+    padding: 0;
+    margin: 0; }
+    .discussiontree .discussiontree__voteuser li {
+      list-style-type: none;
+      display: inline-block;
+      padding: 0.2em 1em;
+      margin: 1px;
+      background-color: #666;
+      color: #eee;
+      font-size: 11px;
+      font-weight: normal;
+      border-radius: 0.5em; }
+      .discussiontree .discussiontree__voteuser li.discussiontree__voteuser--me {
+        background-color: #999; }
+  .discussiontree .discussiontree__parent-issue {
+    margin: 0.5em 0; }
+  .discussiontree .discussiontree__sub-issues {
+    margin: 0.5em 0; }
+    .discussiontree .discussiontree__sub-issues ul {
+      padding: 0; }
+      .discussiontree .discussiontree__sub-issues ul li {
+        display: block;
+        list-style-type: none;
+        padding: 0;
+        margin: 0; }
+  .discussiontree .discussiontree__issue-unit {
+    display: block;
+    border: 1px solid #eee;
+    background-color: #f9f9f9;
+    color: #006;
+    font-size: 80%;
+    padding: 1em;
+    border-radius: 3px;
+    margin: 5px 0; }
+    .discussiontree .discussiontree__issue-unit--widget-id {
+      text-align: right;
+      font-size: 80%; }
+    .discussiontree .discussiontree__issue-unit:hover {
+      text-decoration: none;
+      background-color: #f0f0f0; }
+  .discussiontree--widget {
+    border: 1px solid #ddd;
+    border-left: 7px solid #3399ff;
+    padding: 5px;
+    font-size: 11px;
+    width: 240px; }
+    .discussiontree--widget .discussiontree__issue {
+      font-size: 11px;
+      font-weight: bold; }
+    .discussiontree--widget.discussiontree--status-active {
+      border-left: 7px solid #fe9; }
+    .discussiontree--widget.discussiontree--status-fixed {
+      border-left: 7px solid #6e9; }
+    .discussiontree--widget.discussiontree--status-no-active {
+      border-left: 7px solid #3399ff; }

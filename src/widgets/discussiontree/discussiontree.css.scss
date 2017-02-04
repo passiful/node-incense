@@ -1,37 +1,37 @@
-.issuetree{
+.discussiontree{
 	$color--stats-active: #fe9;
 	$color--stats-fixed: #6e9;
 	$color--stats-no-active: #3399ff;
 
 	background-color: #fff;
 
-	.issuetree__block{
+	.discussiontree__block{
 		padding:5px 0;
 		margin:0.5em 0;
 	}
-	.issuetree__heading{
+	.discussiontree__heading{
 		font-weight: bold;
 		border-left: 3px solid $color--stats-no-active;
 		padding: 0 1em;
 
-		.issuetree__edit-button{
+		.discussiontree__edit-button{
 			margin-left: 1em;
 			font-size: 80%;
 			font-weight: normal;
 		}
 	}
-	&.issuetree--status-active{
-		.issuetree__heading{
+	&.discussiontree--status-active{
+		.discussiontree__heading{
 			border-left-color: $color--stats-active;
 		}
 	}
-	&.issuetree--status-fixed{
-		.issuetree__heading{
+	&.discussiontree--status-fixed{
+		.discussiontree__heading{
 			border-left-color: $color--stats-fixed;
 		}
 	}
 
-	.issuetree__discussion-timeline--timeline{
+	.discussiontree__discussion-timeline--timeline{
 		height: 300px;
 		overflow: auto;
 
@@ -44,7 +44,7 @@
 			}
 		}
 	}
-	.issuetree__discussion-timeline--form{
+	.discussiontree__discussion-timeline--form{
 		&__inputform{
 			display: flex;
 			height: 80px;
@@ -58,12 +58,12 @@
 			}
 		}
 	}
-	.issuetree__issue{
+	.discussiontree__issue{
 		font-weight: bold;
 		font-size: 24px;
 	}
 
-	.issuetree__voteuser{
+	.discussiontree__voteuser{
 		padding: 0;
 		margin: 0;
 		li{
@@ -76,18 +76,18 @@
 			font-size: 11px;
 			font-weight: normal;
 			border-radius: 0.5em;
-			&.issuetree__voteuser--me{
+			&.discussiontree__voteuser--me{
 				background-color: #999;
 			}
 		}
 	}
 
 
-	.issuetree__parent-issue{
+	.discussiontree__parent-issue{
 		margin: 0.5em 0;
 	}
 
-	.issuetree__sub-issues{
+	.discussiontree__sub-issues{
 		margin: 0.5em 0;
 		ul{
 			padding: 0;
@@ -100,7 +100,7 @@
 		}
 	}
 
-	.issuetree__issue-unit{
+	.discussiontree__issue-unit{
 		display: block;
 		border: 1px solid #eee;
 		background-color: #f9f9f9;
@@ -128,17 +128,17 @@
 		padding: 5px;
 		font-size: 11px;
 		width: 240px;
-		.issuetree__issue{
+		.discussiontree__issue{
 			font-size: 11px;
 			font-weight: bold;
 		}
-		&.issuetree--status-active{
+		&.discussiontree--status-active{
 			border-left: 7px solid $color--stats-active;
 		}
-		&.issuetree--status-fixed{
+		&.discussiontree--status-fixed{
 			border-left: 7px solid $color--stats-fixed;
 		}
-		&.issuetree--status-no-active{
+		&.discussiontree--status-no-active{
 			border-left: 7px solid $color--stats-no-active;
 		}
 	}
