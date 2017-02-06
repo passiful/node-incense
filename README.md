@@ -32,7 +32,8 @@ biflora.setupWebSocket(
 		'dataDir': '/path/to/datadir/', // <- data directory (Read/Write permission required)
 		'db': { // <- database setting
 			"dbms": "sqlite",
-			"storage": "/path/to/your/database.sqlite"
+			"storage": "/path/to/your/database.sqlite",
+			"tablePrefix": "incense"
 		} ,
 		'getUserInfo': function( socket, clientDefaultUserInfo, callback ){
 			// provide user info.

@@ -10,6 +10,7 @@ module.exports = function(conf, main){
 	var Sequelize = require('sequelize');
 	var sqlite = require('sqlite3');
 	var dbs = {};
+	var tbls = {};
 
 	/**
 	 * DBを初期化
@@ -33,8 +34,7 @@ module.exports = function(conf, main){
 			'storage': dbPath
 		});
 
-		var tbls = {};
-		tbls.timeline = sequelize.define('timeline',
+		tbls.timeline = sequelize.define(conf.db.tablePrefix+'-timeline',
 			{
 				'boardId': { type: Sequelize.STRING, unique: 'boardMessageUniqueKey', allowNull: false },
 				'boardMessageId': { type: Sequelize.BIGINT, unique: 'boardMessageUniqueKey', allowNull: false },
@@ -52,8 +52,7 @@ module.exports = function(conf, main){
 		dbs[boardId] = {};
 		dbs[boardId].boardId = boardId;
 		dbs[boardId].path = dbPath;
-		dbs[boardId].tbls = tbls;
-		console.log(dbs);
+		// console.log(dbs);
 
 		callback(dbs[boardId]);
 		return;
@@ -100,7 +99,7 @@ module.exports = function(conf, main){
 							return;
 						}
 
-						dbs[boardId].tbls.timeline.max(
+						tbls.timeline.max(
 							'boardMessageId',
 							{
 								'where': { 'boardId': boardId }
@@ -108,7 +107,7 @@ module.exports = function(conf, main){
 						).then(function(maxBoardMessageId){
 							if(!maxBoardMessageId||typeof(maxBoardMessageId)!==typeof(1)){maxBoardMessageId = 0;}
 
-							dbs[boardId].tbls.timeline.create({
+							tbls.timeline.create({
 								'boardId': boardId,
 								'boardMessageId': maxBoardMessageId+1,
 								'content': message.content,
@@ -145,7 +144,7 @@ module.exports = function(conf, main){
 
 		this.initDb(boardId, function(){
 
-			dbs[boardId].tbls.timeline
+			tbls.timeline
 				.findAndCountAll({
 					"where":{
 						"boardId": boardId
