@@ -18,6 +18,7 @@ biflora.setupWebSocket(
 	require( path.resolve(__dirname, '../../../libs/main.js') ).getBifloraApi() ,
 	require( path.resolve(__dirname, '../../../libs/main.js') ).getBifloraMain({
 		'dataDir': conf.dataDir,
+		'db': conf.db,
 		'getUserInfo': function(socket, clientDefaultUserInfo, callback){
 			callback({
 				'id': 'tester',

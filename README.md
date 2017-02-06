@@ -30,6 +30,10 @@ biflora.setupWebSocket(
 	require('incense').getBifloraApi() ,
 	require('incense').getBifloraMain({
 		'dataDir': '/path/to/datadir/', // <- data directory (Read/Write permission required)
+		'db': { // <- database setting
+			"dbms": "sqlite",
+			"storage": "/path/to/your/database.sqlite"
+		} ,
 		'getUserInfo': function( socket, clientDefaultUserInfo, callback ){
 			// provide user info.
 			// e.g. {

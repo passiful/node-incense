@@ -1,5 +1,9 @@
 {
 	"appName": "incense",
 	"dataDir": "./data/",
+	"db": {
+		"dbms": "sqlite",
+		"storage": "./data/__database.sqlite"
+	},
 	"origin": "http://127.0.0.1:8080"
 }
