@@ -18381,7 +18381,7 @@ window.Incense = function(){
 					'getMessageList',
 					{'boardId': boardId},
 					function(rtn){
-						console.log(rtn);
+						// console.log(rtn);
 						it79.ary(
 							rtn.rows,
 							function(it1, row1, idx1){

@@ -12,12 +12,7 @@ module.exports = function(conf, main){
 	/**
 	 * 新しいボードを生成する
 	 */
-	this.createNewBoard = function( boardInfo, callback ){
-		if( typeof(boardInfo) == typeof('') ){
-			boardInfo = {'theme': boardInfo};
-		}else{
-			boardInfo = boardInfo || {'theme': 'no title'};
-		}
+	this.createNewBoard = function( callback ){
 		callback = callback || function(){};
 
 		while(1){
@@ -31,9 +26,6 @@ module.exports = function(conf, main){
 				// ディレクトリ作成
 				fsX.mkdirpSync(newDirPath);
 				console.log('SUCCESS...!');
-
-				// info.json 生成
-				fs.writeFileSync(require('path').resolve(newDirPath, 'info.json'), JSON.stringify(boardInfo, null, 1));
 
 				main.dbh.initDb(newBoardId, function(dbInfo){
 					// 返却
