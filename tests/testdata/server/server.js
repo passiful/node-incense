@@ -31,7 +31,9 @@ biflora.setupWebSocket(
 );
 
 console.log('------ creating new board.');
-bifloraMain.dbh.createNewBoard({}, function(boardId){
+bifloraMain.dbh.createNewBoard({
+	'title': 'TEST BOARD'
+}, function(boardId){
 	console.log('----- created board ID:', boardId);
 	bifloraMain.dbh.getBoardInfo(boardId, function(boardInfo){
 		console.log('boardInfo:', boardInfo);

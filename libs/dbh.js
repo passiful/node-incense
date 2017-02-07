@@ -106,7 +106,8 @@ module.exports = function(conf, main){
 							'boardId': newBoardId,
 							'title': boardInfo.title,
 							'opened': 1,
-							'owner': boardInfo.owner
+							'owner': boardInfo.owner,
+							'microtime': Date.now()
 						}).then(function(record){
 							// successful
 							callback(newBoardId);
@@ -191,7 +192,7 @@ module.exports = function(conf, main){
 								'targetWidget': message.targetWidget,
 								'owner': message.owner,
 								'connectionId': message.connectionId,
-								'microtime': message.microtime
+								'microtime': Date.now()
 							}).then(function(record){
 								// successful
 								callback(record);
