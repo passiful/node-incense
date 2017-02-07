@@ -58,9 +58,12 @@ module.exports = function(conf, main){
 				'microtime': { type: Sequelize.BIGINT }
 			}
 		);
-		sequelize.sync();
+		sequelize.sync()
+			.then(function(){
+				callback(true);
+			})
+		;
 
-		callback(true);
 		return;
 	}
 
@@ -100,7 +103,15 @@ module.exports = function(conf, main){
 						}
 
 						var newBoardId = (+new Date());
-						console.log(newBoardId);
+						newBoardId += '.'+(Math.random() * 10000)+'.'+(Math.random() * 10000);
+						// console.log(newBoardId);
+						newBoardId = (function(src) {
+							var crypto = require('crypto');
+							var md5 = crypto.createHash('md5');
+							md5.update(src, 'utf8');
+							return md5.digest('hex');
+						})(newBoardId);
+						// console.log(newBoardId);
 
 						tbls.board.create({
 							'boardId': newBoardId,
