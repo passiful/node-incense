@@ -14,18 +14,13 @@ module.exports = function(conf, main){
 	 */
 	this.createNewBoard = function( callback ){
 		callback = callback || function(){};
+		var tryCount = 0;
 
 		while(1){
 
 			try {
 				var newBoardId = (+new Date());
 				console.log(newBoardId);
-				var newDirPath = main.dbh.getPathBoardDataDir(newBoardId);
-				// console.log(newDirPath);
-
-				// ディレクトリ作成
-				fsX.mkdirpSync(newDirPath);
-				console.log('SUCCESS...!');
 
 				main.dbh.initDb(newBoardId, function(dbInfo){
 					// 返却
@@ -36,31 +31,16 @@ module.exports = function(conf, main){
 
 			} catch (e) {
 				console.log('catched.', e.message);
+				tryCount ++;
+				if( tryCount > 100 ){
+					callback(false);
+					return;
+				}
 				continue;
 			}
 
 		}
 
-		return;
-	}
-
-	/**
-	 * ボード情報を取得する
-	 */
-	this.getBoardInfo = function(boardId, callback){
-		callback = callback || function(){};
-
-		var dirPath = main.dbh.getPathBoardDataDir(boardId);
-
-		if( !utils79.is_dir(dirPath) ){
-			callback(false);
-			return;
-		}
-
-		var bin = fs.readFileSync(require('path').resolve(dirPath, 'info.json'));
-		var json = JSON.parse(bin);
-
-		callback(json);
 		return;
 	}
 
