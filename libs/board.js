@@ -15,7 +15,7 @@ module.exports = function(conf, main){
 	this.createNewBoard = function( boardInfo, callback ){
 		callback = callback || function(){};
 		var tryCount = 0;
-		var boardInfo = {};
+		boardInfo = boardInfo||{};
 
 		while(1){
 
