@@ -9,22 +9,16 @@ module.exports = function(conf, main){
 	var it79 = require('iterate79');
 	var Sequelize = require('sequelize');
 	var sqlite = require('sqlite3');
-	var dbs = {};
 	var tbls = {};
 
 	/**
 	 * DBを初期化
-	 * @param  {String}   boardId  [description]
 	 * @param  {Function} callback [description]
 	 * @return {Void}              void.
 	 */
-	this.initDb = function(boardId, callback){
+	this.initDb = function(callback){
 		callback = callback || function(){};
-		if(dbs[boardId]){
-			callback(dbs[boardId]);
-			return;
-		}
-		// console.log(boardId);
+
 		var dbPath = require('path').resolve(conf.db.storage);
 		// console.log(dbPath);
 
@@ -34,9 +28,27 @@ module.exports = function(conf, main){
 			'storage': dbPath
 		});
 
+		tbls.board = sequelize.define(conf.db.tablePrefix+'-board',
+			{
+				'boardId': { type: Sequelize.STRING, primaryKey: true, allowNull: false },
+				'title': { type: Sequelize.STRING },
+				'owner': { type: Sequelize.STRING },
+				'opened': { type: Sequelize.INTEGER },
+				'microtime': { type: Sequelize.BIGINT }
+			}
+		);
 		tbls.timeline = sequelize.define(conf.db.tablePrefix+'-timeline',
 			{
-				'boardId': { type: Sequelize.STRING, unique: 'boardMessageUniqueKey', allowNull: false },
+				'boardId': {
+					type: Sequelize.STRING,
+					unique: 'boardMessageUniqueKey',
+					allowNull: false,
+					references: {
+						// This is a reference to another model
+						model: tbls.board,
+						key: 'boardId'
+					}
+				},
 				'boardMessageId': { type: Sequelize.BIGINT, unique: 'boardMessageUniqueKey', allowNull: false },
 				'content': { type: Sequelize.STRING },
 				'contentType': { type: Sequelize.STRING },
@@ -48,13 +60,7 @@ module.exports = function(conf, main){
 		);
 		sequelize.sync();
 
-		// ボード情報を記憶
-		dbs[boardId] = {};
-		dbs[boardId].boardId = boardId;
-		dbs[boardId].path = dbPath;
-		// console.log(dbs);
-
-		callback(dbs[boardId]);
+		callback(true);
 		return;
 	}
 
@@ -76,6 +82,76 @@ module.exports = function(conf, main){
 	}
 
 	/**
+	 * 新しいボードを作成する
+	 */
+	this.createNewBoard = function(boardInfo, callback){
+		callback = callback || function(){};
+		this.initDb(function(){
+			var retryCounter = 0;
+			it79.fnc(
+				{},
+				{
+					"insert": function(it1, data){
+						retryCounter ++;
+						if( retryCounter > 50 ){
+							// 50回やっても成功しないなら、諦めて離脱する
+							callback(false);
+							return;
+						}
+
+						var newBoardId = (+new Date());
+						console.log(newBoardId);
+
+						tbls.board.create({
+							'boardId': newBoardId,
+							'title': boardInfo.title,
+							'opened': 1,
+							'owner': boardInfo.owner
+						}).then(function(record){
+							// successful
+							callback(newBoardId);
+						}).catch(function(){
+							// retry
+							retryCounter ++;
+							if( retryCounter > 100 ){
+								callback(false);
+								return;
+							}
+							it1.goto("insert", data);
+						});
+					}
+				}
+			);
+		});
+		return;
+	}
+
+	/**
+	 * ボードの詳細情報を得る
+	 */
+	this.getBoardInfo = function(boardId, callback){
+		callback = callback || function(){};
+
+		this.initDb(function(){
+
+			tbls.board
+				.findOne({
+					"where":{
+						"boardId": boardId
+					}
+				})
+				.then(function(result) {
+					// console.log(result);
+					result.dataValues = JSON.parse(JSON.stringify(result.dataValues));
+					callback(result.dataValues);
+				})
+			;
+
+		});
+		return;
+	}
+
+	/**
 	 * メッセージをDBに挿入する
 	 * @param  {[type]}   boardId  [description]
 	 * @param  {[type]}   message  [description]
@@ -85,7 +161,7 @@ module.exports = function(conf, main){
 	this.insertMessage = function(boardId, message, callback){
 		callback = callback || function(){};
 
-		this.initDb(boardId, function(){
+		this.initDb(function(){
 
 			var retryCounter = 0;
 			it79.fnc(
@@ -142,7 +218,7 @@ module.exports = function(conf, main){
 	this.getMessageList = function(boardId, options, callback){
 		callback = callback || function(){};
 
-		this.initDb(boardId, function(){
+		this.initDb(function(){
 
 			tbls.timeline
 				.findAndCountAll({

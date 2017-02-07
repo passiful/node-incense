@@ -15,14 +15,12 @@ module.exports = function(conf, main){
 	this.createNewBoard = function( callback ){
 		callback = callback || function(){};
 		var tryCount = 0;
+		var boardInfo = {};
 
 		while(1){
 
 			try {
-				var newBoardId = (+new Date());
-				console.log(newBoardId);
-
-				main.dbh.initDb(newBoardId, function(dbInfo){
+				main.dbh.createNewBoard(boardInfo, function(newBoardId){
 					// 返却
 					// console.log(dbInfo);
 					callback(newBoardId);
@@ -40,6 +38,19 @@ module.exports = function(conf, main){
 			}
 
 		}
+
+		return;
+	}
+
+	/**
+	 * ボード情報を取得する
+	 */
+	this.getBoardInfo = function(boardId, callback){
+		callback = callback || function(){};
+
+		var dirPath = main.dbh.getBoardInfo(boardId, function(result){
+			callback(result);
+		});
 
 		return;
 	}

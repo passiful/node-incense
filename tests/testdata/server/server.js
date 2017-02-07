@@ -13,21 +13,30 @@ console.log('port number is '+_port);
 
 // middleware - biflora resources
 app.use( biflora.clientLibs() );
+bifloraMain = require( path.resolve(__dirname, '../../../libs/main.js') ).getBifloraMain({
+	'dataDir': conf.dataDir,
+	'db': conf.db,
+	'getUserInfo': function(socket, clientDefaultUserInfo, callback){
+		callback({
+			'id': 'tester',
+			'name': 'Test User'
+		});
+		return;
+	}
+});
 biflora.setupWebSocket(
 	server,
 	require( path.resolve(__dirname, '../../../libs/main.js') ).getBifloraApi() ,
-	require( path.resolve(__dirname, '../../../libs/main.js') ).getBifloraMain({
-		'dataDir': conf.dataDir,
-		'db': conf.db,
-		'getUserInfo': function(socket, clientDefaultUserInfo, callback){
-			callback({
-				'id': 'tester',
-				'name': 'Test User'
-			});
-			return;
-		}
-	})
+	bifloraMain
 );
+
+console.log('------ creating new board.');
+bifloraMain.dbh.createNewBoard({}, function(boardId){
+	console.log('----- created board ID:', boardId);
+	bifloraMain.dbh.getBoardInfo(boardId, function(boardInfo){
+		console.log('boardInfo:', boardInfo);
+	});
+});
 
 // middleware - frontend documents
 app.use( '/common/dist', express.static( path.resolve(__dirname, '../../../dist/') ) );
