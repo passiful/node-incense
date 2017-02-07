@@ -46,7 +46,7 @@ describe('Creating new board', function() {
 	it("create", function(done) {
 		this.timeout(60*1000);
 		// console.log(incense);
-		incense.board.createNewBoard(function(newBoardId){
+		incense.board.createNewBoard({"title": "TEST BOARD"}, function(newBoardId){
 			console.log(newBoardId);
 
 			assert.strictEqual(typeof(incense), typeof({}));

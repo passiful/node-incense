@@ -12,7 +12,7 @@ module.exports = function(conf, main){
 	/**
 	 * 新しいボードを生成する
 	 */
-	this.createNewBoard = function( callback ){
+	this.createNewBoard = function( boardInfo, callback ){
 		callback = callback || function(){};
 		var tryCount = 0;
 		var boardInfo = {};
