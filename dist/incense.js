@@ -20609,7 +20609,10 @@ module.exports = function( incense, $widget ){
 	 */
 	function editQuestion(){
 		mode = 'edit';
-		_this.$detailBodyQuestion.append( _this.$detailBodyQuestion_textarea.val( _this.question ) );
+		_this.$detailBodyQuestion
+			.css({'overflow':'hidden'})
+			.append( _this.$detailBodyQuestion_textarea.val( _this.question ) )
+		;
 		_this.$detailBody.find('.discussiontree__edit-button').hide();
 		incense.setBehaviorChatComment(
 			_this.$detailBodyQuestion_textarea,
@@ -20624,6 +20627,9 @@ module.exports = function( incense, $widget ){
 		_this.$detailBodyQuestion_textarea
 			.on('change blur', function(e){
 				applyTextareaEditContent( _this.$detailBodyQuestion_textarea, 'question' );
+				_this.$detailBodyQuestion
+					.css({'overflow':'auto'})
+				;
 				_this.$detailBody.find('.discussiontree__edit-button').show();
 				setTimeout(function(){editAnswer();}, 100);
 			})
@@ -20636,7 +20642,10 @@ module.exports = function( incense, $widget ){
 	 */
 	function editAnswer(){
 		mode = 'edit';
-		_this.$detailBodyAnswer.append( _this.$detailBodyAnswer_textarea.val( _this.answer ) );
+		_this.$detailBodyAnswer
+			.css({'overflow':'hidden'})
+			.append( _this.$detailBodyAnswer_textarea.val( _this.answer ) )
+		;
 		_this.$detailBody.find('.discussiontree__edit-button').hide();
 		incense.setBehaviorChatComment(
 			_this.$detailBodyAnswer_textarea,
@@ -20650,6 +20659,9 @@ module.exports = function( incense, $widget ){
 		_this.$detailBodyAnswer_textarea
 			.on('change blur', function(e){
 				applyTextareaEditContent( _this.$detailBodyAnswer_textarea, 'answer' );
+				_this.$detailBodyAnswer
+					.css({'overflow':'auto'})
+				;
 				_this.$detailBody.find('.discussiontree__edit-button').show();
 			})
 		;

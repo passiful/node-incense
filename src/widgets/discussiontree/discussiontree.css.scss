@@ -62,6 +62,12 @@
 		font-weight: bold;
 		font-size: 24px;
 	}
+	.discussiontree__question,
+	.discussiontree__answer{
+		min-height: 60px;
+		max-height: 300px;
+		overflow: auto;
+	}
 
 	.discussiontree__voteuser{
 		padding: 0;

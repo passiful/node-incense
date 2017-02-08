@@ -1,5 +1,7 @@
 @import url(./libs/bootstrap/dist/css/bootstrap.css);
 .incense { }
+  .incense textarea {
+    resize: none; }
   .incense.incense__board {
     position: relative;
     top: 0;
@@ -334,6 +336,11 @@
     .incense .discussiontree .discussiontree__question {
       font-weight: bold;
       font-size: 24px; }
+    .incense .discussiontree .discussiontree__question,
+    .incense .discussiontree .discussiontree__answer {
+      min-height: 60px;
+      max-height: 300px;
+      overflow: auto; }
     .incense .discussiontree .discussiontree__voteuser {
       padding: 0;
       margin: 0; }

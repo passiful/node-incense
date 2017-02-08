@@ -1,5 +1,9 @@
 .incense{
 
+	textarea{
+		resize: none;
+	}
+
 	&.incense__board{
 		position: relative;
 		top: 0; left: 0;
