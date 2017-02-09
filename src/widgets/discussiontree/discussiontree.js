@@ -18,13 +18,13 @@ module.exports = function( incense, $widget ){
 			.append( $('<div class="col-sm-6">')
 				.append( $('<div class="discussiontree__block">')
 					.append( $('<div class="discussiontree__heading">').text( '問' ) )
-					.append( $('<div class="discussiontree__question incense-markdown">').html( incense.detoxHtml( incense.markdown(this.question) ) || 'no-set' ) )
+					.append( $('<div class="discussiontree__question incense-markdown">').html( incense.markdown(this.question) || 'no-set' ) )
 				)
 			)
 			.append( $('<div class="col-sm-6">')
 				.append( $('<div class="discussiontree__block">')
 					.append( $('<div class="discussiontree__heading">').text( '答' ) )
-					.append( $('<div class="discussiontree__answer">').html( incense.detoxHtml( incense.markdown(_this.answer) ) || 'no-answer' ) )
+					.append( $('<div class="discussiontree__answer incense-markdown">').html( incense.markdown(_this.answer) || 'no-answer' ) )
 				)
 			)
 		)
@@ -722,7 +722,7 @@ module.exports = function( incense, $widget ){
 		switch( message.content.command ){
 			case 'comment':
 				// コメントの投稿
-				userMessage = incense.detoxHtml( incense.markdown( message.content.comment ) );
+				userMessage = incense.markdown( message.content.comment );
 				this.commentCount ++;
 				updateView();
 
@@ -746,8 +746,8 @@ module.exports = function( incense, $widget ){
 			case 'update_question':
 				// 問の更新
 				_this.question = message.content.val;
-				_this.$detailBodyQuestion.html( incense.detoxHtml( incense.markdown(_this.question) ) || 'no-set' );
-				$widget.find('.discussiontree__question').html( incense.detoxHtml( incense.markdown(_this.question) ) || 'no-set' );
+				_this.$detailBodyQuestion.html( incense.markdown(_this.question) || 'no-set' );
+				$widget.find('.discussiontree__question').html( incense.markdown(_this.question) || 'no-set' );
 
 				// 詳細画面のディスカッションに追加
 				mkTimelineElement(

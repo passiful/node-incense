@@ -282,9 +282,6 @@
 			padding: 0.4em 1.5em;
 			border-radius: 10px;
 			word-wrap: break-word;
-			p{
-				white-space: pre-wrap;
-			}
 			>:first-child{
 				margin-top: 0;
 			}
@@ -334,6 +331,24 @@
 	.incense-markdown{
 		*{
 			font-size: 100%;
+		}
+		p{
+			white-space: pre-wrap;
+		}
+		ul{
+			padding-left: 0;
+			li{
+				list-style-type: none;
+				position: relative;
+				padding-left: 1.5em;
+				&:before{
+					content: "-";
+					position: absolute;
+					width: 1.5em;
+					text-align: center;
+					left: 0;
+				}
+			}
 		}
 	}
 	.incense-no-pointer-event{

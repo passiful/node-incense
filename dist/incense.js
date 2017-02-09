@@ -19273,6 +19273,7 @@ module.exports = function( incense ){
  */
 module.exports = function( md ){
     var $ = require('jquery');
+	var detoxHtml = require('./_detoxHtml.js');
 	// md = md.replace(/(\r\n|\r|\n)/g, '<br />');
 
 	var marked = require('marked');
@@ -19289,10 +19290,15 @@ module.exports = function( md ){
 	var html = marked(md);
 	var $div = $('<div>').html(html);
 	$div.find('a').attr({'target': '_blank'});
-	return $div.html();
+    html = $div.html();
+
+    // 解毒
+    html = detoxHtml( html );
+
+	return html;
 }
 
-},{"jquery":9,"marked":10}],88:[function(require,module,exports){
+},{"./_detoxHtml.js":83,"jquery":9,"marked":10}],88:[function(require,module,exports){
 /**
  * messageOperator.js
  */
@@ -20309,13 +20315,13 @@ module.exports = function( incense, $widget ){
 			.append( $('<div class="col-sm-6">')
 				.append( $('<div class="discussiontree__block">')
 					.append( $('<div class="discussiontree__heading">').text( '問' ) )
-					.append( $('<div class="discussiontree__question incense-markdown">').html( incense.detoxHtml( incense.markdown(this.question) ) || 'no-set' ) )
+					.append( $('<div class="discussiontree__question incense-markdown">').html( incense.markdown(this.question) || 'no-set' ) )
 				)
 			)
 			.append( $('<div class="col-sm-6">')
 				.append( $('<div class="discussiontree__block">')
 					.append( $('<div class="discussiontree__heading">').text( '答' ) )
-					.append( $('<div class="discussiontree__answer">').html( incense.detoxHtml( incense.markdown(_this.answer) ) || 'no-answer' ) )
+					.append( $('<div class="discussiontree__answer incense-markdown">').html( incense.markdown(_this.answer) || 'no-answer' ) )
 				)
 			)
 		)
@@ -21013,7 +21019,7 @@ module.exports = function( incense, $widget ){
 		switch( message.content.command ){
 			case 'comment':
 				// コメントの投稿
-				userMessage = incense.detoxHtml( incense.markdown( message.content.comment ) );
+				userMessage = incense.markdown( message.content.comment );
 				this.commentCount ++;
 				updateView();
 
@@ -21037,8 +21043,8 @@ module.exports = function( incense, $widget ){
 			case 'update_question':
 				// 問の更新
 				_this.question = message.content.val;
-				_this.$detailBodyQuestion.html( incense.detoxHtml( incense.markdown(_this.question) ) || 'no-set' );
-				$widget.find('.discussiontree__question').html( incense.detoxHtml( incense.markdown(_this.question) ) || 'no-set' );
+				_this.$detailBodyQuestion.html( incense.markdown(_this.question) || 'no-set' );
+				$widget.find('.discussiontree__question').html( incense.markdown(_this.question) || 'no-set' );
 
 				// 詳細画面のディスカッションに追加
 				mkTimelineElement(

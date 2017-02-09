@@ -255,8 +255,6 @@
       padding: 0.4em 1.5em;
       border-radius: 10px;
       word-wrap: break-word; }
-      .incense .incense__message-unit .incense__message-unit__content p {
-        white-space: pre-wrap; }
       .incense .incense__message-unit .incense__message-unit__content > :first-child {
         margin-top: 0; }
       .incense .incense__message-unit .incense__message-unit__content > :last-child {
@@ -296,6 +294,20 @@
     background-color: #eee; }
   .incense .incense-markdown * {
     font-size: 100%; }
+  .incense .incense-markdown p {
+    white-space: pre-wrap; }
+  .incense .incense-markdown ul {
+    padding-left: 0; }
+    .incense .incense-markdown ul li {
+      list-style-type: none;
+      position: relative;
+      padding-left: 1.5em; }
+      .incense .incense-markdown ul li:before {
+        content: "-";
+        position: absolute;
+        width: 1.5em;
+        text-align: center;
+        left: 0; }
   .incense .incense-no-pointer-event {
     pointer-events: none; }
   .incense .discussiontree {
