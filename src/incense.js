@@ -484,7 +484,7 @@ window.Incense = function(){
 						(function(file){
 							var reader = new FileReader();
 							reader.onload = function(evt) {
-								options.submit('<a href="'+evt.target.result+'"><img src="'+evt.target.result+'" /></a>');
+								options.submit('<a href="'+evt.target.result+'"><img src="'+evt.target.result+'" alt="投稿されたイメージ" /></a>');
 							}
 							reader.readAsDataURL(file);
 						})(file);
@@ -492,9 +492,20 @@ window.Incense = function(){
 				}
 			})
 			.on('drop', function(e){
-				options.submit('file dropped.');
 				e.stopPropagation();
 				e.preventDefault();
+				var event = e.originalEvent;
+				var items = event.dataTransfer.files;
+				for (var i = 0 ; i < items.length ; i++) {
+					var item = items[i];
+					(function(file){
+						var reader = new FileReader();
+						reader.onload = function(evt) {
+							options.submit('<a href="'+evt.target.result+'"><img src="'+evt.target.result+'" alt="投稿されたイメージ" /></a>');
+						}
+						reader.readAsDataURL(file);
+					})(item);
+				}
 			})
 		;
 		return $textarea;
