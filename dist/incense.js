@@ -20916,7 +20916,7 @@ module.exports = function( incense, $widget ){
 				.append( $link
 					.html('')
 					.addClass('discussiontree__question-unit')
-					.append( $('<div>').text(incense.widgetMgr.get(_this.parent).question) )
+					.append( $('<div>').text(incense.widgetMgr.get(_this.parent).getSummary()) )
 					.append( $('<div class="discussiontree__question-unit--widget-id">').append( '#widget.'+_this.parent ) )
 				)
 			;
@@ -20932,7 +20932,7 @@ module.exports = function( incense, $widget ){
 						.append( incense.widgetMgr.mkLinkToWidget( children[idx].id )
 							.html('')
 							.addClass('discussiontree__question-unit')
-							.append( $('<div>').text(children[idx].question) )
+							.append( $('<div>').text(children[idx].getSummary()) )
 							.append( $('<div class="discussiontree__question-unit--widget-id">').append( '#widget.'+children[idx].id ) )
 						)
 					;
