@@ -59,6 +59,10 @@ window.Incense = function(){
 						'<button class="btn btn-primary">send</button>'+
 						'</div>'
 					)
+					.on('dragover dragleave drop', function(e){
+						e.stopPropagation();
+						e.preventDefault();
+					})
 				;
 				$timelineList = $timeline.find('.incense__timeline_list');
 				$timelineForm = $timeline.find('.incense__timeline_form');
@@ -77,6 +81,10 @@ window.Incense = function(){
 					)
 					.on('click', function(e){
 						_this.widgetMgr.unselect();
+					})
+					.on('dragover dragleave drop', function(e){
+						e.stopPropagation();
+						e.preventDefault();
 					})
 				;
 				$fieldContextMenu = $field.find('.incense__board-contextmenu');
