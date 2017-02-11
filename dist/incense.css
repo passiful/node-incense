@@ -252,8 +252,8 @@
       background-color: #f9f9f9;
       border: 1px solid #eeeeee;
       text-align: left;
-      padding: 0.4em 1.5em;
-      border-radius: 10px;
+      padding: 0.4em 0.6em;
+      border-radius: 4px;
       word-wrap: break-word; }
       .incense .incense__message-unit .incense__message-unit__content > :first-child {
         margin-top: 0; }
@@ -322,6 +322,8 @@
     border: 1px solid #ddd;
     border-radius: 3px;
     margin-left: 1em; }
+  .incense .incense-markdown img {
+    max-width: 100%; }
   .incense .incense-markdown ul {
     padding-left: 0; }
     .incense .incense-markdown ul li {

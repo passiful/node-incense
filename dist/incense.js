@@ -18626,33 +18626,74 @@ window.Incense = function(){
 	/**
 	 * チャットコメントフォームを作成
 	 */
-	this.setBehaviorChatComment = function($textarea, callbacks){
-		callbacks = callbacks || {};
-		callbacks.submit = callbacks.submit || function(){};
+	this.setBehaviorChatComment = function($textarea, options){
+		options = options || {};
+		options.submit = options.submit || function(){};
 		$textarea = $($textarea);
-		$textarea.keypress(function(e){
-			// console.log(e);
-			if( e.which == 13 ){
-				// alert('enter');
-				var $this = $(e.target);
-				if( e.shiftKey ){
-					// SHIFTキーを押しながらなら、送信せず改行する
-					return true;
+		$textarea
+			.on('keydown', function(e){
+				// console.log(e);
+				if(e.key.toLowerCase() == 'escape'){
+					this.blur();
 				}
-				if(!$this.val().length){
-					// 中身が空っぽなら送信しない
+			})
+			.on('keypress', function(e){
+				// console.log(e);
+				if( e.which == 13 ){
+					// alert('enter');
+					var $this = $(e.target);
+					if( e.shiftKey ){
+						// SHIFTキーを押しながらなら、送信せず改行する
+						return true;
+					}
+					if(!$this.val().length){
+						// 中身が空っぽなら送信しない
+						return false;
+					}
+					var fixedValue = $this.val();
+					options.submit( fixedValue );
+					$this.val('').focus();
 					return false;
 				}
-				var fixedValue = $this.val();
-				callbacks.submit( fixedValue );
-				$this.val('').focus();
-				return false;
-			}
-			return;
-		});
-		$textarea.on('dblclick', function(e){
-			e.stopPropagation();
-		});
+				return;
+			})
+			.on('dblclick', function(e){
+				e.stopPropagation();
+			})
+			.on('paste', function(e){
+				// console.log(e);
+				e.stopPropagation();
+				var items = e.originalEvent.clipboardData.items;
+				for (var i = 0 ; i < items.length ; i++) {
+					var item = items[i];
+					// console.log(item);
+					if(item.type.indexOf("image") != -1){
+						var file = item.getAsFile();
+						file.name = file.name||'clipboard.'+(function(type){
+							if(type.match(/png$/i)){return 'png';}
+							if(type.match(/gif$/i)){return 'gif';}
+							if(type.match(/(?:jpeg|jpg|jpe)$/i)){return 'jpg';}
+							if(type.match(/svg/i)){return 'svg';}
+							return 'txt';
+						})(file.type);
+						// console.log(file);
+						e.preventDefault();
+						(function(file){
+							var reader = new FileReader();
+							reader.onload = function(evt) {
+								options.submit('<a href="'+evt.target.result+'"><img src="'+evt.target.result+'" /></a>');
+							}
+							reader.readAsDataURL(file);
+						})(file);
+					}
+				}
+			})
+			.on('drop', function(e){
+				options.submit('file dropped.');
+				e.stopPropagation();
+				e.preventDefault();
+			})
+		;
 		return $textarea;
 	} // setBehaviorChatComment()
 
