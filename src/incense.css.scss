@@ -331,9 +331,42 @@
 	.incense-markdown{
 		*{
 			font-size: 100%;
+			font-weight: normal;
+		}
+		h1{
+			font-size: 130%;
+		}
+		h2{
+			font-size: 115%;
+		}
+		h3{
+			font-size: 105%;
+		}
+		h1,h2,h3,h4,h5,h6{
+			font-weight: bold;
+			margin-top: 1em;
+			margin-bottom: 0.2em;
+		}
+		blockquote,
+		pre,
+		ul, li,
+		p{
+			margin-top: 0.5em;
+			margin-bottom: 0.5em;
 		}
 		p{
 			white-space: pre-wrap;
+		}
+		blockquote{
+			padding: 0 0 0 1em;
+			border: none;
+			border-left: 4px solid #ddd;
+		}
+		pre{
+			padding: 0.5em;
+			border: 1px solid #ddd;
+			border-radius: 3px;
+			margin-left: 1em;
 		}
 		ul{
 			padding-left: 0;

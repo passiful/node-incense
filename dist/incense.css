@@ -293,9 +293,35 @@
     min-height: 5px;
     background-color: #eee; }
   .incense .incense-markdown * {
-    font-size: 100%; }
+    font-size: 100%;
+    font-weight: normal; }
+  .incense .incense-markdown h1 {
+    font-size: 130%; }
+  .incense .incense-markdown h2 {
+    font-size: 115%; }
+  .incense .incense-markdown h3 {
+    font-size: 105%; }
+  .incense .incense-markdown h1, .incense .incense-markdown h2, .incense .incense-markdown h3, .incense .incense-markdown h4, .incense .incense-markdown h5, .incense .incense-markdown h6 {
+    font-weight: bold;
+    margin-top: 1em;
+    margin-bottom: 0.2em; }
+  .incense .incense-markdown blockquote,
+  .incense .incense-markdown pre,
+  .incense .incense-markdown ul, .incense .incense-markdown li,
+  .incense .incense-markdown p {
+    margin-top: 0.5em;
+    margin-bottom: 0.5em; }
   .incense .incense-markdown p {
     white-space: pre-wrap; }
+  .incense .incense-markdown blockquote {
+    padding: 0 0 0 1em;
+    border: none;
+    border-left: 4px solid #ddd; }
+  .incense .incense-markdown pre {
+    padding: 0.5em;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    margin-left: 1em; }
   .incense .incense-markdown ul {
     padding-left: 0; }
     .incense .incense-markdown ul li {

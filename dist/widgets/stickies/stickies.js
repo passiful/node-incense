@@ -9824,7 +9824,7 @@ module.exports = function( incense, $widget ){
 
 	this.value = 'new Stickies';
 
-	var $stickies = $('<div class="stickies">');
+	var $stickies = $('<article class="stickies incense-markdown">');
 	var $textarea = $('<textarea>')
 		.css({
 			'position': 'absolute',
