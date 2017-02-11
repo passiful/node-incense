@@ -9851,7 +9851,7 @@ module.exports = function( incense, $widget ){
 					return;
 				}
 				_this.mode = 'edit';
-				$widget.append( $textarea.val( _this.value ) );
+				$textarea.val( _this.value ).show();
 				$textarea.focus();
 			});
 		})
@@ -9867,8 +9867,8 @@ module.exports = function( incense, $widget ){
 		_this.mode = null;
 		if( _this.value == $textarea.val() ){
 			// 変更なし
-			$textarea.val('').remove();
-			$stickies.html( incense.detoxHtml( incense.markdown(_this.value) ) );
+			$textarea.val('').hide();
+			$stickies.html( incense.markdown(_this.value) );
 			incense.locker.unlock();
 			return;
 		}
@@ -9883,13 +9883,15 @@ module.exports = function( incense, $widget ){
 			},
 			function(){
 				console.log('stickies change submited.');
-				$textarea.val('').remove();
-				$stickies.html( incense.detoxHtml( incense.markdown(_this.value) ) );
+				$textarea.val('').hide();
+				$stickies.html( incense.markdown(_this.value) );
 				incense.locker.unlock();
+				incense.updateRelations();
+				incense.widgetMgr.updateSelection();
 				return;
 			}
 		);
-	}
+	} // apply()
 
 	$textarea
 		.on('change blur', function(e){
@@ -9910,6 +9912,7 @@ module.exports = function( incense, $widget ){
 			}
 		}
 	);
+	$widget.append( $textarea.val('').hide() );
 
 
 	/**

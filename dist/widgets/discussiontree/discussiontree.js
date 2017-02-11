@@ -10201,7 +10201,7 @@ module.exports = function( incense, $widget ){
 		callback = callback || function(){};
 		var optionValueList = {};
 		var myAnswer = _this.vote[incense.getUserInfo().id];
-		_this.$detailBodyAnswer.html( incense.detoxHtml( incense.markdown(_this.answer) ) || 'no-answer' );
+		_this.$detailBodyAnswer.html( incense.markdown(_this.answer) || 'no-answer' );
 		_this.$detailBodyAnswer.find('ol>li').each(function(){
 			var $this = $(this);
 			var optionValue = $this.html()+'';
@@ -10307,7 +10307,7 @@ module.exports = function( incense, $widget ){
 				.append( $answerList )
 			;
 		}else{
-			$widgetAnser.html( incense.detoxHtml( incense.markdown(_this.answer) ) || 'no-answer' );
+			$widgetAnser.html( incense.markdown(_this.answer) || 'no-answer' );
 		}
 
 		_this.$widgetBody
