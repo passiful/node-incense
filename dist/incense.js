@@ -19829,18 +19829,47 @@ module.exports = function(incense, biflora){
 	}
 
 	/**
-	 * ファイルIDを予約する
+	 * ファイルを更新する
 	 */
-	this.upload = function(lfId, fileInfo, callback){
-		callback(false);
+	this.upload = function(fileId, fileInfo, callback){
+		biflora.send(
+			'updateFile',
+			{
+				'boardId': incense.getBoardId(),
+				'fileId': fileId,
+				'fileInfo': fileInfo
+			},
+			function(result){
+				// console.log(result);
+				if( !result ){
+					console.error('ERROR: failed to update file:', fileId);
+				}
+				callback(result);
+				return;
+			}
+		);
 		return;
 	}
 
 	/**
 	 * ファイルを取得する
 	 */
-	this.download = function(lfId, callback){
-		callback(false);
+	this.download = function(fileId, callback){
+		biflora.send(
+			'getFile',
+			{
+				'boardId': incense.getBoardId(),
+				'fileId': fileId
+			},
+			function(fileInfo){
+				// console.log(fileInfo);
+				if( !fileInfo ){
+					console.error('ERROR: failed to downloading file:', fileId);
+				}
+				callback(fileInfo);
+				return;
+			}
+		);
 		return;
 	}
 }
@@ -20342,10 +20371,11 @@ module.exports = function(incense){
 
 		var reader = new FileReader();
 		reader.onload = function(evt) {
+			console.log(evt.target);
 			evt.target.result.match(/^data\:([\s\S]+?)\;base64\,([\s\S]*)$/);
 			var type = RegExp.$1;
 			var base64 = RegExp.$2;
-			// console.log(type, base64);
+			console.log(type, base64);
 			incense.lfm.reserve(function(newFileId){
 				var rtn = '';
 				// console.log(newFileId, file);
@@ -20355,6 +20385,18 @@ module.exports = function(incense){
 					rtn = '<a href="'+utils79.h( incense.getFileUrl(newFileId) )+'" data-incense-file-id="'+utils79.h( newFileId )+'" download="'+utils79.h( file.name )+'">添付ファイル '+utils79.h( file.name )+' ('+utils79.h( utils79.toStr(file.size) )+' bytes)</a>';
 				}
 				callback( rtn );
+
+				incense.lfm.upload(newFileId, {
+					"filename": file.name,
+					"type": file.type,
+					"size": utils79.base64_decode(base64).length,
+					"base64": base64
+				}, function(result){
+					console.log(result);
+					incense.lfm.download(newFileId, function(fileInfo){
+						console.log(fileInfo);
+					});
+				});
 			});
 		}
 		reader.readAsDataURL(file);

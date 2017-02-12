@@ -17,12 +17,21 @@ module.exports = function(options){
 			if( query.boardId && query.fileId ){
 				dbh.getFile(query.boardId, query.fileId, function(fileInfo){
 					// console.log(fileInfo);
-					res
-						.status(200)
-						.set('Content-Type', fileInfo.type)
-						.set('Content-Length', fileInfo.size)
-						.send( utils79.base64_decode( fileInfo.base64 ) )
-						.end();
+					var bin = utils79.base64_decode( fileInfo.base64 );
+					// console.log(fileInfo.size, bin.length);
+					res.writeHead(
+						200,
+						{
+							'Content-Type': fileInfo.type,
+							'Content-Length': bin.length
+						}
+					);
+					res.end(bin, 'binary');
+					// res
+					// 	.status(200)
+					// 	.set('Content-Type', fileInfo.type)
+					// 	.set('Content-Length', bin.length)
+					// 	.end( new Buffer(bin, 'binary') );
 
 				});
 				return;

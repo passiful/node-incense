@@ -73,7 +73,7 @@ module.exports = function(conf, main){
 				'filename': { type: Sequelize.STRING },
 				'size': { type: Sequelize.INTEGER },
 				'type': { type: Sequelize.STRING },
-				'base64': { type: Sequelize.STRING },
+				'base64': { type: Sequelize.TEXT },
 				'owner': { type: Sequelize.STRING },
 				'microtime': { type: Sequelize.BIGINT }
 			}
@@ -326,7 +326,33 @@ module.exports = function(conf, main){
 	 * fileを更新する
 	 */
 	this.updateFile = function( boardId, fileId, fileInfo, callback ){
-		callback(false);
+		callback = callback || function(){};
+
+		this.initDb(function(){
+			// console.log('=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= updateFile() =-=-=-=-=-=-=');
+			// console.log(fileInfo);
+			tbls.files
+				.update(
+					{
+						"filename": fileInfo.filename,
+						"size": fileInfo.size,
+						"type": fileInfo.type,
+						"base64": fileInfo.base64
+					},
+					{ "where":{
+						"boardId": boardId,
+						"fileId": fileId
+					} }
+				)
+				.then(function(result) {
+					callback(true);
+				})
+				.catch(function(){
+					callback(false);
+				})
+			;
+
+		});
 		return;
 	}
 
