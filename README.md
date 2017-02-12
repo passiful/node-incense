@@ -1,5 +1,7 @@
 # node-incense
 
+Discussion Board UI.
+
 ## install
 
 ```
@@ -22,13 +24,8 @@ var express = require('express'),
 	app = express();
 var server = require('http').Server(app);
 var biflora = require('biflora');
-
-// middleware - biflora resources
-app.use( biflora.clientLibs() );
-biflora.setupWebSocket(
-	server,
-	require('incense').getBifloraApi() ,
-	require('incense').getBifloraMain({
+var Incense = require('incense'),
+	incense = new Incense({
 		'dataDir': '/path/to/datadir/', // <- data directory (Read/Write permission required)
 		'db': { // <- database setting
 			"dbms": "sqlite",
@@ -46,8 +43,19 @@ biflora.setupWebSocket(
 			callback(clientDefaultUserInfo);
 			return;
 		}
-	})
+	});
+
+
+// middleware - biflora resources
+app.use( biflora.clientLibs() );
+biflora.setupWebSocket(
+	server,
+	incense.getBifloraApi() ,
+	incense.getBifloraMain()
 );
+
+// middleware - Incense API for Express
+app.use( '/path/to/incense/api', incense.getExpressMiddleware() );
 
 // middleware - frontend documents
 app.use( express.static( '/path/to/htdocs/' ) );
@@ -93,6 +101,7 @@ server.listen( 3000, function(){
 					'elmBoard': document.getElementById('testBoardElement'),
 					'elmTimeline': document.getElementById('testTimelineElement'),
 					'boardId': 1234567890, // <- discussion board name
+					'apiUrl': window.location.origin+'/path/to/incense/api', // <- URL of Incense API Express Middleware
 					'userInfo': {
 						'id': 'tester', // <- login user id
 						'name': 'Test User', // <- login user name
@@ -123,7 +132,7 @@ server.listen( 3000, function(){
 
 ## 更新履歴 - Change log
 
-### incense@0.1.2 (2017-??-??)
+### incense@0.2.0 (2017-??-??)
 
 - zoom位置をboardの中心に合わせるようにした。
 - `scrollToBoardCenter()` 追加
@@ -137,6 +146,8 @@ server.listen( 3000, function(){
 - データベースを統合した。ボードごとに別のDBを持つのではなく、共通のDBファイルを持つように変更。
 - タイムラインにクリップボード上の画像をペーストして投稿できるようになった。
 - タイムラインにファイルを投稿できるようになった。
+- サーバーサイドに Express Middleware を追加。
+- クライアントサイドのオプションに `apiUrl` を追加。
 - その他不具合などの修正。
 
 ### incense@0.1.1 (2017-01-01)

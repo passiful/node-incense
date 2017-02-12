@@ -26,6 +26,7 @@ window.Incense = function(){
 		$fieldInner;
 	var boardId;
 	var zoomRate = 1;
+	var apiUrl;
 
 	/**
 	 * 初期化
@@ -35,6 +36,7 @@ window.Incense = function(){
 		callback = callback || function(){};
 		options = options || {};
 		userInfo = options.userInfo;
+		apiUrl = options.apiUrl;
 
 		this.widgetsMaxZIndex = 1000;
 
@@ -128,8 +130,8 @@ window.Incense = function(){
 				_this.updateRelations = require( './libs/_updateRelations.js' )(_this, $fieldRelations);
 				_this.setBehaviorChatComment = require('./libs/_setBehaviorChatComment.js')(_this);
 				_this.insertTimeline = require('./libs/_insertTimeline.js')(_this, $timelineList);
-				_this.markdown = require('./libs/_markdown.js');
-				_this.detoxHtml = require('./libs/_detoxHtml.js');
+				_this.markdown = require('./libs/_markdown.js')(_this);
+				_this.detoxHtml = require('./libs/_detoxHtml.js')(_this);
 				_this.lfm = new (require('./libs/_lfm.js'))(_this, biflora);
 
 
@@ -459,6 +461,16 @@ window.Incense = function(){
 	 */
 	this.getBoardId = function(){
 		return boardId;
+	}
+
+	/**
+	 * ファイルのURLを取得
+	 */
+	this.getFileUrl = function( fileId ){
+		var rtn = apiUrl;
+		rtn += '?boardId='+encodeURIComponent(boardId);
+		rtn += '&fileId='+encodeURIComponent(fileId);
+		return rtn;
 	}
 
 	/**

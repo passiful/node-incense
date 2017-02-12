@@ -26,11 +26,11 @@ module.exports = function(incense){
 			// console.log(type, base64);
 			incense.lfm.reserve(function(newFileId){
 				var rtn = '';
-				console.log(newFileId, file);
+				// console.log(newFileId, file);
 				if( file.type.indexOf("image/") === 0 ){
-					rtn = '<a href="'+utils79.h( evt.target.result )+'"><img src="'+utils79.h( evt.target.result )+'" alt="'+utils79.h( file.name + ':' + newFileId )+'" /></a>';
+					rtn = '<a href="'+utils79.h( incense.getFileUrl(newFileId) )+'" data-incense-file-id="'+utils79.h( newFileId )+'"><img src="'+utils79.h( evt.target.result )+'" alt="'+utils79.h( file.name )+'" /></a>';
 				}else{
-					rtn = '<a href="'+utils79.h( evt.target.result )+'" download="'+utils79.h( file.name )+'">添付ファイル '+utils79.h( file.name )+' ('+utils79.h( utils79.toStr(file.size) )+' bytes, '+utils79.h( newFileId )+')</a>';
+					rtn = '<a href="'+utils79.h( incense.getFileUrl(newFileId) )+'" data-incense-file-id="'+utils79.h( newFileId )+'" download="'+utils79.h( file.name )+'">添付ファイル '+utils79.h( file.name )+' ('+utils79.h( utils79.toStr(file.size) )+' bytes)</a>';
 				}
 				callback( rtn );
 			});

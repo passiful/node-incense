@@ -4,6 +4,7 @@ var express = require('express'),
 	app = express();
 var server = require('http').Server(app);
 var biflora = require('biflora');
+var Incense = require( path.resolve(__dirname, '../../../libs/main.js') );
 var conf = require('config');
 
 var _port = 8088;
@@ -11,9 +12,8 @@ var _port = 8088;
 
 console.log('port number is '+_port);
 
-// middleware - biflora resources
-app.use( biflora.clientLibs() );
-bifloraMain = require( path.resolve(__dirname, '../../../libs/main.js') ).getBifloraMain({
+// setup beflora
+var incense = new Incense({
 	'dataDir': conf.dataDir,
 	'db': conf.db,
 	'getUserInfo': function(socket, clientDefaultUserInfo, callback){
@@ -24,11 +24,16 @@ bifloraMain = require( path.resolve(__dirname, '../../../libs/main.js') ).getBif
 		return;
 	}
 });
+var bifloraMain = incense.getBifloraMain();
 biflora.setupWebSocket(
 	server,
-	require( path.resolve(__dirname, '../../../libs/main.js') ).getBifloraApi() ,
+	incense.getBifloraApi() ,
 	bifloraMain
 );
+
+// middleware - biflora resources
+app.use( biflora.clientLibs() );
+
 
 console.log('------ creating new board.');
 bifloraMain.dbh.createNewBoard({
@@ -39,6 +44,9 @@ bifloraMain.dbh.createNewBoard({
 		console.log('boardInfo:', boardInfo);
 	});
 });
+
+// middleware - Incense API for Express
+app.use( '/incense/api', incense.getExpressMiddleware() );
 
 // middleware - frontend documents
 app.use( '/common/dist', express.static( path.resolve(__dirname, '../../../dist/') ) );
