@@ -18195,6 +18195,9 @@ module.exports = function( data, callback, main, socket ){
 }
 
 },{}],82:[function(require,module,exports){
+/**
+ * passiful/node-incense
+ */
 window.Incense = function(){
 	// app "board"
 	var _this = this;
@@ -18220,7 +18223,6 @@ window.Incense = function(){
 		$fieldInner;
 	var boardId;
 	var zoomRate = 1;
-	var lastTimelineMessage = {};
 
 	/**
 	 * 初期化
@@ -18305,6 +18307,11 @@ window.Incense = function(){
 				_this.widgetDetailModal = new (require('./libs/_widgetDetailModal.js'))($field);
 				_this.userMgr = new (require('./libs/_userMgr.js'))(_this, $timelineList, $field, $fieldInner);
 				_this.locker = new (require('./libs/_locker.js'))(_this);
+				_this.updateRelations = require( './libs/_updateRelations.js' )(_this, $fieldRelations);
+				_this.setBehaviorChatComment = require('./libs/_setBehaviorChatComment.js')(_this);
+				_this.insertTimeline = require('./libs/_insertTimeline.js')(_this, $timelineList);
+				_this.markdown = require('./libs/_markdown.js');
+				_this.detoxHtml = require('./libs/_detoxHtml.js');
 
 
 				_this.widgetList = {
@@ -18624,171 +18631,6 @@ window.Incense = function(){
 	}
 
 	/**
-	 * チャットコメントフォームを作成
-	 */
-	this.setBehaviorChatComment = function($textarea, options){
-		options = options || {};
-		options.submit = options.submit || function(){};
-		$textarea = $($textarea);
-		$textarea
-			.on('keydown', function(e){
-				// console.log(e);
-				if(e.key.toLowerCase() == 'escape'){
-					this.blur();
-				}
-			})
-			.on('keypress', function(e){
-				// console.log(e);
-				if( e.which == 13 ){
-					// alert('enter');
-					var $this = $(e.target);
-					if( e.shiftKey ){
-						// SHIFTキーを押しながらなら、送信せず改行する
-						return true;
-					}
-					if(!$this.val().length){
-						// 中身が空っぽなら送信しない
-						return false;
-					}
-					var fixedValue = $this.val();
-					options.submit( fixedValue );
-					$this.val('').focus();
-					return false;
-				}
-				return;
-			})
-			.on('dblclick', function(e){
-				e.stopPropagation();
-			})
-			.on('paste', function(e){
-				// console.log(e);
-				e.stopPropagation();
-				var items = e.originalEvent.clipboardData.items;
-				for (var i = 0 ; i < items.length ; i++) {
-					var item = items[i];
-					// console.log(item);
-					if(item.type.indexOf("image") != -1){
-						var file = item.getAsFile();
-						file.name = file.name||'clipboard.'+(function(type){
-							if(type.match(/png$/i)){return 'png';}
-							if(type.match(/gif$/i)){return 'gif';}
-							if(type.match(/(?:jpeg|jpg|jpe)$/i)){return 'jpg';}
-							if(type.match(/svg/i)){return 'svg';}
-							return 'txt';
-						})(file.type);
-						// console.log(file);
-						e.preventDefault();
-						(function(file){
-							var reader = new FileReader();
-							reader.onload = function(evt) {
-								options.submit('<a href="'+evt.target.result+'"><img src="'+evt.target.result+'" alt="投稿されたイメージ" /></a>');
-							}
-							reader.readAsDataURL(file);
-						})(file);
-					}
-				}
-			})
-			.on('drop', function(e){
-				e.stopPropagation();
-				e.preventDefault();
-				var event = e.originalEvent;
-				var items = event.dataTransfer.files;
-				for (var i = 0 ; i < items.length ; i++) {
-					var item = items[i];
-					(function(file){
-						var reader = new FileReader();
-						reader.onload = function(evt) {
-							options.submit('<a href="'+evt.target.result+'"><img src="'+evt.target.result+'" alt="投稿されたイメージ" /></a>');
-						}
-						reader.readAsDataURL(file);
-					})(item);
-				}
-			})
-		;
-		return $textarea;
-	} // setBehaviorChatComment()
-
-	/**
-	 * メインタイムラインにメッセージを表示する
-	 */
-	this.insertTimeline = function( message, $messageContent ){
-		// console.log(message);
-		$messageContent = $messageContent || $('<div>');
-		$messageContent.css({'margin-bottom': 3});
-		var $messageBodyContent = $('<div class="incense__message-unit__message-body-content">');
-		var $message = $('<div>')
-			.addClass('incense__message-unit')
-			.attr({
-				'data-message-id': message.id,
-				'data-message-owner': message.owner
-			})
-		;
-		if( userInfo.id == message.owner ){
-			$message
-				.addClass('incense__message-unit--myitem')
-			;
-		}
-		// console.log( this.userMgr.getAll() );
-		var ownerInfo = this.userMgr.get(message.owner);
-		$userIcon = $('<div class="incense__message-unit__owner-icon">');
-		if( ownerInfo.icon ){
-			$userIcon
-				.append( $('<img>')
-					.attr({
-						'src': ownerInfo.icon
-					})
-					.css({
-						'width': 30,
-						'height': 30
-					})
-				)
-			;
-		}
-
-		if( lastTimelineMessage.owner == message.owner && lastTimelineMessage.targetWidget == message.targetWidget && lastTimelineMessage.microtime > message.microtime-(5*60*1000) ){
-			$messageBodyContent = lastTimelineMessage.$messageBodyContent;
-			$messageBodyContent
-				.append( $messageContent )
-			;
-		}else{
-			var $messageBody = $('<div class="incense__message-unit__message-body">');
-			$message
-				.append( $userIcon )
-				.append( $messageBody
-					.append( $('<div class="incense__message-unit__owner">')
-						.attr({'title': new Date(message.microtime)})
-						.append( $('<span class="incense__message-unit__owner-name">').text(ownerInfo.name) )
-						.append( $('<span class="incense__message-unit__owner-id">').text(ownerInfo.id) )
-					)
-					.append( $messageBodyContent
-						.append($messageContent)
-					)
-				)
-			;
-			if( message.targetWidget ){
-				$messageBody
-					.append( $('<div class="incense__message-unit__targetWidget">')
-						.append(
-							incense.widgetMgr.mkLinkToWidget( message.targetWidget )
-						)
-					)
-				;
-			}
-			$timelineList.append( $message );
-		}
-
-		this.adjustTimelineScrolling($timelineList);
-
-		lastTimelineMessage = {
-			'owner': message.owner,
-			'targetWidget': message.targetWidget,
-			'microtime': message.microtime,
-			'$messageBodyContent': $messageBodyContent
-		};
-		return;
-	}
-
-	/**
 	 * タイムラインのスクロール位置をあわせる
 	 */
 	this.adjustTimelineScrolling = function( $timeline ){
@@ -18800,16 +18642,6 @@ window.Incense = function(){
 
 		return;
 	}
-
-	/**
-	 * Markdown 変換する
-	 */
-	this.markdown = require('./libs/_markdown.js');
-
-	/**
-	 * 投稿されたHTMLを無害化する
-	 */
-	this.detoxHtml = require('./libs/_detoxHtml.js');
 
 	/**
 	 * ログインユーザー情報を取得
@@ -18885,41 +18717,6 @@ window.Incense = function(){
 	}
 
 	/**
-	 * 親子関係の表現を更新する
-	 */
-	this.updateRelations = function( callback ){
-		callback = callback || function(){};
-		// <path stroke="black" stroke-width="2" fill="none" d="M120,170 180,170 150,230z" />
-
-		function getCenterOfGravity($elm){
-			// console.log($elm.position().left, $elm.outerWidth());
-			// console.log(($elm.position().left*(1/zoomRate)), $elm.outerWidth());
-			var toX = 0 + ($elm.position().left*(1/zoomRate)) + $elm.outerWidth()/2;
-			if( toX < 0 ){ toX = 0; }
-			var toY = 0 + ($elm.position().top*(1/zoomRate)) + $elm.outerHeight()/2;
-			if( toY < 0 ){ toY = 0; }
-			return {'x':toX, 'y':toY};
-		}
-
-		var $svg = $fieldRelations.find('>svg');
-		$svg.html('');
-		var widgets = this.widgetMgr.getAll();
-		for( var idx in widgets ){
-			if( !widgets[idx].parent ){ continue; }
-			var d = '';
-			var parentWidget = _this.widgetMgr.get(widgets[idx].parent);
-			if(parentWidget){
-				var me = getCenterOfGravity(widgets[idx].$);
-				var parent = getCenterOfGravity(parentWidget.$);
-				$svg.get(0).innerHTML += '<path stroke="#333" stroke-width="3" fill="none" d="M'+me.x+','+me.y+' L'+parent.x+','+parent.y+'" style="opacity: 0.2;" />';
-			}
-		}
-
-		callback();
-		return;
-	}
-
-	/**
 	 * メッセージを送信する
 	 */
 	this.sendMessage = function(msg, callback){
@@ -18943,7 +18740,7 @@ window.Incense = function(){
 
 };
 
-},{"./apis/_locker.js":80,"./apis/_receiveBroadcast.js":81,"./libs/_detoxHtml.js":83,"./libs/_fieldContextMenu.js":84,"./libs/_keypress.js":85,"./libs/_locker.js":86,"./libs/_markdown.js":87,"./libs/_messageOperator.js":88,"./libs/_modal.js":89,"./libs/_userMgr.js":90,"./libs/_widgetBase.js":91,"./libs/_widgetDetailModal.js":92,"./libs/_widgetMgr.js":93,"./widgets/discussiontree/discussiontree.js":94,"./widgets/stickies/stickies.js":95,"es6-promise":4,"iterate79":8,"jquery":9,"twig":13,"utils79":15}],83:[function(require,module,exports){
+},{"./apis/_locker.js":80,"./apis/_receiveBroadcast.js":81,"./libs/_detoxHtml.js":83,"./libs/_fieldContextMenu.js":84,"./libs/_insertTimeline.js":85,"./libs/_keypress.js":86,"./libs/_locker.js":87,"./libs/_markdown.js":88,"./libs/_messageOperator.js":89,"./libs/_modal.js":90,"./libs/_setBehaviorChatComment.js":91,"./libs/_updateRelations.js":92,"./libs/_userMgr.js":93,"./libs/_widgetBase.js":94,"./libs/_widgetDetailModal.js":95,"./libs/_widgetMgr.js":96,"./widgets/discussiontree/discussiontree.js":97,"./widgets/stickies/stickies.js":98,"es6-promise":4,"iterate79":8,"jquery":9,"twig":13,"utils79":15}],83:[function(require,module,exports){
 /**
  * 投稿されたHTMLを無害化する - _detoxHtml.js
  */
@@ -19152,6 +18949,93 @@ module.exports = function( app, $fieldContextMenu ){
 
 },{"jquery":9}],85:[function(require,module,exports){
 /**
+ * _insertTimeline.js
+ */
+module.exports = function(incense, $timelineList){
+	var $ = require('jquery');
+	var lastTimelineMessage = {};
+
+	return function(message, $messageContent){
+		// console.log(message);
+		$messageContent = $messageContent || $('<div>');
+		$messageContent.css({'margin-bottom': 3});
+		var $messageBodyContent = $('<div class="incense__message-unit__message-body-content">');
+		var $message = $('<div>')
+			.addClass('incense__message-unit')
+			.attr({
+				'data-message-id': message.id,
+				'data-message-owner': message.owner
+			})
+		;
+		var userInfo = incense.getUserInfo();
+		if( userInfo.id == message.owner ){
+			$message
+				.addClass('incense__message-unit--myitem')
+			;
+		}
+		// console.log( incense.userMgr.getAll() );
+		var ownerInfo = incense.userMgr.get(message.owner);
+		var $userIcon = $('<div class="incense__message-unit__owner-icon">');
+		if( ownerInfo.icon ){
+			$userIcon
+				.append( $('<img>')
+					.attr({
+						'src': ownerInfo.icon
+					})
+					.css({
+						'width': 30,
+						'height': 30
+					})
+				)
+			;
+		}
+
+		if( lastTimelineMessage.owner == message.owner && lastTimelineMessage.targetWidget == message.targetWidget && lastTimelineMessage.microtime > message.microtime-(5*60*1000) ){
+			$messageBodyContent = lastTimelineMessage.$messageBodyContent;
+			$messageBodyContent
+				.append( $messageContent )
+			;
+		}else{
+			var $messageBody = $('<div class="incense__message-unit__message-body">');
+			$message
+				.append( $userIcon )
+				.append( $messageBody
+					.append( $('<div class="incense__message-unit__owner">')
+						.attr({'title': new Date(message.microtime)})
+						.append( $('<span class="incense__message-unit__owner-name">').text(ownerInfo.name) )
+						.append( $('<span class="incense__message-unit__owner-id">').text(ownerInfo.id) )
+					)
+					.append( $messageBodyContent
+						.append($messageContent)
+					)
+				)
+			;
+			if( message.targetWidget ){
+				$messageBody
+					.append( $('<div class="incense__message-unit__targetWidget">')
+						.append(
+							incense.widgetMgr.mkLinkToWidget( message.targetWidget )
+						)
+					)
+				;
+			}
+			$timelineList.append( $message );
+		}
+
+		incense.adjustTimelineScrolling($timelineList);
+
+		lastTimelineMessage = {
+			'owner': message.owner,
+			'targetWidget': message.targetWidget,
+			'microtime': message.microtime,
+			'$messageBodyContent': $messageBodyContent
+		};
+		return;
+	}
+}
+
+},{"jquery":9}],86:[function(require,module,exports){
+/**
  * keypress.js
  */
 module.exports = function( incense ){
@@ -19228,7 +19112,7 @@ module.exports = function( incense ){
 	return;
 }
 
-},{}],86:[function(require,module,exports){
+},{}],87:[function(require,module,exports){
 /**
  * lockApi - locker.js
  */
@@ -19327,7 +19211,7 @@ module.exports = function( incense ){
 	return;
 }
 
-},{}],87:[function(require,module,exports){
+},{}],88:[function(require,module,exports){
 /**
  * Markdown 変換する - _markdown.js
  */
@@ -19358,7 +19242,7 @@ module.exports = function( md ){
 	return html;
 }
 
-},{"./_detoxHtml.js":83,"jquery":9,"marked":10}],88:[function(require,module,exports){
+},{"./_detoxHtml.js":83,"jquery":9,"marked":10}],89:[function(require,module,exports){
 /**
  * messageOperator.js
  */
@@ -19590,7 +19474,7 @@ module.exports = function( app, $timelineList, $fieldInner ){
 	return;
 }
 
-},{"es6-promise":4,"iterate79":8,"jquery":9}],89:[function(require,module,exports){
+},{"es6-promise":4,"iterate79":8,"jquery":9}],90:[function(require,module,exports){
 /**
  * _modal.js
  */
@@ -19696,7 +19580,137 @@ module.exports = function($field){
 
 }
 
-},{"jquery":9}],90:[function(require,module,exports){
+},{"jquery":9}],91:[function(require,module,exports){
+/**
+ * _setBehaviorChatComment.js
+ */
+module.exports = function(incense){
+	var $ = require('jquery');
+	return function($textarea, options){
+		options = options || {};
+		options.submit = options.submit || function(){};
+		$textarea = $($textarea);
+		$textarea
+			.on('keydown', function(e){
+				// console.log(e);
+				if(e.key.toLowerCase() == 'escape'){
+					this.blur();
+				}
+			})
+			.on('keypress', function(e){
+				// console.log(e);
+				if( e.which == 13 ){
+					// alert('enter');
+					var $this = $(e.target);
+					if( e.shiftKey ){
+						// SHIFTキーを押しながらなら、送信せず改行する
+						return true;
+					}
+					if(!$this.val().length){
+						// 中身が空っぽなら送信しない
+						return false;
+					}
+					var fixedValue = $this.val();
+					options.submit( fixedValue );
+					$this.val('').focus();
+					return false;
+				}
+				return;
+			})
+			.on('dblclick', function(e){
+				e.stopPropagation();
+			})
+			.on('paste', function(e){
+				// console.log(e);
+				e.stopPropagation();
+				var items = e.originalEvent.clipboardData.items;
+				for (var i = 0 ; i < items.length ; i++) {
+					var item = items[i];
+					// console.log(item);
+					if(item.type.indexOf("image") != -1){
+						var file = item.getAsFile();
+						file.name = file.name||'clipboard.'+(function(type){
+							if(type.match(/png$/i)){return 'png';}
+							if(type.match(/gif$/i)){return 'gif';}
+							if(type.match(/(?:jpeg|jpg|jpe)$/i)){return 'jpg';}
+							if(type.match(/svg/i)){return 'svg';}
+							return 'txt';
+						})(file.type);
+						// console.log(file);
+						e.preventDefault();
+						(function(file){
+							var reader = new FileReader();
+							reader.onload = function(evt) {
+								options.submit('<a href="'+evt.target.result+'"><img src="'+evt.target.result+'" alt="投稿されたイメージ" /></a>');
+							}
+							reader.readAsDataURL(file);
+						})(file);
+					}
+				}
+			})
+			.on('drop', function(e){
+				e.stopPropagation();
+				e.preventDefault();
+				var event = e.originalEvent;
+				var items = event.dataTransfer.files;
+				for (var i = 0 ; i < items.length ; i++) {
+					var item = items[i];
+					(function(file){
+						var reader = new FileReader();
+						reader.onload = function(evt) {
+							options.submit('<a href="'+evt.target.result+'"><img src="'+evt.target.result+'" alt="投稿されたイメージ" /></a>');
+						}
+						reader.readAsDataURL(file);
+					})(item);
+				}
+			})
+		;
+		return $textarea;
+	}
+}
+
+},{"jquery":9}],92:[function(require,module,exports){
+/**
+ * _updateRelations.js
+ */
+module.exports = function(incense, $fieldRelations){
+	var $ = require('jquery');
+	return function(callback){
+		callback = callback || function(){};
+		// <path stroke="black" stroke-width="2" fill="none" d="M120,170 180,170 150,230z" />
+
+		function getCenterOfGravity($elm){
+			var zoomRate = incense.getZoomRate();
+			// console.log($elm.position().left, $elm.outerWidth());
+			// console.log(($elm.position().left*(1/zoomRate)), $elm.outerWidth());
+			var toX = 0 + ($elm.position().left*(1/zoomRate)) + $elm.outerWidth()/2;
+			if( toX < 0 ){ toX = 0; }
+			var toY = 0 + ($elm.position().top*(1/zoomRate)) + $elm.outerHeight()/2;
+			if( toY < 0 ){ toY = 0; }
+			return {'x':toX, 'y':toY};
+		}
+
+		var $svg = $fieldRelations.find('>svg');
+		$svg.html('');
+		var widgets = incense.widgetMgr.getAll();
+		for( var idx in widgets ){
+			if( !widgets[idx].parent ){ continue; }
+			var d = '';
+			var parentWidget = incense.widgetMgr.get(widgets[idx].parent);
+			if(parentWidget){
+				var me = getCenterOfGravity(widgets[idx].$);
+				var parent = getCenterOfGravity(parentWidget.$);
+				$svg.get(0).innerHTML += '<path stroke="#333" stroke-width="3" fill="none" d="M'+me.x+','+me.y+' L'+parent.x+','+parent.y+'" style="opacity: 0.2;" />';
+			}
+		}
+
+		callback();
+		return;
+	}
+
+}
+
+},{"jquery":9}],93:[function(require,module,exports){
 /**
  * userMgr.js
  */
@@ -19775,7 +19789,7 @@ module.exports = function( app, $timelineList, $field, $fieldInner ){
 	return;
 }
 
-},{}],91:[function(require,module,exports){
+},{}],94:[function(require,module,exports){
 /**
  * widgets: base class
  */
@@ -19806,7 +19820,7 @@ module.exports = function( incense, $widget ){
 	return;
 }
 
-},{}],92:[function(require,module,exports){
+},{}],95:[function(require,module,exports){
 /**
  * _widgetDetailModal.js
  */
@@ -19915,7 +19929,7 @@ module.exports = function($field){
 
 }
 
-},{"jquery":9}],93:[function(require,module,exports){
+},{"jquery":9}],96:[function(require,module,exports){
 /**
  * widgetMgr.js
  */
@@ -20354,7 +20368,7 @@ module.exports = function( incense, $timelineList, $field, $fieldOuter, $fieldIn
 	return;
 }
 
-},{"jquery":9,"underscore":14}],94:[function(require,module,exports){
+},{"jquery":9,"underscore":14}],97:[function(require,module,exports){
 /**
  * widgets: discussiontree.js
  */
@@ -21195,7 +21209,7 @@ module.exports = function( incense, $widget ){
 	return;
 }
 
-},{"jquery":9}],95:[function(require,module,exports){
+},{"jquery":9}],98:[function(require,module,exports){
 /**
  * widgets: stickies.js
  */

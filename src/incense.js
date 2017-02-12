@@ -1,3 +1,6 @@
+/**
+ * passiful/node-incense
+ */
 window.Incense = function(){
 	// app "board"
 	var _this = this;
@@ -23,7 +26,6 @@ window.Incense = function(){
 		$fieldInner;
 	var boardId;
 	var zoomRate = 1;
-	var lastTimelineMessage = {};
 
 	/**
 	 * 初期化
@@ -108,6 +110,11 @@ window.Incense = function(){
 				_this.widgetDetailModal = new (require('./libs/_widgetDetailModal.js'))($field);
 				_this.userMgr = new (require('./libs/_userMgr.js'))(_this, $timelineList, $field, $fieldInner);
 				_this.locker = new (require('./libs/_locker.js'))(_this);
+				_this.updateRelations = require( './libs/_updateRelations.js' )(_this, $fieldRelations);
+				_this.setBehaviorChatComment = require('./libs/_setBehaviorChatComment.js')(_this);
+				_this.insertTimeline = require('./libs/_insertTimeline.js')(_this, $timelineList);
+				_this.markdown = require('./libs/_markdown.js');
+				_this.detoxHtml = require('./libs/_detoxHtml.js');
 
 
 				_this.widgetList = {
@@ -427,171 +434,6 @@ window.Incense = function(){
 	}
 
 	/**
-	 * チャットコメントフォームを作成
-	 */
-	this.setBehaviorChatComment = function($textarea, options){
-		options = options || {};
-		options.submit = options.submit || function(){};
-		$textarea = $($textarea);
-		$textarea
-			.on('keydown', function(e){
-				// console.log(e);
-				if(e.key.toLowerCase() == 'escape'){
-					this.blur();
-				}
-			})
-			.on('keypress', function(e){
-				// console.log(e);
-				if( e.which == 13 ){
-					// alert('enter');
-					var $this = $(e.target);
-					if( e.shiftKey ){
-						// SHIFTキーを押しながらなら、送信せず改行する
-						return true;
-					}
-					if(!$this.val().length){
-						// 中身が空っぽなら送信しない
-						return false;
-					}
-					var fixedValue = $this.val();
-					options.submit( fixedValue );
-					$this.val('').focus();
-					return false;
-				}
-				return;
-			})
-			.on('dblclick', function(e){
-				e.stopPropagation();
-			})
-			.on('paste', function(e){
-				// console.log(e);
-				e.stopPropagation();
-				var items = e.originalEvent.clipboardData.items;
-				for (var i = 0 ; i < items.length ; i++) {
-					var item = items[i];
-					// console.log(item);
-					if(item.type.indexOf("image") != -1){
-						var file = item.getAsFile();
-						file.name = file.name||'clipboard.'+(function(type){
-							if(type.match(/png$/i)){return 'png';}
-							if(type.match(/gif$/i)){return 'gif';}
-							if(type.match(/(?:jpeg|jpg|jpe)$/i)){return 'jpg';}
-							if(type.match(/svg/i)){return 'svg';}
-							return 'txt';
-						})(file.type);
-						// console.log(file);
-						e.preventDefault();
-						(function(file){
-							var reader = new FileReader();
-							reader.onload = function(evt) {
-								options.submit('<a href="'+evt.target.result+'"><img src="'+evt.target.result+'" alt="投稿されたイメージ" /></a>');
-							}
-							reader.readAsDataURL(file);
-						})(file);
-					}
-				}
-			})
-			.on('drop', function(e){
-				e.stopPropagation();
-				e.preventDefault();
-				var event = e.originalEvent;
-				var items = event.dataTransfer.files;
-				for (var i = 0 ; i < items.length ; i++) {
-					var item = items[i];
-					(function(file){
-						var reader = new FileReader();
-						reader.onload = function(evt) {
-							options.submit('<a href="'+evt.target.result+'"><img src="'+evt.target.result+'" alt="投稿されたイメージ" /></a>');
-						}
-						reader.readAsDataURL(file);
-					})(item);
-				}
-			})
-		;
-		return $textarea;
-	} // setBehaviorChatComment()
-
-	/**
-	 * メインタイムラインにメッセージを表示する
-	 */
-	this.insertTimeline = function( message, $messageContent ){
-		// console.log(message);
-		$messageContent = $messageContent || $('<div>');
-		$messageContent.css({'margin-bottom': 3});
-		var $messageBodyContent = $('<div class="incense__message-unit__message-body-content">');
-		var $message = $('<div>')
-			.addClass('incense__message-unit')
-			.attr({
-				'data-message-id': message.id,
-				'data-message-owner': message.owner
-			})
-		;
-		if( userInfo.id == message.owner ){
-			$message
-				.addClass('incense__message-unit--myitem')
-			;
-		}
-		// console.log( this.userMgr.getAll() );
-		var ownerInfo = this.userMgr.get(message.owner);
-		$userIcon = $('<div class="incense__message-unit__owner-icon">');
-		if( ownerInfo.icon ){
-			$userIcon
-				.append( $('<img>')
-					.attr({
-						'src': ownerInfo.icon
-					})
-					.css({
-						'width': 30,
-						'height': 30
-					})
-				)
-			;
-		}
-
-		if( lastTimelineMessage.owner == message.owner && lastTimelineMessage.targetWidget == message.targetWidget && lastTimelineMessage.microtime > message.microtime-(5*60*1000) ){
-			$messageBodyContent = lastTimelineMessage.$messageBodyContent;
-			$messageBodyContent
-				.append( $messageContent )
-			;
-		}else{
-			var $messageBody = $('<div class="incense__message-unit__message-body">');
-			$message
-				.append( $userIcon )
-				.append( $messageBody
-					.append( $('<div class="incense__message-unit__owner">')
-						.attr({'title': new Date(message.microtime)})
-						.append( $('<span class="incense__message-unit__owner-name">').text(ownerInfo.name) )
-						.append( $('<span class="incense__message-unit__owner-id">').text(ownerInfo.id) )
-					)
-					.append( $messageBodyContent
-						.append($messageContent)
-					)
-				)
-			;
-			if( message.targetWidget ){
-				$messageBody
-					.append( $('<div class="incense__message-unit__targetWidget">')
-						.append(
-							incense.widgetMgr.mkLinkToWidget( message.targetWidget )
-						)
-					)
-				;
-			}
-			$timelineList.append( $message );
-		}
-
-		this.adjustTimelineScrolling($timelineList);
-
-		lastTimelineMessage = {
-			'owner': message.owner,
-			'targetWidget': message.targetWidget,
-			'microtime': message.microtime,
-			'$messageBodyContent': $messageBodyContent
-		};
-		return;
-	}
-
-	/**
 	 * タイムラインのスクロール位置をあわせる
 	 */
 	this.adjustTimelineScrolling = function( $timeline ){
@@ -603,16 +445,6 @@ window.Incense = function(){
 
 		return;
 	}
-
-	/**
-	 * Markdown 変換する
-	 */
-	this.markdown = require('./libs/_markdown.js');
-
-	/**
-	 * 投稿されたHTMLを無害化する
-	 */
-	this.detoxHtml = require('./libs/_detoxHtml.js');
 
 	/**
 	 * ログインユーザー情報を取得
@@ -685,41 +517,6 @@ window.Incense = function(){
 	 */
 	this.getZoomRate = function(){
 		return zoomRate;
-	}
-
-	/**
-	 * 親子関係の表現を更新する
-	 */
-	this.updateRelations = function( callback ){
-		callback = callback || function(){};
-		// <path stroke="black" stroke-width="2" fill="none" d="M120,170 180,170 150,230z" />
-
-		function getCenterOfGravity($elm){
-			// console.log($elm.position().left, $elm.outerWidth());
-			// console.log(($elm.position().left*(1/zoomRate)), $elm.outerWidth());
-			var toX = 0 + ($elm.position().left*(1/zoomRate)) + $elm.outerWidth()/2;
-			if( toX < 0 ){ toX = 0; }
-			var toY = 0 + ($elm.position().top*(1/zoomRate)) + $elm.outerHeight()/2;
-			if( toY < 0 ){ toY = 0; }
-			return {'x':toX, 'y':toY};
-		}
-
-		var $svg = $fieldRelations.find('>svg');
-		$svg.html('');
-		var widgets = this.widgetMgr.getAll();
-		for( var idx in widgets ){
-			if( !widgets[idx].parent ){ continue; }
-			var d = '';
-			var parentWidget = _this.widgetMgr.get(widgets[idx].parent);
-			if(parentWidget){
-				var me = getCenterOfGravity(widgets[idx].$);
-				var parent = getCenterOfGravity(parentWidget.$);
-				$svg.get(0).innerHTML += '<path stroke="#333" stroke-width="3" fill="none" d="M'+me.x+','+me.y+' L'+parent.x+','+parent.y+'" style="opacity: 0.2;" />';
-			}
-		}
-
-		callback();
-		return;
 	}
 
 	/**
