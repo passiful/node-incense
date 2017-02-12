@@ -18915,6 +18915,21 @@ window.Incense = function(){
 				rlv();
 			}); })
 			.then(function(){ return new Promise(function(rlv, rjt){
+				// init biflora framework
+				console.log('incense: initializing biflora framework...');
+				biflora = _this.biflora = window.biflora
+					.createSocket(
+						_this,
+						io,
+						{
+							'receiveBroadcast': require('./apis/_receiveBroadcast.js'),
+							'locker': require('./apis/_locker.js')
+						}
+					)
+				;
+				rlv();
+			}); })
+			.then(function(){ return new Promise(function(rlv, rjt){
 				// DOM Setup
 				console.log('incense: DOM Setup...');
 
@@ -18983,6 +18998,7 @@ window.Incense = function(){
 				_this.insertTimeline = require('./libs/_insertTimeline.js')(_this, $timelineList);
 				_this.markdown = require('./libs/_markdown.js');
 				_this.detoxHtml = require('./libs/_detoxHtml.js');
+				_this.lfm = new (require('./libs/_lfm.js'))(_this, biflora);
 
 
 				_this.widgetList = {
@@ -18996,21 +19012,6 @@ window.Incense = function(){
 					}
 				};
 
-				rlv();
-			}); })
-			.then(function(){ return new Promise(function(rlv, rjt){
-				// init biflora framework
-				console.log('incense: initializing biflora framework...');
-				biflora = _this.biflora = window.biflora
-					.createSocket(
-						_this,
-						io,
-						{
-							'receiveBroadcast': require('./apis/_receiveBroadcast.js'),
-							'locker': require('./apis/_locker.js')
-						}
-					)
-				;
 				rlv();
 			}); })
 			.then(function(){ return new Promise(function(rlv, rjt){
@@ -19411,7 +19412,7 @@ window.Incense = function(){
 
 };
 
-},{"./apis/_locker.js":103,"./apis/_receiveBroadcast.js":104,"./libs/_detoxHtml.js":106,"./libs/_fieldContextMenu.js":107,"./libs/_insertTimeline.js":108,"./libs/_keypress.js":109,"./libs/_locker.js":110,"./libs/_markdown.js":111,"./libs/_messageOperator.js":112,"./libs/_modal.js":113,"./libs/_setBehaviorChatComment.js":114,"./libs/_updateRelations.js":115,"./libs/_userMgr.js":116,"./libs/_widgetBase.js":117,"./libs/_widgetDetailModal.js":118,"./libs/_widgetMgr.js":119,"./widgets/discussiontree/discussiontree.js":120,"./widgets/stickies/stickies.js":121,"es6-promise":10,"iterate79":14,"jquery":15,"twig":19,"utils79":38}],106:[function(require,module,exports){
+},{"./apis/_locker.js":103,"./apis/_receiveBroadcast.js":104,"./libs/_detoxHtml.js":106,"./libs/_fieldContextMenu.js":107,"./libs/_insertTimeline.js":108,"./libs/_keypress.js":109,"./libs/_lfm.js":110,"./libs/_locker.js":111,"./libs/_markdown.js":112,"./libs/_messageOperator.js":113,"./libs/_modal.js":114,"./libs/_setBehaviorChatComment.js":115,"./libs/_updateRelations.js":116,"./libs/_userMgr.js":117,"./libs/_widgetBase.js":118,"./libs/_widgetDetailModal.js":119,"./libs/_widgetMgr.js":120,"./widgets/discussiontree/discussiontree.js":121,"./widgets/stickies/stickies.js":122,"es6-promise":10,"iterate79":14,"jquery":15,"twig":19,"utils79":38}],106:[function(require,module,exports){
 /**
  * 投稿されたHTMLを無害化する - _detoxHtml.js
  */
@@ -19785,6 +19786,52 @@ module.exports = function( incense ){
 
 },{}],110:[function(require,module,exports){
 /**
+ * _lfm.js
+ */
+module.exports = function(incense, biflora){
+	var $ = require('jquery');
+	var utils79 = require('utils79');
+
+	/**
+	 * ファイルIDを予約する
+	 */
+	this.reserve = function(callback){
+		biflora.send(
+			'createNewFile',
+			{
+				'boardId': incense.getBoardId()
+			},
+			function(fileId){
+				// console.log(fileId);
+				if( !fileId ){
+					console.error('ERROR: failed to getting new file ID:', fileId);
+				}
+				callback(fileId);
+				return;
+			}
+		);
+		return;
+	}
+
+	/**
+	 * ファイルIDを予約する
+	 */
+	this.upload = function(lfId, fileInfo, callback){
+		callback(false);
+		return;
+	}
+
+	/**
+	 * ファイルを取得する
+	 */
+	this.download = function(lfId, callback){
+		callback(false);
+		return;
+	}
+}
+
+},{"jquery":15,"utils79":38}],111:[function(require,module,exports){
+/**
  * lockApi - locker.js
  */
 module.exports = function( incense ){
@@ -19882,7 +19929,7 @@ module.exports = function( incense ){
 	return;
 }
 
-},{}],111:[function(require,module,exports){
+},{}],112:[function(require,module,exports){
 /**
  * Markdown 変換する - _markdown.js
  */
@@ -19913,7 +19960,7 @@ module.exports = function( md ){
 	return html;
 }
 
-},{"./_detoxHtml.js":106,"jquery":15,"marked":16}],112:[function(require,module,exports){
+},{"./_detoxHtml.js":106,"jquery":15,"marked":16}],113:[function(require,module,exports){
 /**
  * messageOperator.js
  */
@@ -20145,7 +20192,7 @@ module.exports = function( incense, $timelineList, $fieldInner ){
 	return;
 }
 
-},{"es6-promise":10,"iterate79":14,"jquery":15}],113:[function(require,module,exports){
+},{"es6-promise":10,"iterate79":14,"jquery":15}],114:[function(require,module,exports){
 /**
  * _modal.js
  */
@@ -20251,12 +20298,13 @@ module.exports = function($field){
 
 }
 
-},{"jquery":15}],114:[function(require,module,exports){
+},{"jquery":15}],115:[function(require,module,exports){
 /**
  * _setBehaviorChatComment.js
  */
 module.exports = function(incense){
 	var $ = require('jquery');
+	var utils79 = require('utils79');
 
 	function applyFile(file, callback){
 		callback = callback || function(){};
@@ -20273,13 +20321,20 @@ module.exports = function(incense){
 
 		var reader = new FileReader();
 		reader.onload = function(evt) {
-			var rtn = '';
-			if( file.type.indexOf("image/") === 0 ){
-				rtn = '<a href="'+evt.target.result+'"><img src="'+evt.target.result+'" alt="'+file.name+'" /></a>';
-			}else{
-				rtn = '<a href="'+evt.target.result+'" download="'+file.name+'">添付ファイル '+file.name+' ('+file.size+' bytes)</a>';
-			}
-			callback( rtn );
+			evt.target.result.match(/^data\:([\s\S]+?)\;base64\,([\s\S]*)$/);
+			var type = RegExp.$1;
+			var base64 = RegExp.$2;
+			// console.log(type, base64);
+			incense.lfm.reserve(function(newFileId){
+				var rtn = '';
+				console.log(newFileId, file);
+				if( file.type.indexOf("image/") === 0 ){
+					rtn = '<a href="'+utils79.h( evt.target.result )+'"><img src="'+utils79.h( evt.target.result )+'" alt="'+utils79.h( file.name + ':' + newFileId )+'" /></a>';
+				}else{
+					rtn = '<a href="'+utils79.h( evt.target.result )+'" download="'+utils79.h( file.name )+'">添付ファイル '+utils79.h( file.name )+' ('+utils79.h( utils79.toStr(file.size) )+' bytes, '+utils79.h( newFileId )+')</a>';
+				}
+				callback( rtn );
+			});
 		}
 		reader.readAsDataURL(file);
 		return reader;
@@ -20353,7 +20408,7 @@ module.exports = function(incense){
 	}
 }
 
-},{"jquery":15}],115:[function(require,module,exports){
+},{"jquery":15,"utils79":38}],116:[function(require,module,exports){
 /**
  * _updateRelations.js
  */
@@ -20394,7 +20449,7 @@ module.exports = function(incense, $fieldRelations){
 
 }
 
-},{"jquery":15}],116:[function(require,module,exports){
+},{"jquery":15}],117:[function(require,module,exports){
 /**
  * userMgr.js
  */
@@ -20473,7 +20528,7 @@ module.exports = function( app, $timelineList, $field, $fieldInner ){
 	return;
 }
 
-},{}],117:[function(require,module,exports){
+},{}],118:[function(require,module,exports){
 /**
  * widgets: base class
  */
@@ -20504,7 +20559,7 @@ module.exports = function( incense, $widget ){
 	return;
 }
 
-},{}],118:[function(require,module,exports){
+},{}],119:[function(require,module,exports){
 /**
  * _widgetDetailModal.js
  */
@@ -20613,7 +20668,7 @@ module.exports = function($field){
 
 }
 
-},{"jquery":15}],119:[function(require,module,exports){
+},{"jquery":15}],120:[function(require,module,exports){
 /**
  * widgetMgr.js
  */
@@ -21052,7 +21107,7 @@ module.exports = function( incense, $timelineList, $field, $fieldOuter, $fieldIn
 	return;
 }
 
-},{"jquery":15,"underscore":20}],120:[function(require,module,exports){
+},{"jquery":15,"underscore":20}],121:[function(require,module,exports){
 /**
  * widgets: discussiontree.js
  */
@@ -21893,7 +21948,7 @@ module.exports = function( incense, $widget ){
 	return;
 }
 
-},{"jquery":15}],121:[function(require,module,exports){
+},{"jquery":15}],122:[function(require,module,exports){
 /**
  * widgets: stickies.js
  */

@@ -58,6 +58,26 @@ module.exports = function(conf, main){
 				'microtime': { type: Sequelize.BIGINT }
 			}
 		);
+		tbls.files = sequelize.define(conf.db.tablePrefix+'-files',
+			{
+				'fileId': { type: Sequelize.STRING, primaryKey: true, allowNull: false },
+				'boardId': {
+					type: Sequelize.STRING,
+					allowNull: false,
+					references: {
+						// This is a reference to another model
+						model: tbls.board,
+						key: 'boardId'
+					}
+				},
+				'filename': { type: Sequelize.STRING },
+				'size': { type: Sequelize.INTEGER },
+				'type': { type: Sequelize.STRING },
+				'base64': { type: Sequelize.STRING },
+				'owner': { type: Sequelize.STRING },
+				'microtime': { type: Sequelize.BIGINT }
+			}
+		);
 		sequelize.sync()
 			.then(function(){
 				callback(true);
@@ -102,16 +122,7 @@ module.exports = function(conf, main){
 							return;
 						}
 
-						var newBoardId = (+new Date());
-						newBoardId += '.'+(Math.random() * 10000)+'.'+(Math.random() * 10000);
-						// console.log(newBoardId);
-						newBoardId = (function(src) {
-							var crypto = require('crypto');
-							var md5 = crypto.createHash('md5');
-							md5.update(src, 'utf8');
-							return md5.digest('hex');
-						})(newBoardId);
-						// console.log(newBoardId);
+						var newBoardId = utils79.md5( (+new Date())+'.'+(Math.random() * 10000)+'.'+(Math.random() * 10000) );
 
 						tbls.board.create({
 							'boardId': newBoardId,
@@ -242,6 +253,102 @@ module.exports = function(conf, main){
 					result.rows = JSON.parse(JSON.stringify(result.rows));
 					// console.log(result);
 					callback(result);
+				})
+			;
+
+		});
+		return;
+	}
+
+	/**
+	 * fileIdを作成する
+	 */
+	this.createNewFile = function( boardId, fileInfo, callback ){
+		callback = callback || function(){};
+		this.initDb(function(){
+			var retryCounter = 0;
+
+			try {
+				fileInfo = fileInfo || {};
+				fileInfo.name = fileInfo.name||'unknown.txt';
+				fileInfo.base64 = fileInfo.base64||utils79.base64_encode('unknown');
+				fileInfo.size = fileInfo.size||utils79.base64_decode(fileInfo.base64).length;
+				fileInfo.type = fileInfo.type||'text/plain';
+				fileInfo.owner = fileInfo.owner||'';
+			} catch (e) {
+				console.error('Failed to init file info on dbh.createNewFile()');
+			}
+			console.log(boardId);
+			console.log(fileInfo);
+
+			it79.fnc(
+				{},
+				{
+					"insert": function(it1, data){
+						retryCounter ++;
+						if( retryCounter > 50 ){
+							// 50回やっても成功しないなら、諦めて離脱する
+							callback(false);
+							return;
+						}
+
+						var newFileId = utils79.md5( (+new Date())+'.'+(Math.random() * 10000)+'.'+(Math.random() * 10000) );
+
+						tbls.files.create({
+							'boardId': boardId,
+							'fileId': newFileId,
+							'filename': fileInfo.name,
+							'size': fileInfo.size,
+							'type': fileInfo.type,
+							'base64': fileInfo.base64,
+							'owner': fileInfo.owner,
+							'microtime': Date.now()
+						}).then(function(record){
+							// successful
+							callback(newFileId);
+						}).catch(function(){
+							// retry
+							retryCounter ++;
+							if( retryCounter > 100 ){
+								callback(false);
+								return;
+							}
+							it1.goto("insert", data);
+						});
+					}
+				}
+			);
+		});
+		return;
+	}
+
+	/**
+	 * fileを更新する
+	 */
+	this.updateFile = function( boardId, fileId, fileInfo, callback ){
+		callback(false);
+		return;
+	}
+
+	/**
+	 * fileを取得する
+	 */
+	this.getFile = function( boardId, fileId, callback ){
+		callback = callback || function(){};
+
+		this.initDb(function(){
+
+			tbls.files
+				.findOne({
+					"where":{
+						"boardId": boardId,
+						"fileId": fileId
+					}
+				})
+				.then(function(result) {
+					// console.log(result);
+					result.dataValues = JSON.parse(JSON.stringify(result.dataValues));
+					callback(result.dataValues);
 				})
 			;
 

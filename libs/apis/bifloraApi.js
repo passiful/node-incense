@@ -183,6 +183,36 @@ module.exports = (function(){
 		}
 
 		/**
+		 * 新しいファイルを作成する
+		 */
+		this.createNewFile = function( data, callback, main, biflora ){
+			main.dbh.createNewFile(data.boardId, {}, function(result){
+				callback(result);
+			});
+			return;
+		}
+
+		/**
+		 * ファイルを更新する
+		 */
+		this.updateFile = function( data, callback, main, biflora ){
+			main.dbh.updateFile(data.boardId, data.fileId, data.fileInfo, function(result){
+				callback(result);
+			});
+			return;
+		}
+
+		/**
+		 * ファイルを取得する
+		 */
+		this.getFile = function( data, callback, main, biflora ){
+			main.dbh.getFile(data.boardId, data.fileId, function(result){
+				callback(result);
+			});
+			return;
+		}
+
+		/**
 		 * UIを排他ロックしたメッセージを配信する
 		 */
 		this.locker = function( data, callback, main, biflora ){

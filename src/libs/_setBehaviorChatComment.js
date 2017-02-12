@@ -3,6 +3,7 @@
  */
 module.exports = function(incense){
 	var $ = require('jquery');
+	var utils79 = require('utils79');
 
 	function applyFile(file, callback){
 		callback = callback || function(){};
@@ -19,13 +20,20 @@ module.exports = function(incense){
 
 		var reader = new FileReader();
 		reader.onload = function(evt) {
-			var rtn = '';
-			if( file.type.indexOf("image/") === 0 ){
-				rtn = '<a href="'+evt.target.result+'"><img src="'+evt.target.result+'" alt="'+file.name+'" /></a>';
-			}else{
-				rtn = '<a href="'+evt.target.result+'" download="'+file.name+'">添付ファイル '+file.name+' ('+file.size+' bytes)</a>';
-			}
-			callback( rtn );
+			evt.target.result.match(/^data\:([\s\S]+?)\;base64\,([\s\S]*)$/);
+			var type = RegExp.$1;
+			var base64 = RegExp.$2;
+			// console.log(type, base64);
+			incense.lfm.reserve(function(newFileId){
+				var rtn = '';
+				console.log(newFileId, file);
+				if( file.type.indexOf("image/") === 0 ){
+					rtn = '<a href="'+utils79.h( evt.target.result )+'"><img src="'+utils79.h( evt.target.result )+'" alt="'+utils79.h( file.name + ':' + newFileId )+'" /></a>';
+				}else{
+					rtn = '<a href="'+utils79.h( evt.target.result )+'" download="'+utils79.h( file.name )+'">添付ファイル '+utils79.h( file.name )+' ('+utils79.h( utils79.toStr(file.size) )+' bytes, '+utils79.h( newFileId )+')</a>';
+				}
+				callback( rtn );
+			});
 		}
 		reader.readAsDataURL(file);
 		return reader;

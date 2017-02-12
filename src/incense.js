@@ -47,6 +47,21 @@ window.Incense = function(){
 				rlv();
 			}); })
 			.then(function(){ return new Promise(function(rlv, rjt){
+				// init biflora framework
+				console.log('incense: initializing biflora framework...');
+				biflora = _this.biflora = window.biflora
+					.createSocket(
+						_this,
+						io,
+						{
+							'receiveBroadcast': require('./apis/_receiveBroadcast.js'),
+							'locker': require('./apis/_locker.js')
+						}
+					)
+				;
+				rlv();
+			}); })
+			.then(function(){ return new Promise(function(rlv, rjt){
 				// DOM Setup
 				console.log('incense: DOM Setup...');
 
@@ -115,6 +130,7 @@ window.Incense = function(){
 				_this.insertTimeline = require('./libs/_insertTimeline.js')(_this, $timelineList);
 				_this.markdown = require('./libs/_markdown.js');
 				_this.detoxHtml = require('./libs/_detoxHtml.js');
+				_this.lfm = new (require('./libs/_lfm.js'))(_this, biflora);
 
 
 				_this.widgetList = {
@@ -128,21 +144,6 @@ window.Incense = function(){
 					}
 				};
 
-				rlv();
-			}); })
-			.then(function(){ return new Promise(function(rlv, rjt){
-				// init biflora framework
-				console.log('incense: initializing biflora framework...');
-				biflora = _this.biflora = window.biflora
-					.createSocket(
-						_this,
-						io,
-						{
-							'receiveBroadcast': require('./apis/_receiveBroadcast.js'),
-							'locker': require('./apis/_locker.js')
-						}
-					)
-				;
 				rlv();
 			}); })
 			.then(function(){ return new Promise(function(rlv, rjt){
