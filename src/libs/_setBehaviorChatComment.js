@@ -3,6 +3,34 @@
  */
 module.exports = function(incense){
 	var $ = require('jquery');
+
+	function applyFile(file, callback){
+		callback = callback || function(){};
+		file = file||{};
+
+		file.name = file.name||'clipboard.'+(function(type){
+			if(type.match(/png$/i)){return 'png';}
+			if(type.match(/gif$/i)){return 'gif';}
+			if(type.match(/(?:jpeg|jpg|jpe)$/i)){return 'jpg';}
+			if(type.match(/svg/i)){return 'svg';}
+			return 'txt';
+		})(file.type);
+		// console.log('applyFile', file);
+
+		var reader = new FileReader();
+		reader.onload = function(evt) {
+			var rtn = '';
+			if( file.type.indexOf("image/") === 0 ){
+				rtn = '<a href="'+evt.target.result+'"><img src="'+evt.target.result+'" alt="'+file.name+'" /></a>';
+			}else{
+				rtn = '<a href="'+evt.target.result+'" download="'+file.name+'">添付ファイル '+file.name+' ('+file.size+' bytes)</a>';
+			}
+			callback( rtn );
+		}
+		reader.readAsDataURL(file);
+		return reader;
+	}
+
 	return function($textarea, options){
 		options = options || {};
 		options.submit = options.submit || function(){};
@@ -44,24 +72,13 @@ module.exports = function(incense){
 				for (var i = 0 ; i < items.length ; i++) {
 					var item = items[i];
 					// console.log(item);
-					if(item.type.indexOf("image") != -1){
+					if( item.type.indexOf("image/") === 0 ){
 						var file = item.getAsFile();
-						file.name = file.name||'clipboard.'+(function(type){
-							if(type.match(/png$/i)){return 'png';}
-							if(type.match(/gif$/i)){return 'gif';}
-							if(type.match(/(?:jpeg|jpg|jpe)$/i)){return 'jpg';}
-							if(type.match(/svg/i)){return 'svg';}
-							return 'txt';
-						})(file.type);
 						// console.log(file);
 						e.preventDefault();
-						(function(file){
-							var reader = new FileReader();
-							reader.onload = function(evt) {
-								options.submit('<a href="'+evt.target.result+'"><img src="'+evt.target.result+'" alt="投稿されたイメージ" /></a>');
-							}
-							reader.readAsDataURL(file);
-						})(file);
+						applyFile(file, function(result){
+							options.submit( result );
+						});
 					}
 				}
 			})
@@ -72,13 +89,9 @@ module.exports = function(incense){
 				var items = event.dataTransfer.files;
 				for (var i = 0 ; i < items.length ; i++) {
 					var item = items[i];
-					(function(file){
-						var reader = new FileReader();
-						reader.onload = function(evt) {
-							options.submit('<a href="'+evt.target.result+'"><img src="'+evt.target.result+'" alt="投稿されたイメージ" /></a>');
-						}
-						reader.readAsDataURL(file);
-					})(item);
+					applyFile(item, function(result){
+						options.submit( result );
+					});
 				}
 			})
 		;

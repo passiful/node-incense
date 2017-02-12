@@ -19246,7 +19246,7 @@ module.exports = function( md ){
 /**
  * messageOperator.js
  */
-module.exports = function( app, $timelineList, $fieldInner ){
+module.exports = function( incense, $timelineList, $fieldInner ){
 	var _this = this;
 	var Promise = require('es6-promise').Promise;
 	var $ = require('jquery');
@@ -19276,21 +19276,21 @@ module.exports = function( app, $timelineList, $fieldInner ){
 				message.content = JSON.parse(message.content);
 				switch( message.content.operation ){
 					case 'createWidget':
-						app.widgetMgr.create( message.boardMessageId, message.content );
+						incense.widgetMgr.create( message.boardMessageId, message.content );
 						var str = '';
 						str += message.owner;
 						str += ' が ';
 						str += message.content.widgetType;
 						str += ' を作成しました。';
-						app.insertTimeline( message, $messageUnit
+						incense.insertTimeline( message, $messageUnit
 							.append( $('<div class="incense__message-unit__operation">').text(str) )
 						);
 						break;
 					case 'moveWidget':
-						app.widgetMgr.move( message.boardMessageId, message.content );
+						incense.widgetMgr.move( message.boardMessageId, message.content );
 						break;
 					case 'setParentWidget':
-						app.widgetMgr.setParentWidget( message.boardMessageId, message.content );
+						incense.widgetMgr.setParentWidget( message.boardMessageId, message.content );
 						var str = '';
 						str += message.owner;
 						str += ' が ';
@@ -19298,34 +19298,34 @@ module.exports = function( app, $timelineList, $fieldInner ){
 						str += ' の親ウィジェットを ';
 						str += '#widget.'+message.content.newParentWidgetId;
 						str += ' に変更しました。';
-						app.insertTimeline( message, $messageUnit
+						incense.insertTimeline( message, $messageUnit
 							.append( $('<div class="incense__message-unit__operation">').text(str) )
 						);
 						break;
 					case 'deleteWidget':
-						app.widgetMgr.delete( message.boardMessageId, message.content.targetWidgetId );
+						incense.widgetMgr.delete( message.boardMessageId, message.content.targetWidgetId );
 						var str = '';
 						str += message.owner;
 						str += ' が ';
 						str += '#widget.'+message.content.targetWidgetId;
 						str += ' を削除しました。';
-						app.insertTimeline( message, $messageUnit
+						incense.insertTimeline( message, $messageUnit
 							.append( $('<div class="incense__message-unit__operation">').text(str) )
 						);
 						break;
 					case 'userLogin':
-						app.userMgr.login( message.content.userInfo, function(err, userInfo){
+						incense.userMgr.login( message.content.userInfo, function(err, userInfo){
 							// console.log('user "'+userInfo.name+'" Login.');
 							var str = '';
 							str += 'ユーザー "' + message.content.userInfo.name + '" がログインしました。';
-							app.insertTimeline( message, $messageUnit
+							incense.insertTimeline( message, $messageUnit
 								.append( $('<div class="incense__message-unit__operation">').text(str) )
 							);
 						} );
 						break;
 					case 'userLogout':
 						// console.log(message);
-						app.userMgr.logout( message.content.userInfo.id, function(err, userInfo){
+						incense.userMgr.logout( message.content.userInfo.id, function(err, userInfo){
 							if(userInfo === undefined){
 								console.error( 'userLogout: userInfo が undefined です。' );
 								return;
@@ -19334,7 +19334,7 @@ module.exports = function( app, $timelineList, $fieldInner ){
 							// console.log('user "'+userInfo.name+'" Logout.');
 							var str = '';
 							str += 'ユーザー "' + userInfo.name + '" がログアウトしました。';
-							app.insertTimeline( message, $messageUnit
+							incense.insertTimeline( message, $messageUnit
 								.append( $('<div class="incense__message-unit__operation">').text(str) )
 							);
 						} );
@@ -19343,11 +19343,11 @@ module.exports = function( app, $timelineList, $fieldInner ){
 				break;
 			case 'application/x-passiflora-widget-message':
 				message.content = JSON.parse(message.content);
-				app.widgetMgr.receiveWidgetMessage( message );
+				incense.widgetMgr.receiveWidgetMessage( message );
 				break;
 			case 'text/html':
-				var user = app.userMgr.get(message.owner);
-				app.insertTimeline( message, $messageUnit
+				var user = incense.userMgr.get(message.owner);
+				incense.insertTimeline( message, $messageUnit
 					.append( $('<div class="incense__message-unit__content incense-markdown">').html( incense.detoxHtml( message.content ) ) )
 				);
 				break;
@@ -19586,6 +19586,34 @@ module.exports = function($field){
  */
 module.exports = function(incense){
 	var $ = require('jquery');
+
+	function applyFile(file, callback){
+		callback = callback || function(){};
+		file = file||{};
+
+		file.name = file.name||'clipboard.'+(function(type){
+			if(type.match(/png$/i)){return 'png';}
+			if(type.match(/gif$/i)){return 'gif';}
+			if(type.match(/(?:jpeg|jpg|jpe)$/i)){return 'jpg';}
+			if(type.match(/svg/i)){return 'svg';}
+			return 'txt';
+		})(file.type);
+		// console.log('applyFile', file);
+
+		var reader = new FileReader();
+		reader.onload = function(evt) {
+			var rtn = '';
+			if( file.type.indexOf("image/") === 0 ){
+				rtn = '<a href="'+evt.target.result+'"><img src="'+evt.target.result+'" alt="'+file.name+'" /></a>';
+			}else{
+				rtn = '<a href="'+evt.target.result+'" download="'+file.name+'">添付ファイル '+file.name+' ('+file.size+' bytes)</a>';
+			}
+			callback( rtn );
+		}
+		reader.readAsDataURL(file);
+		return reader;
+	}
+
 	return function($textarea, options){
 		options = options || {};
 		options.submit = options.submit || function(){};
@@ -19627,24 +19655,13 @@ module.exports = function(incense){
 				for (var i = 0 ; i < items.length ; i++) {
 					var item = items[i];
 					// console.log(item);
-					if(item.type.indexOf("image") != -1){
+					if( item.type.indexOf("image/") === 0 ){
 						var file = item.getAsFile();
-						file.name = file.name||'clipboard.'+(function(type){
-							if(type.match(/png$/i)){return 'png';}
-							if(type.match(/gif$/i)){return 'gif';}
-							if(type.match(/(?:jpeg|jpg|jpe)$/i)){return 'jpg';}
-							if(type.match(/svg/i)){return 'svg';}
-							return 'txt';
-						})(file.type);
 						// console.log(file);
 						e.preventDefault();
-						(function(file){
-							var reader = new FileReader();
-							reader.onload = function(evt) {
-								options.submit('<a href="'+evt.target.result+'"><img src="'+evt.target.result+'" alt="投稿されたイメージ" /></a>');
-							}
-							reader.readAsDataURL(file);
-						})(file);
+						applyFile(file, function(result){
+							options.submit( result );
+						});
 					}
 				}
 			})
@@ -19655,13 +19672,9 @@ module.exports = function(incense){
 				var items = event.dataTransfer.files;
 				for (var i = 0 ; i < items.length ; i++) {
 					var item = items[i];
-					(function(file){
-						var reader = new FileReader();
-						reader.onload = function(evt) {
-							options.submit('<a href="'+evt.target.result+'"><img src="'+evt.target.result+'" alt="投稿されたイメージ" /></a>');
-						}
-						reader.readAsDataURL(file);
-					})(item);
+					applyFile(item, function(result){
+						options.submit( result );
+					});
 				}
 			})
 		;
