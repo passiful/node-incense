@@ -17,26 +17,23 @@ module.exports = function(options){
 			if( query.boardId && query.fileId ){
 				dbh.getFile(query.boardId, query.fileId, function(fileInfo){
 					// console.log(fileInfo);
-					var bin = utils79.base64_decode( fileInfo.base64 );
-					// console.log(fileInfo.size, bin.length);
+					var base64 = fileInfo.base64;
+					base64 = new Buffer(base64, 'base64');
+
+					// 標準出力
 					res.writeHead(
 						200,
 						{
 							'Content-Type': fileInfo.type,
-							'Content-Length': bin.length
+							'Content-Length': base64.length
 						}
 					);
-					res.end(bin, 'binary');
-					// res
-					// 	.status(200)
-					// 	.set('Content-Type', fileInfo.type)
-					// 	.set('Content-Length', bin.length)
-					// 	.end( new Buffer(bin, 'binary') );
-
+					res.end(base64);
 				});
 				return;
 			}
 
+			// パラメータが不足している
 			res
 				.status(400)
 				.set('Content-Type', 'text/html')
