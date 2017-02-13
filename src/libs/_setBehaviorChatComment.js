@@ -20,35 +20,67 @@ module.exports = function(incense){
 
 		var reader = new FileReader();
 		reader.onload = function(evt) {
-			console.log(evt.target);
-			evt.target.result.match(/^data\:([\s\S]+?)\;base64\,([\s\S]*)$/);
-			var type = RegExp.$1;
-			var base64 = RegExp.$2;
-			console.log(type, base64);
+			// console.log(evt.target);
+			var dataUri = evt.target.result;
 			incense.lfm.reserve(function(newFileId){
 				var rtn = '';
 				// console.log(newFileId, file);
 				if( file.type.indexOf("image/") === 0 ){
-					rtn = '<a href="'+utils79.h( incense.getFileUrl(newFileId) )+'" data-incense-file-id="'+utils79.h( newFileId )+'"><img src="'+utils79.h( evt.target.result )+'" alt="'+utils79.h( file.name )+'" /></a>';
+					imageResize(dataUri, function(resizedDataUri){
+						rtn = '<a href="'+utils79.h( incense.getFileUrl(newFileId) )+'" data-incense-file-id="'+utils79.h( newFileId )+'"><img src="'+utils79.h( resizedDataUri )+'" alt="'+utils79.h( file.name )+'" /></a>';
+						callback( rtn );
+					});
 				}else{
 					rtn = '<a href="'+utils79.h( incense.getFileUrl(newFileId) )+'" data-incense-file-id="'+utils79.h( newFileId )+'" download="'+utils79.h( file.name )+'">添付ファイル '+utils79.h( file.name )+' ('+utils79.h( utils79.toStr(file.size) )+' bytes)</a>';
+					callback( rtn );
 				}
-				callback( rtn );
 
 				setTimeout(function(){
+					dataUri.match(/^data\:([\s\S]+?)\;base64\,([\s\S]*)$/);
+					var type = RegExp.$1;
+					var base64 = RegExp.$2;
+					// console.log(type, base64);
+
 					incense.lfm.upload(newFileId, {
 						"filename": file.name,
 						"type": file.type,
 						"size": utils79.base64_decode(base64).length,
 						"base64": base64
 					}, function(result){
-						console.log(result);
+						console.info('file uploading, done.', result);
 					});
 				}, 10);
 			});
 		}
 		reader.readAsDataURL(file);
 		return reader;
+	}
+
+	/**
+	 * 画像をリサイズする
+	 */
+	function imageResize(dataUri, callback){
+		var maxWidth = 240;
+		var canvas = document.createElement('canvas');
+		var ctx = canvas.getContext('2d');
+		var image = new Image();
+
+		image.onload = function(event){
+			var dstWidth = this.width;
+			var dstHeight = this.height;
+			if( dstWidth <= maxWidth ){
+				// 規定サイズ内に収まっていたらもとのまま返す
+				callback(dataUri);return;
+			}
+			dstHeight = dstHeight * ( maxWidth/dstWidth );
+			dstWidth = maxWidth;
+			canvas.width = dstWidth;
+			canvas.height = dstHeight;
+			ctx.drawImage(this, 0, 0, this.width, this.height, 0, 0, dstWidth, dstHeight);
+			callback( canvas.toDataURL() );
+		}
+		image.src = dataUri;
+		return;
 	}
 
 	return function($textarea, options){
