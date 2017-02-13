@@ -35,17 +35,16 @@ module.exports = function(incense){
 				}
 				callback( rtn );
 
-				incense.lfm.upload(newFileId, {
-					"filename": file.name,
-					"type": file.type,
-					"size": utils79.base64_decode(base64).length,
-					"base64": base64
-				}, function(result){
-					console.log(result);
-					incense.lfm.download(newFileId, function(fileInfo){
-						console.log(fileInfo);
+				setTimeout(function(){
+					incense.lfm.upload(newFileId, {
+						"filename": file.name,
+						"type": file.type,
+						"size": utils79.base64_decode(base64).length,
+						"base64": base64
+					}, function(result){
+						console.log(result);
 					});
-				});
+				}, 10);
 			});
 		}
 		reader.readAsDataURL(file);
