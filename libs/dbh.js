@@ -39,6 +39,7 @@ module.exports = function(conf, main){
 		);
 		tbls.timeline = sequelize.define(conf.db.tablePrefix+'-timeline',
 			{
+				'id': { type: Sequelize.STRING, primaryKey: true, autoIncrement: false, allowNull: false },
 				'boardId': {
 					type: Sequelize.STRING,
 					unique: 'boardMessageUniqueKey',
@@ -206,9 +207,11 @@ module.exports = function(conf, main){
 						).then(function(maxBoardMessageId){
 							if(!maxBoardMessageId||typeof(maxBoardMessageId)!==typeof(1)){maxBoardMessageId = 0;}
 
+							var msgId = maxBoardMessageId+1;
 							tbls.timeline.create({
+								'id': boardId+'-'+msgId,
 								'boardId': boardId,
-								'boardMessageId': maxBoardMessageId+1,
+								'boardMessageId': msgId,
 								'content': message.content,
 								'contentType': message.contentType,
 								'targetWidget': message.targetWidget,
