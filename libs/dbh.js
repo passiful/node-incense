@@ -33,7 +33,7 @@ module.exports = function(conf, main){
 				'boardId': { type: Sequelize.STRING, primaryKey: true, allowNull: false },
 				'title': { type: Sequelize.STRING },
 				'owner': { type: Sequelize.STRING },
-				'opened': { type: Sequelize.INTEGER },
+				'openedFlag': { type: Sequelize.INTEGER },
 				'microtime': { type: Sequelize.BIGINT }
 			}
 		);
@@ -56,6 +56,7 @@ module.exports = function(conf, main){
 				'targetWidget': { type: Sequelize.STRING },
 				'owner': { type: Sequelize.STRING },
 				'connectionId': { type: Sequelize.STRING },
+				'deletedFlag': { type: Sequelize.INTEGER },
 				'microtime': { type: Sequelize.BIGINT }
 			}
 		);
@@ -71,6 +72,7 @@ module.exports = function(conf, main){
 						key: 'boardId'
 					}
 				},
+				'boardMessageId': { type: Sequelize.BIGINT },
 				'filename': { type: Sequelize.STRING },
 				'size': { type: Sequelize.INTEGER },
 				'type': { type: Sequelize.STRING },
@@ -128,7 +130,7 @@ module.exports = function(conf, main){
 						tbls.board.create({
 							'boardId': newBoardId,
 							'title': boardInfo.title,
-							'opened': 1,
+							'openedFlag': 1,
 							'owner': boardInfo.owner,
 							'microtime': Date.now()
 						}).then(function(record){
