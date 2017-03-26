@@ -173,6 +173,18 @@ module.exports = (function(){
 		}
 
 		/**
+		 * 過去に投稿されたメッセージを削除する
+		 */
+		this.deleteMessage = function( data, callback, main, biflora ){
+			console.log('=-=-=-=-=-=-=-=-=-= delete message');
+			console.log(data);
+			main.dbh.deleteMessage(data.boardId, data.messageId, function(result){
+				callback(result);
+			});
+			return;
+		}
+
+		/**
 		 * DBからメッセージの一覧を取得する
 		 */
 		this.getMessageList = function( data, callback, main, biflora ){

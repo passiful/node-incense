@@ -387,4 +387,36 @@ module.exports = function(conf, main){
 		return;
 	}
 
+	/**
+	 * メッセージを削除する
+	 */
+	this.deleteMessage = function( boardId, messageId, callback ){
+		callback = callback || function(){};
+
+		this.initDb(function(){
+
+			tbls.timeline
+				.update(
+					{
+						"content": 'Deleted.',
+						"contentType": 'text/html',
+						"deletedFlag": 1
+					},
+					{ "where":{
+						"boardId": boardId,
+						"boardMessageId": messageId
+					} }
+				)
+				.then(function(result) {
+					callback(true);
+				})
+				.catch(function(){
+					callback(false);
+				})
+			;
+
+		});
+		return;
+	}
+
 }

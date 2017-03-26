@@ -554,4 +554,22 @@ window.Incense = function(){
 		return;
 	}
 
+	/**
+	 * メッセージを削除する
+	 */
+	this.deleteMessage = function(messageId, callback){
+		callback = callback || function(){};
+		biflora.send(
+			'deleteMessage',
+			{
+				'boardId': boardId,
+				'messageId': messageId
+			},
+			function(rtn){
+				callback(rtn);
+			}
+		);
+		return;
+	}
+
 };

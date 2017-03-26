@@ -206,7 +206,18 @@
       border-top: 1px solid #ddd;
       width: 100%;
       height: 50px; }
-  .incense .incense__message-unit {
+  .incense__board-message-unit {
+    display: block;
+    position: relative;
+    margin-bottom: 3px; }
+    .incense__board-message-unit__ctrl {
+      display: none;
+      position: absolute;
+      right: 0;
+      bottom: 0; }
+    .incense__board-message-unit:hover .incense__board-message-unit__ctrl {
+      display: block; }
+  .incense .incense__message-group {
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
@@ -218,11 +229,11 @@
     padding: 0.5em;
     margin: 0 0 1px 0;
     background-color: #fff; }
-    .incense .incense__message-unit:hover {
+    .incense .incense__message-group:hover {
       background-color: #ffe; }
-    .incense .incense__message-unit:last-child {
+    .incense .incense__message-group:last-child {
       border: none; }
-    .incense .incense__message-unit .incense__message-unit__owner-icon {
+    .incense .incense__message-group .incense__message-group__owner-icon {
       display: block;
       width: 30px;
       height: 30px;
@@ -230,22 +241,22 @@
       background-color: #ddd;
       margin-right: 10px;
       border-radius: 50%; }
-      .incense .incense__message-unit .incense__message-unit__owner-icon img {
+      .incense .incense__message-group .incense__message-group__owner-icon img {
         width: 100%;
         height: 100%; }
-    .incense .incense__message-unit .incense__message-unit__message-body {
+    .incense .incense__message-group .incense__message-group__message-body {
       display: block;
       width: calc(100% - 40px); }
-    .incense .incense__message-unit .incense__message-unit__owner {
+    .incense .incense__message-group .incense__message-group__owner {
       font-weight: bold; }
-      .incense .incense__message-unit .incense__message-unit__owner-id {
+      .incense .incense__message-group .incense__message-group__owner-id {
         margin-left: 1em;
         color: #999;
         font-size: 80%;
         font-weight: normal; }
-        .incense .incense__message-unit .incense__message-unit__owner-id:before {
+        .incense .incense__message-group .incense__message-group__owner-id:before {
           content: "@"; }
-    .incense .incense__message-unit .incense__message-unit__content {
+    .incense .incense__message-group .incense__message-group__content {
       font-weight: normal;
       margin-left: 0;
       margin-right: 24px;
@@ -255,32 +266,32 @@
       padding: 0.4em 0.6em;
       border-radius: 4px;
       word-wrap: break-word; }
-      .incense .incense__message-unit .incense__message-unit__content > :first-child {
+      .incense .incense__message-group .incense__message-group__content > :first-child {
         margin-top: 0; }
-      .incense .incense__message-unit .incense__message-unit__content > :last-child {
+      .incense .incense__message-group .incense__message-group__content > :last-child {
         margin-bottom: 0; }
-    .incense .incense__message-unit--myitem {
+    .incense .incense__message-group--myitem {
       -webkit-box-orient: horizontal;
       -webkit-box-direction: reverse;
           -ms-flex-direction: row-reverse;
               flex-direction: row-reverse; }
-      .incense .incense__message-unit--myitem .incense__message-unit__owner-icon {
+      .incense .incense__message-group--myitem .incense__message-group__owner-icon {
         margin-right: 0px;
         margin-left: 10px; }
-      .incense .incense__message-unit--myitem .incense__message-unit__owner {
+      .incense .incense__message-group--myitem .incense__message-group__owner {
         text-align: right; }
-      .incense .incense__message-unit--myitem .incense__message-unit__content {
+      .incense .incense__message-group--myitem .incense__message-group__content {
         margin-left: 24px;
         margin-right: 0;
         background-color: #d5ffd5;
         border: 1px solid #a7efa7; }
-  .incense .incense__message-unit__operation {
+  .incense .incense__message-group__operation {
     background-color: #eeeef9;
     color: #77b;
     font-size: 70%;
     text-align: center;
     padding: 0.4em 1em; }
-  .incense .incense__message-unit__targetWidget {
+  .incense .incense__message-group__targetWidget {
     clear: both;
     text-align: right;
     font-size: 75%;

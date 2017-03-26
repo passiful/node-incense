@@ -97,6 +97,7 @@
 
 	}
 
+	// Context Menu
 	.incense-contextmenu{
 		background-color: rgba(255,255,255,0.95);
 		border: 1px solid #ddd;
@@ -125,6 +126,7 @@
 		}
 	}
 
+	// Modal Window
 	.incense-modal{
 		position: fixed;
 		top: 0;
@@ -228,7 +230,24 @@
 		}
 	}
 
-	.incense__message-unit{
+	&__board-message-unit{
+		display: block;
+		position: relative;
+		margin-bottom: 3px;
+		&__ctrl{
+			display: none;
+			position: absolute;
+			right: 0; bottom: 0;
+		}
+		&:hover &__ctrl{
+			display: block;
+		}
+	}
+
+
+
+	// Message Group
+	.incense__message-group{
 		display: flex;
 		flex-direction: row;
 		font-size:13px;
@@ -243,7 +262,7 @@
 		&:last-child{
 			border: none;
 		}
-		.incense__message-unit__owner-icon{
+		.incense__message-group__owner-icon{
 			display: block;
 			width: 30px;
 			height: 30px;
@@ -256,11 +275,11 @@
 				height: 100%;
 			}
 		}
-		.incense__message-unit__message-body{
+		.incense__message-group__message-body{
 			display: block;
 			width: calc(100% - 40px);
 		}
-		.incense__message-unit__owner{
+		.incense__message-group__owner{
 			font-weight: bold;
 			&-id{
 				margin-left: 1em;
@@ -272,7 +291,7 @@
 				}
 			}
 		}
-		.incense__message-unit__content{
+		.incense__message-group__content{
 			font-weight: normal;
 			margin-left: 0;
 			margin-right: 24px;
@@ -292,14 +311,14 @@
 		&--myitem{
 			flex-direction: row-reverse;
 
-			.incense__message-unit__owner-icon{
+			.incense__message-group__owner-icon{
 				margin-right: 0px;
 				margin-left: 10px;
 			}
-			.incense__message-unit__owner{
+			.incense__message-group__owner{
 				text-align: right;
 			}
-			.incense__message-unit__content{
+			.incense__message-group__content{
 				margin-left: 24px;
 				margin-right: 0;
 				background-color: #d5ffd5;
@@ -307,14 +326,14 @@
 			}
 		}
 	}
-	.incense__message-unit__operation{
+	.incense__message-group__operation{
 		background-color: #eeeef9;
 		color: #77b;
 		font-size: 70%;
 		text-align: center;
 		padding: 0.4em 1em;
 	}
-	.incense__message-unit__targetWidget{
+	.incense__message-group__targetWidget{
 		clear: both;
 		text-align: right;
 		font-size: 75%;

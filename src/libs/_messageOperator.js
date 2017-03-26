@@ -38,7 +38,7 @@ module.exports = function( incense, $timelineList, $fieldInner ){
 						str += message.content.widgetType;
 						str += ' を作成しました。';
 						incense.insertTimeline( message, $messageUnit
-							.append( $('<div class="incense__message-unit__operation">').text(str) )
+							.append( $('<div class="incense__message-group__operation">').text(str) )
 						);
 						break;
 					case 'moveWidget':
@@ -54,7 +54,7 @@ module.exports = function( incense, $timelineList, $fieldInner ){
 						str += '#widget.'+message.content.newParentWidgetId;
 						str += ' に変更しました。';
 						incense.insertTimeline( message, $messageUnit
-							.append( $('<div class="incense__message-unit__operation">').text(str) )
+							.append( $('<div class="incense__message-group__operation">').text(str) )
 						);
 						break;
 					case 'deleteWidget':
@@ -65,7 +65,7 @@ module.exports = function( incense, $timelineList, $fieldInner ){
 						str += '#widget.'+message.content.targetWidgetId;
 						str += ' を削除しました。';
 						incense.insertTimeline( message, $messageUnit
-							.append( $('<div class="incense__message-unit__operation">').text(str) )
+							.append( $('<div class="incense__message-group__operation">').text(str) )
 						);
 						break;
 					case 'userLogin':
@@ -74,7 +74,7 @@ module.exports = function( incense, $timelineList, $fieldInner ){
 							var str = '';
 							str += 'ユーザー "' + message.content.userInfo.name + '" がログインしました。';
 							incense.insertTimeline( message, $messageUnit
-								.append( $('<div class="incense__message-unit__operation">').text(str) )
+								.append( $('<div class="incense__message-group__operation">').text(str) )
 							);
 						} );
 						break;
@@ -90,7 +90,7 @@ module.exports = function( incense, $timelineList, $fieldInner ){
 							var str = '';
 							str += 'ユーザー "' + userInfo.name + '" がログアウトしました。';
 							incense.insertTimeline( message, $messageUnit
-								.append( $('<div class="incense__message-unit__operation">').text(str) )
+								.append( $('<div class="incense__message-group__operation">').text(str) )
 							);
 						} );
 						break;
@@ -103,7 +103,7 @@ module.exports = function( incense, $timelineList, $fieldInner ){
 			case 'text/html':
 				var user = incense.userMgr.get(message.owner);
 				incense.insertTimeline( message, $messageUnit
-					.append( $('<div class="incense__message-unit__content incense-markdown">').html( incense.detoxHtml( message.content ) ) )
+					.append( $('<div class="incense__message-group__content incense-markdown">').html( incense.detoxHtml( message.content ) ) )
 				);
 				break;
 		}
