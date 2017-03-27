@@ -18867,6 +18867,20 @@ module.exports = function( data, callback, main, socket ){
 
 },{}],105:[function(require,module,exports){
 /**
+ * bifloraApi - updateLog.js
+ */
+module.exports = function( data, callback, main, socket ){
+	console.log('=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= _updateLog.js');
+	console.log(data);
+	console.info('TODO: delete message の配信を受けたら、過去の投稿の内容を改変する処理を実行します。');
+	// console.log(callback);
+	// main.locker.receive(data);
+	callback(true);
+	return;
+}
+
+},{}],106:[function(require,module,exports){
+/**
  * passiful/node-incense
  */
 window.Incense = function(){
@@ -18925,6 +18939,7 @@ window.Incense = function(){
 						io,
 						{
 							'receiveBroadcast': require('./apis/_receiveBroadcast.js'),
+							'updateLog': require('./apis/_updateLog.js'),
 							'locker': require('./apis/_locker.js')
 						}
 					)
@@ -19442,7 +19457,7 @@ window.Incense = function(){
 
 };
 
-},{"./apis/_locker.js":103,"./apis/_receiveBroadcast.js":104,"./libs/_detoxHtml.js":106,"./libs/_fieldContextMenu.js":107,"./libs/_insertTimeline.js":108,"./libs/_keypress.js":109,"./libs/_lfm.js":110,"./libs/_locker.js":111,"./libs/_markdown.js":112,"./libs/_messageOperator.js":113,"./libs/_modal.js":114,"./libs/_setBehaviorChatComment.js":115,"./libs/_updateRelations.js":116,"./libs/_userMgr.js":117,"./libs/_widgetBase.js":118,"./libs/_widgetDetailModal.js":119,"./libs/_widgetMgr.js":120,"./widgets/discussiontree/discussiontree.js":121,"./widgets/stickies/stickies.js":122,"es6-promise":10,"iterate79":14,"jquery":15,"twig":19,"utils79":38}],106:[function(require,module,exports){
+},{"./apis/_locker.js":103,"./apis/_receiveBroadcast.js":104,"./apis/_updateLog.js":105,"./libs/_detoxHtml.js":107,"./libs/_fieldContextMenu.js":108,"./libs/_insertTimeline.js":109,"./libs/_keypress.js":110,"./libs/_lfm.js":111,"./libs/_locker.js":112,"./libs/_markdown.js":113,"./libs/_messageOperator.js":114,"./libs/_modal.js":115,"./libs/_setBehaviorChatComment.js":116,"./libs/_updateRelations.js":117,"./libs/_userMgr.js":118,"./libs/_widgetBase.js":119,"./libs/_widgetDetailModal.js":120,"./libs/_widgetMgr.js":121,"./widgets/discussiontree/discussiontree.js":122,"./widgets/stickies/stickies.js":123,"es6-promise":10,"iterate79":14,"jquery":15,"twig":19,"utils79":38}],107:[function(require,module,exports){
 /**
  * 投稿されたHTMLを無害化する - _detoxHtml.js
  */
@@ -19574,7 +19589,7 @@ module.exports = function( incense ){
 	}
 }
 
-},{"jquery":15}],107:[function(require,module,exports){
+},{"jquery":15}],108:[function(require,module,exports){
 /**
  * _fieldContextMenu.js
  */
@@ -19652,7 +19667,7 @@ module.exports = function( app, $fieldContextMenu ){
 	return;
 }
 
-},{"jquery":15}],108:[function(require,module,exports){
+},{"jquery":15}],109:[function(require,module,exports){
 /**
  * _insertTimeline.js
  */
@@ -19775,7 +19790,7 @@ module.exports = function(incense, $timelineList){
 	}
 }
 
-},{"jquery":15}],109:[function(require,module,exports){
+},{"jquery":15}],110:[function(require,module,exports){
 /**
  * keypress.js
  */
@@ -19853,7 +19868,7 @@ module.exports = function( incense ){
 	return;
 }
 
-},{}],110:[function(require,module,exports){
+},{}],111:[function(require,module,exports){
 /**
  * _lfm.js
  */
@@ -19928,7 +19943,7 @@ module.exports = function(incense, biflora){
 	}
 }
 
-},{"jquery":15,"utils79":38}],111:[function(require,module,exports){
+},{"jquery":15,"utils79":38}],112:[function(require,module,exports){
 /**
  * lockApi - locker.js
  */
@@ -20027,7 +20042,7 @@ module.exports = function( incense ){
 	return;
 }
 
-},{}],112:[function(require,module,exports){
+},{}],113:[function(require,module,exports){
 /**
  * Markdown 変換する - _markdown.js
  */
@@ -20064,7 +20079,7 @@ module.exports = function( incense ){
 	}
 }
 
-},{"./_detoxHtml.js":106,"jquery":15,"marked":16}],113:[function(require,module,exports){
+},{"./_detoxHtml.js":107,"jquery":15,"marked":16}],114:[function(require,module,exports){
 /**
  * messageOperator.js
  */
@@ -20296,7 +20311,7 @@ module.exports = function( incense, $timelineList, $fieldInner ){
 	return;
 }
 
-},{"es6-promise":10,"iterate79":14,"jquery":15}],114:[function(require,module,exports){
+},{"es6-promise":10,"iterate79":14,"jquery":15}],115:[function(require,module,exports){
 /**
  * _modal.js
  */
@@ -20402,7 +20417,7 @@ module.exports = function($field){
 
 }
 
-},{"jquery":15}],115:[function(require,module,exports){
+},{"jquery":15}],116:[function(require,module,exports){
 /**
  * _setBehaviorChatComment.js
  */
@@ -20556,7 +20571,7 @@ module.exports = function(incense){
 	}
 }
 
-},{"jquery":15,"utils79":38}],116:[function(require,module,exports){
+},{"jquery":15,"utils79":38}],117:[function(require,module,exports){
 /**
  * _updateRelations.js
  */
@@ -20597,7 +20612,7 @@ module.exports = function(incense, $fieldRelations){
 
 }
 
-},{"jquery":15}],117:[function(require,module,exports){
+},{"jquery":15}],118:[function(require,module,exports){
 /**
  * userMgr.js
  */
@@ -20676,7 +20691,7 @@ module.exports = function( app, $timelineList, $field, $fieldInner ){
 	return;
 }
 
-},{}],118:[function(require,module,exports){
+},{}],119:[function(require,module,exports){
 /**
  * widgets: base class
  */
@@ -20707,7 +20722,7 @@ module.exports = function( incense, $widget ){
 	return;
 }
 
-},{}],119:[function(require,module,exports){
+},{}],120:[function(require,module,exports){
 /**
  * _widgetDetailModal.js
  */
@@ -20816,7 +20831,7 @@ module.exports = function($field){
 
 }
 
-},{"jquery":15}],120:[function(require,module,exports){
+},{"jquery":15}],121:[function(require,module,exports){
 /**
  * widgetMgr.js
  */
@@ -21255,7 +21270,7 @@ module.exports = function( incense, $timelineList, $field, $fieldOuter, $fieldIn
 	return;
 }
 
-},{"jquery":15,"underscore":20}],121:[function(require,module,exports){
+},{"jquery":15,"underscore":20}],122:[function(require,module,exports){
 /**
  * widgets: discussiontree.js
  */
@@ -22096,7 +22111,7 @@ module.exports = function( incense, $widget ){
 	return;
 }
 
-},{"jquery":15}],122:[function(require,module,exports){
+},{"jquery":15}],123:[function(require,module,exports){
 /**
  * widgets: stickies.js
  */
@@ -22232,4 +22247,4 @@ module.exports = function( incense, $widget ){
 	return;
 }
 
-},{"jquery":15}]},{},[105])
+},{"jquery":15}]},{},[106])

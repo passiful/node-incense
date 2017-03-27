@@ -176,10 +176,29 @@ module.exports = (function(){
 		 * 過去に投稿されたメッセージを削除する
 		 */
 		this.deleteMessage = function( data, callback, main, biflora ){
-			console.log('=-=-=-=-=-=-=-=-=-= delete message');
-			console.log(data);
+			// console.log('=-=-=-=-=-=-=-=-=-= delete message');
+			// console.log(data);
 			main.dbh.deleteMessage(data.boardId, data.messageId, function(result){
-				callback(result);
+				if(result === false){
+					callback(false);
+					return;
+				}
+				main.dbh.getMessage(data.boardId, data.messageId, {}, function(message){
+					var dataBroadcast = {
+						'command': 'delete',
+						'boardId': data.boardId,
+						'messageId': data.messageId,
+						'message': message
+					};
+					biflora.send('updateLog', dataBroadcast, function(){
+						// 送信者自身へ
+						console.log('send message; - delete message');
+					});
+					biflora.sendToRoom('updateLog', dataBroadcast, data.boardId, function(){
+						console.log('send message to room; - delete message');
+					});
+					callback(true);
+				});
 			});
 			return;
 		}

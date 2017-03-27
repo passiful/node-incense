@@ -237,6 +237,38 @@ module.exports = function(conf, main){
 	}
 
 	/**
+	 * メッセージを削除する
+	 */
+	this.deleteMessage = function( boardId, messageId, callback ){
+		callback = callback || function(){};
+
+		this.initDb(function(){
+
+			tbls.timeline
+				.update(
+					{
+						"content": 'Deleted.',
+						"contentType": 'text/html',
+						"deletedFlag": 1
+					},
+					{ "where":{
+						"boardId": boardId,
+						"boardMessageId": messageId
+					} }
+				)
+				.then(function(result) {
+					callback(true);
+				})
+				.catch(function(){
+					callback(false);
+				})
+			;
+
+		});
+		return;
+	}
+
+	/**
 	 * メッセージ一覧を取得する
 	 * @param  {[type]}   boardId  [description]
 	 * @param  {[type]}   options  [description]
@@ -258,6 +290,32 @@ module.exports = function(conf, main){
 					result.rows = JSON.parse(JSON.stringify(result.rows));
 					// console.log(result);
 					callback(result);
+				})
+			;
+
+		});
+		return;
+	}
+
+	/**
+	 * メッセージを取得する
+	 */
+	this.getMessage = function(boardId, boardMessageId, options, callback){
+		callback = callback || function(){};
+
+		this.initDb(function(){
+
+			tbls.timeline
+				.findOne({
+					"where":{
+						"boardId": boardId,
+						"boardMessageId": boardMessageId
+					}
+				})
+				.then(function(result) {
+					result.dataValues = JSON.parse(JSON.stringify(result.dataValues));
+					// console.log(result);
+					callback(result.dataValues);
 				})
 			;
 
@@ -380,38 +438,6 @@ module.exports = function(conf, main){
 					// console.log(result);
 					result.dataValues = JSON.parse(JSON.stringify(result.dataValues));
 					callback(result.dataValues);
-				})
-			;
-
-		});
-		return;
-	}
-
-	/**
-	 * メッセージを削除する
-	 */
-	this.deleteMessage = function( boardId, messageId, callback ){
-		callback = callback || function(){};
-
-		this.initDb(function(){
-
-			tbls.timeline
-				.update(
-					{
-						"content": 'Deleted.',
-						"contentType": 'text/html',
-						"deletedFlag": 1
-					},
-					{ "where":{
-						"boardId": boardId,
-						"boardMessageId": messageId
-					} }
-				)
-				.then(function(result) {
-					callback(true);
-				})
-				.catch(function(){
-					callback(false);
 				})
 			;
 

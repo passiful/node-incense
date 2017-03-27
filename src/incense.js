@@ -57,6 +57,7 @@ window.Incense = function(){
 						io,
 						{
 							'receiveBroadcast': require('./apis/_receiveBroadcast.js'),
+							'updateLog': require('./apis/_updateLog.js'),
 							'locker': require('./apis/_locker.js')
 						}
 					)
