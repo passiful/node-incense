@@ -18870,11 +18870,8 @@ module.exports = function( data, callback, main, socket ){
  * bifloraApi - updateLog.js
  */
 module.exports = function( data, callback, main, socket ){
-	console.log('=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= _updateLog.js');
-	console.log(data);
-	console.info('TODO: delete message の配信を受けたら、過去の投稿の内容を改変する処理を実行します。');
 	// console.log(callback);
-	// main.locker.receive(data);
+	main.messageUpdater.exec(data);
 	callback(true);
 	return;
 }
@@ -19004,6 +19001,7 @@ window.Incense = function(){
 				// functions Setup
 				_this.fieldContextMenu = new (require('./libs/_fieldContextMenu.js'))(_this, $fieldContextMenu);
 				_this.messageOperator = new (require('./libs/_messageOperator.js'))(_this, $timelineList, $fieldInner);
+				_this.messageUpdater = new (require('./libs/_messageUpdater.js'))(_this, $timelineList, $fieldInner);
 				_this.widgetBase = require('./libs/_widgetBase.js');
 				_this.widgetMgr = new (require('./libs/_widgetMgr.js'))(_this, $timelineList, $field, $fieldOuter, $fieldInner, $fieldSelection);
 				_this.modal = new (require('./libs/_modal.js'))($field);
@@ -19457,7 +19455,7 @@ window.Incense = function(){
 
 };
 
-},{"./apis/_locker.js":103,"./apis/_receiveBroadcast.js":104,"./apis/_updateLog.js":105,"./libs/_detoxHtml.js":107,"./libs/_fieldContextMenu.js":108,"./libs/_insertTimeline.js":109,"./libs/_keypress.js":110,"./libs/_lfm.js":111,"./libs/_locker.js":112,"./libs/_markdown.js":113,"./libs/_messageOperator.js":114,"./libs/_modal.js":115,"./libs/_setBehaviorChatComment.js":116,"./libs/_updateRelations.js":117,"./libs/_userMgr.js":118,"./libs/_widgetBase.js":119,"./libs/_widgetDetailModal.js":120,"./libs/_widgetMgr.js":121,"./widgets/discussiontree/discussiontree.js":122,"./widgets/stickies/stickies.js":123,"es6-promise":10,"iterate79":14,"jquery":15,"twig":19,"utils79":38}],107:[function(require,module,exports){
+},{"./apis/_locker.js":103,"./apis/_receiveBroadcast.js":104,"./apis/_updateLog.js":105,"./libs/_detoxHtml.js":107,"./libs/_fieldContextMenu.js":108,"./libs/_insertTimeline.js":109,"./libs/_keypress.js":110,"./libs/_lfm.js":111,"./libs/_locker.js":112,"./libs/_markdown.js":113,"./libs/_messageOperator.js":114,"./libs/_messageUpdater.js":115,"./libs/_modal.js":116,"./libs/_setBehaviorChatComment.js":117,"./libs/_updateRelations.js":118,"./libs/_userMgr.js":119,"./libs/_widgetBase.js":120,"./libs/_widgetDetailModal.js":121,"./libs/_widgetMgr.js":122,"./widgets/discussiontree/discussiontree.js":123,"./widgets/stickies/stickies.js":124,"es6-promise":10,"iterate79":14,"jquery":15,"twig":19,"utils79":38}],107:[function(require,module,exports){
 /**
  * 投稿されたHTMLを無害化する - _detoxHtml.js
  */
@@ -19676,7 +19674,7 @@ module.exports = function(incense, $timelineList){
 	var lastTimelineMessage = {};
 
 	return function(message, $messageContent){
-		console.log(message);
+		// console.log(message);
 		var userInfo = incense.getUserInfo();
 
 		$messageContent = $messageContent || $('<div>');
@@ -19705,25 +19703,27 @@ module.exports = function(incense, $timelineList){
 			$message
 				.addClass('incense__message-group--myitem')
 			;
-			$boardMessageUnit.append($('<div>')
-				.addClass('incense__board-message-unit__ctrl')
-				.append( $('<a>')
-					.attr({
-						'href': 'javascript:;',
-						'data-message-id': message.id,
-						'data-message-owner': message.owner,
-						'data-board-message-id': message.boardMessageId
-					})
-					.text('削除')
-					.on('click', function(){
-						var $this = $(this);
-						var messageId = $this.attr('data-board-message-id');
-						incense.deleteMessage( messageId, function(result){
-							alert('TODO: '+messageId+' を削除します。 投稿の削除機能は開発中です。');
-						} );
-					})
-				)
-			);
+			if( !message.deletedFlag ){
+				$boardMessageUnit.append($('<div>')
+					.addClass('incense__board-message-unit__ctrl')
+					.append( $('<a>')
+						.attr({
+							'href': 'javascript:;',
+							'data-message-id': message.id,
+							'data-message-owner': message.owner,
+							'data-board-message-id': message.boardMessageId
+						})
+						.text('削除')
+						.on('click', function(){
+							var $this = $(this);
+							var messageId = $this.attr('data-board-message-id');
+							incense.deleteMessage( messageId, function(result){
+								console.info('メッセージ '+messageId+' を削除しました。');
+							} );
+						})
+					)
+				);
+			}
 		}
 		// console.log( incense.userMgr.getAll() );
 		var ownerInfo = incense.userMgr.get(message.owner);
@@ -20102,6 +20102,15 @@ module.exports = function( incense, $timelineList, $fieldInner ){
 
 		var $messageUnit = $('<div>');
 
+		if( message.deletedFlag ){
+			// console.log('削除されたレコードです。', message);
+			incense.insertTimeline( message, $messageUnit
+				.append( $('<div class="incense__message-group__deleted">').html( '-- deleted --' ) )
+			);
+			callback();
+			return;
+		}
+
 		if( !message.content ){
 			console.error('content がセットされていないレコードです。', message);
 			callback();
@@ -20185,7 +20194,9 @@ module.exports = function( incense, $timelineList, $fieldInner ){
 			case 'text/html':
 				var user = incense.userMgr.get(message.owner);
 				incense.insertTimeline( message, $messageUnit
-					.append( $('<div class="incense__message-group__content incense-markdown">').html( incense.detoxHtml( message.content ) ) )
+					.append( $('<div class="incense__message-group__content incense-markdown">')
+						.html( incense.detoxHtml( message.content ) )
+					)
 				);
 				break;
 		}
@@ -20313,6 +20324,53 @@ module.exports = function( incense, $timelineList, $fieldInner ){
 
 },{"es6-promise":10,"iterate79":14,"jquery":15}],115:[function(require,module,exports){
 /**
+ * messageUpdater.js
+ */
+module.exports = function( incense, $timelineList, $fieldInner ){
+	var _this = this;
+	var Promise = require('es6-promise').Promise;
+	var $ = require('jquery');
+	var it79 = require('iterate79');
+
+	/**
+	 * タイムラインメッセージを更新する
+	 */
+	function execute(message, callback){
+		callback = callback || function(){};
+		console.log('=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= updateLog - messageUpdater');
+		console.log(message);
+
+		$timelineList.find('.incense__board-message-unit[data-board-message-id='+message.messageId+']')
+			.html('')//一旦内容を削除
+			.append($('<div>')
+				.append( $('<div class="incense__message-group__deleted">').html( '-- deleted --' ) )
+			)
+		;
+
+		callback();
+		return;
+	}
+
+	/**
+	 * タイムラインメッセージを受け付ける
+	 */
+	this.exec = function(message, callback){
+		callback = callback || function(){};
+
+		// 次のメッセージを処理
+		execute(message, function(){
+			// 処理済みのメッセージを破棄
+			callback();
+		});
+
+		return;
+	}
+
+	return;
+}
+
+},{"es6-promise":10,"iterate79":14,"jquery":15}],116:[function(require,module,exports){
+/**
  * _modal.js
  */
 module.exports = function($field){
@@ -20417,7 +20475,7 @@ module.exports = function($field){
 
 }
 
-},{"jquery":15}],116:[function(require,module,exports){
+},{"jquery":15}],117:[function(require,module,exports){
 /**
  * _setBehaviorChatComment.js
  */
@@ -20571,7 +20629,7 @@ module.exports = function(incense){
 	}
 }
 
-},{"jquery":15,"utils79":38}],117:[function(require,module,exports){
+},{"jquery":15,"utils79":38}],118:[function(require,module,exports){
 /**
  * _updateRelations.js
  */
@@ -20612,7 +20670,7 @@ module.exports = function(incense, $fieldRelations){
 
 }
 
-},{"jquery":15}],118:[function(require,module,exports){
+},{"jquery":15}],119:[function(require,module,exports){
 /**
  * userMgr.js
  */
@@ -20691,7 +20749,7 @@ module.exports = function( app, $timelineList, $field, $fieldInner ){
 	return;
 }
 
-},{}],119:[function(require,module,exports){
+},{}],120:[function(require,module,exports){
 /**
  * widgets: base class
  */
@@ -20722,7 +20780,7 @@ module.exports = function( incense, $widget ){
 	return;
 }
 
-},{}],120:[function(require,module,exports){
+},{}],121:[function(require,module,exports){
 /**
  * _widgetDetailModal.js
  */
@@ -20831,7 +20889,7 @@ module.exports = function($field){
 
 }
 
-},{"jquery":15}],121:[function(require,module,exports){
+},{"jquery":15}],122:[function(require,module,exports){
 /**
  * widgetMgr.js
  */
@@ -21270,7 +21328,7 @@ module.exports = function( incense, $timelineList, $field, $fieldOuter, $fieldIn
 	return;
 }
 
-},{"jquery":15,"underscore":20}],122:[function(require,module,exports){
+},{"jquery":15,"underscore":20}],123:[function(require,module,exports){
 /**
  * widgets: discussiontree.js
  */
@@ -22111,7 +22169,7 @@ module.exports = function( incense, $widget ){
 	return;
 }
 
-},{"jquery":15}],123:[function(require,module,exports){
+},{"jquery":15}],124:[function(require,module,exports){
 /**
  * widgets: stickies.js
  */

@@ -247,8 +247,8 @@ module.exports = function(conf, main){
 			tbls.timeline
 				.update(
 					{
-						"content": 'Deleted.',
-						"contentType": 'text/html',
+						"content": null,
+						"contentType": null,
 						"deletedFlag": 1
 					},
 					{ "where":{

@@ -308,6 +308,22 @@
 				margin-bottom: 0;
 			}
 		}
+		.incense__message-group__deleted{
+			font-weight: normal;
+			margin-left: 0;
+			margin-right: 24px;
+			color: #bbb;
+			background-color: #f9f9f9;
+			text-align: center;
+			word-wrap: break-word;
+			font-size: 80%;
+			>:first-child{
+				margin-top: 0;
+			}
+			>:last-child{
+				margin-bottom: 0;
+			}
+		}
 		&--myitem{
 			flex-direction: row-reverse;
 
@@ -323,6 +339,10 @@
 				margin-right: 0;
 				background-color: #d5ffd5;
 				border: 1px solid #a7efa7;
+			}
+			.incense__message-group__deleted{
+				margin-left: 24px;
+				margin-right: 0;
 			}
 		}
 	}

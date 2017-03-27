@@ -6,7 +6,7 @@ module.exports = function(incense, $timelineList){
 	var lastTimelineMessage = {};
 
 	return function(message, $messageContent){
-		console.log(message);
+		// console.log(message);
 		var userInfo = incense.getUserInfo();
 
 		$messageContent = $messageContent || $('<div>');
@@ -35,25 +35,27 @@ module.exports = function(incense, $timelineList){
 			$message
 				.addClass('incense__message-group--myitem')
 			;
-			$boardMessageUnit.append($('<div>')
-				.addClass('incense__board-message-unit__ctrl')
-				.append( $('<a>')
-					.attr({
-						'href': 'javascript:;',
-						'data-message-id': message.id,
-						'data-message-owner': message.owner,
-						'data-board-message-id': message.boardMessageId
-					})
-					.text('削除')
-					.on('click', function(){
-						var $this = $(this);
-						var messageId = $this.attr('data-board-message-id');
-						incense.deleteMessage( messageId, function(result){
-							alert('TODO: '+messageId+' を削除します。 投稿の削除機能は開発中です。');
-						} );
-					})
-				)
-			);
+			if( !message.deletedFlag ){
+				$boardMessageUnit.append($('<div>')
+					.addClass('incense__board-message-unit__ctrl')
+					.append( $('<a>')
+						.attr({
+							'href': 'javascript:;',
+							'data-message-id': message.id,
+							'data-message-owner': message.owner,
+							'data-board-message-id': message.boardMessageId
+						})
+						.text('削除')
+						.on('click', function(){
+							var $this = $(this);
+							var messageId = $this.attr('data-board-message-id');
+							incense.deleteMessage( messageId, function(result){
+								console.info('メッセージ '+messageId+' を削除しました。');
+							} );
+						})
+					)
+				);
+			}
 		}
 		// console.log( incense.userMgr.getAll() );
 		var ownerInfo = incense.userMgr.get(message.owner);

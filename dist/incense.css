@@ -270,6 +270,19 @@
         margin-top: 0; }
       .incense .incense__message-group .incense__message-group__content > :last-child {
         margin-bottom: 0; }
+    .incense .incense__message-group .incense__message-group__deleted {
+      font-weight: normal;
+      margin-left: 0;
+      margin-right: 24px;
+      color: #bbb;
+      background-color: #f9f9f9;
+      text-align: center;
+      word-wrap: break-word;
+      font-size: 80%; }
+      .incense .incense__message-group .incense__message-group__deleted > :first-child {
+        margin-top: 0; }
+      .incense .incense__message-group .incense__message-group__deleted > :last-child {
+        margin-bottom: 0; }
     .incense .incense__message-group--myitem {
       -webkit-box-orient: horizontal;
       -webkit-box-direction: reverse;
@@ -285,6 +298,9 @@
         margin-right: 0;
         background-color: #d5ffd5;
         border: 1px solid #a7efa7; }
+      .incense .incense__message-group--myitem .incense__message-group__deleted {
+        margin-left: 24px;
+        margin-right: 0; }
   .incense .incense__message-group__operation {
     background-color: #eeeef9;
     color: #77b;

@@ -20,6 +20,15 @@ module.exports = function( incense, $timelineList, $fieldInner ){
 
 		var $messageUnit = $('<div>');
 
+		if( message.deletedFlag ){
+			// console.log('削除されたレコードです。', message);
+			incense.insertTimeline( message, $messageUnit
+				.append( $('<div class="incense__message-group__deleted">').html( '-- deleted --' ) )
+			);
+			callback();
+			return;
+		}
+
 		if( !message.content ){
 			console.error('content がセットされていないレコードです。', message);
 			callback();
@@ -103,7 +112,9 @@ module.exports = function( incense, $timelineList, $fieldInner ){
 			case 'text/html':
 				var user = incense.userMgr.get(message.owner);
 				incense.insertTimeline( message, $messageUnit
-					.append( $('<div class="incense__message-group__content incense-markdown">').html( incense.detoxHtml( message.content ) ) )
+					.append( $('<div class="incense__message-group__content incense-markdown">')
+						.html( incense.detoxHtml( message.content ) )
+					)
 				);
 				break;
 		}
