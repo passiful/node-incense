@@ -17,7 +17,7 @@ $ npm install --save socket.io
 
 ## Usage
 
-### server side
+### Server side
 
 ```js
 var express = require('express'),
@@ -65,7 +65,7 @@ server.listen( 3000, function(){
 } );
 ```
 
-### client side
+### Client side
 
 ```html
 <!DOCTYPE html>
@@ -132,7 +132,7 @@ server.listen( 3000, function(){
 
 ## 更新履歴 - Change log
 
-### incense@0.2.0 (2017-??-??)
+### incense v0.2.0 (2019-??-??)
 
 - zoom位置をboardの中心に合わせるようにした。
 - `scrollToBoardCenter()` 追加
@@ -151,7 +151,7 @@ server.listen( 3000, function(){
 - 過去の投稿を削除する機能を追加。
 - その他不具合などの修正。
 
-### incense@0.1.1 (2017-01-01)
+### incense v0.1.1 (2017-01-01)
 
 - ウィンドウサイズ変更時に、選択状態の表示を更新するようにした。
 - `#widget.36` のようなハッシュをつけてアクセスすると、ウィジェットにフォーカスした画面からスタートできるようになった。
@@ -160,24 +160,24 @@ server.listen( 3000, function(){
 - ズームAPI `zoom()` 、 `getZoomRate()` 追加。
 - 他のウィジェット上にドロップする操作で、親ウィジェットを変更できるようになった。
 
-### incense@0.1.0 (2016-12-29)
+### incense v0.1.0 (2016-12-29)
 
 - サーバーサイドに `getUserInfo()` オプション追加
 - ボードデータ格納ディレクトリパスの生成規則を変更。2文字ずつ分割してパスを生成するようになった。
 
-### incense@0.0.1 (2016-12-26)
+### incense v0.0.1 (2016-12-26)
 
 - initial release.
 
 
 ## ライセンス - License
 
-Copyright (c)2016 Tomoya Koyanagi, and Passiful Project<br />
+Copyright (c)2016-2019 Tomoya Koyanagi, and Passiful Project<br />
 MIT License https://opensource.org/licenses/mit-license.php
 
 
 ## 作者 - Author
 
 - Tomoya Koyanagi <tomk79@gmail.com>
-- website: <http://www.pxt.jp/>
-- Twitter: @tomk79 <http://twitter.com/tomk79/>
+- website: <https://www.pxt.jp/>
+- Twitter: @tomk79 <https://twitter.com/tomk79/>

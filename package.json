@@ -4,7 +4,7 @@
   "description": "",
   "main": "libs/main.js",
   "scripts": {
-    "start": "gulp watch",
+    "start": "node ./tests/testdata/server/server.js",
     "up": "node ./tests/testdata/server/server.js",
     "preview": "gulp preview;",
     "test": "gulp; mocha --ui tdd ./tests/"

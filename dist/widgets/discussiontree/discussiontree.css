@@ -23,7 +23,6 @@
       .discussiontree .discussiontree__discussion-timeline--timeline > div:last-child {
         border-bottom: none; }
   .discussiontree .discussiontree__discussion-timeline--form__inputform {
-    display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
     height: 80px; }
