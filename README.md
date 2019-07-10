@@ -159,7 +159,7 @@ incense = new Incense({
 
 ## 更新履歴 - Change log
 
-### incense v0.2.0 (2019-??-??)
+### incense v0.2.0 (2019-07-11)
 
 - MySQLに対応した。
 - zoom位置をboardの中心に合わせるようにした。

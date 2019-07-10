@@ -1,6 +1,6 @@
 {
   "name": "incense",
-  "version": "0.2.0-alpha.1+nb",
+  "version": "0.2.0",
   "description": "",
   "main": "libs/main.js",
   "scripts": {
