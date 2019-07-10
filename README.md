@@ -2,7 +2,7 @@
 
 Discussion Board UI.
 
-## install
+## Install
 
 ```
 $ npm install --save incense
@@ -65,6 +65,28 @@ server.listen( 3000, function(){
 } );
 ```
 
+MySQLを利用する場合は次のように書きます。
+
+```js
+var db_host = "your.dbhost",
+	db_database = "your_scheme_name",
+	db_user = "mysql_user_name",
+	db_password = "mysql_password";
+
+incense = new Incense({
+	'dataDir': ......,
+	'db': {
+		"dbms": "mysql",
+		"host": db_host,
+		"database": db_database,
+		"user": db_user,
+		"password": db_password,
+		"tablePrefix": "incense"
+	} ,
+	'getUserInfo': ......
+});
+```
+
 ### Client side
 
 ```html
@@ -105,8 +127,8 @@ server.listen( 3000, function(){
 					'userInfo': {
 						'id': 'tester', // <- login user id
 						'name': 'Test User', // <- login user name
-					    'url': 'http://example.com/', // <- login user profile page
-					    'icon': 'http://example.com/sample.png' // <- login user icon
+						'url': 'https://example.com/', // <- login user profile page
+						'icon': 'https://example.com/sample.png' // <- login user icon
 					}
 				},
 				function(){
@@ -130,10 +152,16 @@ server.listen( 3000, function(){
 - incense.scrollToBoardCenter() : ボードの中央へスクロール移動する
 
 
+## NodeJS version.
+
+- NodeJS v6.x
+
+
 ## 更新履歴 - Change log
 
 ### incense v0.2.0 (2019-??-??)
 
+- MySQLに対応した。
 - zoom位置をboardの中心に合わせるようにした。
 - `scrollToBoardCenter()` 追加
 - textarea編集中のダブルクリックイベントを無効化。

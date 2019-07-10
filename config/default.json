@@ -6,5 +6,5 @@
 		"storage": "./data/__database.sqlite",
 		"tablePrefix": "incense"
 	},
-	"origin": "http://127.0.0.1:8080"
+	"origin": "http://127.0.0.1:8088"
 }

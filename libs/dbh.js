@@ -9,7 +9,7 @@ module.exports = function(conf, main){
 	var it79 = require('iterate79');
 	var Sequelize = require('sequelize');
 	var sqlite = require('sqlite3');
-	var tbls = {};
+	var tbls;
 
 	/**
 	 * DBを初期化
@@ -19,15 +19,30 @@ module.exports = function(conf, main){
 	this.initDb = function(callback){
 		callback = callback || function(){};
 
-		var dbPath = require('path').resolve(conf.db.storage);
-		// console.log(dbPath);
+		if( tbls ){
+			// 初期化済みの場合
+			callback(true);
+			return;
+		}
 
-		var sequelize = new Sequelize(undefined, undefined, undefined, {
-			'dialect': 'sqlite',
-			'connection': new sqlite.Database( dbPath ),
-			'storage': dbPath
-		});
+		var sequelize;
+		if( conf.db.dbms == 'sqlite' ){
+			var dbPath = require('path').resolve(conf.db.storage);
+			// console.log(dbPath);
 
+			sequelize = new Sequelize(undefined, undefined, undefined, {
+				'dialect': 'sqlite',
+				'connection': new sqlite.Database( dbPath ),
+				'storage': dbPath
+			});
+		}else if( conf.db.dbms == 'mysql' ){
+			sequelize = new Sequelize(conf.db.database, conf.db.user, conf.db.password, {
+				'dialect': 'mysql',
+				'host': conf.db.host
+			});
+		}
+
+		tbls = {};
 		tbls.board = sequelize.define(conf.db.tablePrefix+'-board',
 			{
 				'boardId': { type: Sequelize.STRING, primaryKey: true, allowNull: false },
